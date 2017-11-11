@@ -33,7 +33,7 @@ public class Game extends Application
 {	
 	public static ArrayList<Color> c0;
 	public static int turn=0;
-	public static int n=2;
+	public static int n=3;
 	public static int sizex=6;
 	public static int sizey=9;
 	public static int [][]a=new int[6][9];
@@ -62,10 +62,11 @@ public class Game extends Application
 	public static boolean edge4(int i,int j){
 		return (j==0&&i>0&&i<sizex-1);
 	}
-	public static void burst(int x,int y,int i){
+	public static void burst(Group r[][],int x,int y,int i){
+		ArrayList<Sphere> s1=new ArrayList<Sphere>();	
 		if(a[x][y]/4!=i){
-			int r=a[x][y]/4;
-			a[x][y]=a[x][y]+4*(i-r);
+			int r1=a[x][y]/4;
+			a[x][y]=a[x][y]+4*(i-r1);
 		}
 		a[x][y]++;
 		/*
@@ -78,73 +79,111 @@ public class Game extends Application
 		*/
 		if(corner1(x,y)){
 			if(a[x][y]%4==2){
+				
+				while(!r[x][y].getChildren().isEmpty()){
+					s1.add((Sphere)r[x][y].getChildren().get(0));
+					r[x][y].getChildren().remove(0);
+				}
 				a[x][y]=0;
-				burst(x+1,y,i);
-				burst(x,y+1,i);			
+				r[x+1][y].getChildren().add(new Sphere());
+				burst(r,x+1,y,i);
+				burst(r,x,y+1,i);			
 			}
 	
 		}
 		else if(corner2(x,y)){
 			if(a[x][y]%4==2){
+				while(!r[x][y].getChildren().isEmpty()){
+					s1.add((Sphere)r[x][y].getChildren().get(0));
+					r[x][y].getChildren().remove(0);
+				}
 				a[x][y]=0;
-				burst(x+1,y,i);
-				burst(x,y-1,i);				
+				burst(r,x+1,y,i);
+				burst(r,x,y-1,i);				
 			}
 		}
 		else if(corner3(x,y)){
 			if(a[x][y]%4==2){
+				while(!r[x][y].getChildren().isEmpty()){
+					s1.add((Sphere)r[x][y].getChildren().get(0));
+					r[x][y].getChildren().remove(0);
+				}
 				a[x][y]=0;
-				burst(x-1,y,i);
-				burst(x,y+1,i);			
+				burst(r,x-1,y,i);
+				burst(r,x,y+1,i);			
 			}
 	
 		}
 		else if(corner4(x,y)){
 			if(a[x][y]%4==2){
+				while(!r[x][y].getChildren().isEmpty()){
+					s1.add((Sphere)r[x][y].getChildren().get(0));
+					r[x][y].getChildren().remove(0);
+				}
 				a[x][y]=0;
-				burst(x-1,y,i);
-				burst(x,y-1,i);
+				burst(r,x-1,y,i);
+				burst(r,x,y-1,i);
 			}		
 		}
 		else if(edge1(x,y)){
 			if(a[x][y]%4==3){
+				while(!r[x][y].getChildren().isEmpty()){
+					s1.add((Sphere)r[x][y].getChildren().get(0));
+					r[x][y].getChildren().remove(0);
+				}
 				a[x][y]=0;
-				burst(x,y-1,i);
-				burst(x,y+1,i);
-				burst(x+1,y,i);
+				burst(r,x,y-1,i);
+				burst(r,x,y+1,i);
+				burst(r,x+1,y,i);
 			}
 		}
 		else if(edge2(x,y)){
 			if(a[x][y]%4==3){
+				while(!r[x][y].getChildren().isEmpty()){
+					s1.add((Sphere)r[x][y].getChildren().get(0));
+					r[x][y].getChildren().remove(0);
+				}
 				a[x][y]=0;
-				burst(x-1,y,i);
-				burst(x+1,y,i);
-				burst(x+1,y-1,i);
+				burst(r,x-1,y,i);
+				burst(r,x+1,y,i);
+				burst(r,x+1,y-1,i);
 			}
 		}
 		else if(edge3(x,y)){
 			if(a[x][y]%4==3){
+				while(!r[x][y].getChildren().isEmpty()){
+					s1.add((Sphere)r[x][y].getChildren().get(0));
+					r[x][y].getChildren().remove(0);
+				}
 				a[x][y]=0;
-				burst(x,y-1,i);
-				burst(x,y+1,i);
-				burst(x-1,y,i);
+				burst(r,x,y-1,i);
+				burst(r,x,y+1,i);
+				burst(r,x-1,y,i);
 			}
 		}
 		else if(edge4(x,y)){
 			if(a[x][y]%4==3){
+				while(!r[x][y].getChildren().isEmpty()){
+					s1.add((Sphere)r[x][y].getChildren().get(0));
+					r[x][y].getChildren().remove(0);
+				}
 				a[x][y]=0;
-				burst(x-1,y,i);
-				burst(x+1,y,i);
-				burst(x,y+1,i);
+				burst(r,x-1,y,i);
+				burst(r,x+1,y,i);
+				burst(r,x,y+1,i);
 			}
 		}
 		else{
 			if(a[x][y]%4==0){
+				while(!r[x][y].getChildren().isEmpty()){
+					s1.add((Sphere)r[x][y].getChildren().get(0));
+					r[x][y].getChildren().remove(0);
+				}
 				a[x][y]=0;
-				burst(x-1,y,i);
-				burst(x+1,y,i);
-				burst(x,y-1,i);
-				burst(x,y+1,i);
+				burst(r,x-1,y,i);
+				burst(r,x+1,y,i);
+				burst(r,x,y-1,i);
+				burst(r,x,y+1,i);
 			}
 		}
 	}
@@ -296,27 +335,26 @@ public class Game extends Application
 				grid2[i][j].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>(){
 					@Override public void handle(MouseEvent event) {
 					double x=b.getMinX()+b.getWidth()/2;
-              		double y=b.getMinY()+b.getHeight()/2;
+    				double y=b.getMinY()+b.getHeight()/2;
               		PhongMaterial redMaterial=material[turn];
-              		changeColor();
-              		if(a[xxx][yyy]==0){
+              		//changeColor();
+              		if(a[xxx][yyy]%4==0){
               			r[xxx][yyy]=new Group();
-              			a[xxx][yyy]++;
               		}
-              		if(a[xxx][yyy]==1){
+              		if(a[xxx][yyy]%4==0){
               			Sphere s=new Sphere();
               			s.setRadius(15.0);
               			s.setTranslateX(x);
               			s.setTranslateY(y);
               			s.setMaterial(redMaterial);
               			r[xxx][yyy].getChildren().add(s);
-              			a[xxx][yyy]++;
+              			burst(r,xxx,yyy,turn);
               			root.getChildren().remove(r[xxx][yyy]);
 						root.getChildren().add(r[xxx][yyy]);
 						r[xxx][yyy].toBack();
 						turn=(turn+1)%n;
               		}
-              		else if(a[xxx][yyy]==2){
+              		else if(a[xxx][yyy]%4==1){
               			Sphere v=find(new Sphere(),r[xxx][yyy]);
               			if(v.getMaterial().equals(redMaterial)){
 	              			Sphere s=new Sphere();
@@ -325,14 +363,14 @@ public class Game extends Application
 	              			s.setTranslateY(y);
 	              			s.setMaterial(redMaterial);
 	              			r[xxx][yyy].getChildren().add(s);
-	              			a[xxx][yyy]++;
+	              			burst(r,xxx,yyy,turn);
 	              			root.getChildren().remove(r[xxx][yyy]);
 							root.getChildren().add(r[xxx][yyy]);
 							r[xxx][yyy].toBack();
 							turn=(turn+1)%n;
 						}
               		}
-              		else if(a[xxx][yyy]==3){
+              		else if(a[xxx][yyy]%4==2){
               			Sphere v=find(new Sphere(),r[xxx][yyy]);
               			if(v.getMaterial().equals(redMaterial)){
 	              			Sphere s=new Sphere();
@@ -341,12 +379,40 @@ public class Game extends Application
 	              			s.setTranslateY(y+7.5);
 	              			s.setMaterial(redMaterial);
 	              			r[xxx][yyy].getChildren().add(s);
+	              			burst(r,xxx,yyy,turn);
 	              			root.getChildren().remove(r[xxx][yyy]);
 							root.getChildren().add(r[xxx][yyy]);
 							r[xxx][yyy].toBack();
 							turn=(turn+1)%n;
 						}
               		}
+              		else if(a[xxx][yyy]%4==3){
+              			Sphere v=find(new Sphere(),r[xxx][yyy]);
+              			if(v.getMaterial().equals(redMaterial)){
+	              			Sphere s=new Sphere();
+	              			s.setRadius(15.0);
+	              			s.setTranslateX(x);
+	              			s.setTranslateY(y+7.5);
+	              			s.setMaterial(redMaterial);
+	              			r[xxx][yyy].getChildren().add(s);
+	              			burst(r,xxx,yyy,turn);
+	              			root.getChildren().remove(r[xxx][yyy]);
+							root.getChildren().add(r[xxx][yyy]);
+							r[xxx][yyy].toBack();
+							turn=(turn+1)%n;
+						}
+              		}
+              		RotateTransition rt=new RotateTransition(Duration.millis(1000),r[xxx][yyy]);
+        			rt.setByAngle(360);
+     				rt.setCycleCount(Timeline.INDEFINITE);
+     				rt.play();
+              		for(int i=0;i<6;i++){
+              			for(int j=0;j<9;j++){
+              				System.out.print(a[i][j]+"  ");
+              			}
+              			System.out.println("");
+              		}
+              		System.out.println("");
               		
 				}
 			});
@@ -374,6 +440,7 @@ public class Game extends Application
 		c0=new ArrayList<Color>();
 		c0.add(Color.RED);
 		c0.add(Color.GREEN);
+		c0.add(Color.YELLOW);
 		launch(args);
 	}
 } 
