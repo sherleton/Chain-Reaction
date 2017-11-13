@@ -85,10 +85,29 @@ public class Main extends Application
 				s1.add((Sphere)r[x][y].getChildren().get(i));
 			}
 			r[x][y].getChildren().clear();
+			int a=s1.size();
 			for(int i=0;i<s1.size();i++){
 				s1.get(i).setMaterial(s.getMaterial());
+				if(i==0){
+					s1.get(i).setTranslateX(s1.get(i).getTranslateX()-3.25);
+				}
+				if(i==1){
+					s1.get(i).setTranslateX(s1.get(i).getTranslateX()+3.25);
+				}
+				if(i==2){
+					s1.get(i).setTranslateY(s1.get(i).getTranslateY()+3.25);
+				}
 				r[x][y].getChildren().add(s1.get(i));
 
+			}
+			if(a==1){
+				double aa=s.getTranslateX()+3.25;
+				s.setTranslateX(aa);
+			}
+			else if(a==2){
+				double aa=s.getTranslateY()+3.25;
+				System.out.println(aa+"yoyo");
+				s.setTranslateY(aa);
 			}
 
 			r[x][y].getChildren().add(s);
@@ -122,7 +141,7 @@ public class Main extends Application
 
 		        TranslateTransition t2 =new TranslateTransition();
 		        t2.setDuration(Duration.seconds(0.5));
-		        t2.setToX(xc+67.5);
+		        t2.setToX(xc+61.0);
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(0));
 		        t2.play();
@@ -130,15 +149,15 @@ public class Main extends Application
 		        TranslateTransition t4 =new TranslateTransition();
 		        t4.setDuration(Duration.seconds(0.5));
 		        t4.setToX(xc);
-		        t4.setToY(yc+67.5);
+		        t4.setToY(yc+61.0);
 		        t4.setNode(s1.get(1));
 		        t4.play();
 
 				a[x][y]=0;
 				conquer(r, x+1, y, s1.get(0), root);
 				conquer(r, x, y+1, s1.get(1), root);
-				burst(r,x+1,y,i,xc+67.5,yc,root);
-				burst(r,x,y+1,i,xc,yc+60,root);			
+				burst(r,x+1,y,i,xc+61.0,yc,root);
+				burst(r,x,y+1,i,xc,yc+61.0,root);			
 			}
 	
 		}
@@ -151,7 +170,7 @@ public class Main extends Application
 
 		        TranslateTransition t2 =new TranslateTransition();
 		        t2.setDuration(Duration.seconds(0.5));
-		        t2.setToX(xc+67.5);
+		        t2.setToX(xc+61.0);
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(0));
 		        t2.play();
@@ -159,15 +178,15 @@ public class Main extends Application
 		        TranslateTransition t3 =new TranslateTransition();
 		        t3.setDuration(Duration.seconds(0.5));
 		        t3.setToX(xc);
-		        t3.setToY(yc-67.5);
+		        t3.setToY(yc-61.0);
 		        t3.setNode(s1.get(1));
 		        t3.play();
 
 				a[x][y]=0;
 				conquer(r, x+1, y, s1.get(0), root);
 				conquer(r, x, y-1, s1.get(1), root);
-				burst(r,x+1,y,i,xc+60,yc,root);
-				burst(r,x,y-1,i,xc,yc-60,root);				
+				burst(r,x+1,y,i,xc+61,yc,root);
+				burst(r,x,y-1,i,xc,yc-61,root);				
 			}
 		}
 		else if(corner3(x,y)){
@@ -179,7 +198,7 @@ public class Main extends Application
 
 				TranslateTransition t1 =new TranslateTransition();
 		        t1.setDuration(Duration.seconds(0.5));
-		        t1.setToX(xc-67.5);
+		        t1.setToX(xc-61.0);
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
 		        t1.play();
@@ -187,7 +206,7 @@ public class Main extends Application
 		        TranslateTransition t4 =new TranslateTransition();
 		        t4.setDuration(Duration.seconds(0.5));
 		        t4.setToX(xc);
-		        t4.setToY(yc+67.5);
+		        t4.setToY(yc+61.0);
 		        t4.setNode(s1.get(1));
 		        t4.play();
 
@@ -208,7 +227,7 @@ public class Main extends Application
 
 				TranslateTransition t1 =new TranslateTransition();
 		        t1.setDuration(Duration.seconds(0.5));
-		        t1.setToX(xc-67.5);
+		        t1.setToX(xc-61.0);
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
 		        t1.play();
@@ -216,15 +235,15 @@ public class Main extends Application
 		        TranslateTransition t3 =new TranslateTransition();
 		        t3.setDuration(Duration.seconds(0.5));
 		        t3.setToX(xc);
-		        t3.setToY(yc-67.5);
+		        t3.setToY(yc-61.0);
 		        t3.setNode(s1.get(1));
 		        t3.play();
 
 				a[x][y]=0;
 				conquer(r, x-1, y, s1.get(0), root);
 				conquer(r, x, y-1, s1.get(1), root);
-				burst(r,x-1,y,i,xc-60,yc,root);
-				burst(r,x,y-1,i,xc,yc-60,root);
+				burst(r,x-1,y,i,xc-61,yc,root);
+				burst(r,x,y-1,i,xc,yc-61,root);
 			}		
 		}
 		else if(edge1(x,y)){
@@ -236,7 +255,7 @@ public class Main extends Application
 
 		        TranslateTransition t2 =new TranslateTransition();
 		        t2.setDuration(Duration.seconds(0.5));
-		        t2.setToX(xc+67.5);
+		        t2.setToX(xc+61.0);
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(0));
 		        t2.play();
@@ -244,14 +263,14 @@ public class Main extends Application
 		        TranslateTransition t3 =new TranslateTransition();
 		        t3.setDuration(Duration.seconds(0.5));
 		        t3.setToX(xc);
-		        t3.setToY(yc-67.5);
+		        t3.setToY(yc-61.0);
 		        t3.setNode(s1.get(1));
 		        t3.play();
 
 		        TranslateTransition t4 =new TranslateTransition();
 		        t4.setDuration(Duration.seconds(0.5));
 		        t4.setToX(xc);
-		        t4.setToY(yc+67.5);
+		        t4.setToY(yc+61.0);
 		        t4.setNode(s1.get(2));
 		        t4.play();
 
@@ -259,9 +278,9 @@ public class Main extends Application
 				conquer(r, x+1, y, s1.get(0), root);
 				conquer(r, x, y-1, s1.get(1), root);
 				conquer(r, x, y+1, s1.get(2), root);
-				burst(r,x,y-1,i,xc,yc-60,root);
-				burst(r,x,y+1,i,xc,yc+60,root);
-				burst(r,x+1,y,i,xc+60,yc,root);
+				burst(r,x,y-1,i,xc,yc-61,root);
+				burst(r,x,y+1,i,xc,yc+61,root);
+				burst(r,x+1,y,i,xc+61,yc,root);
 			}
 		}
 		else if(edge2(x,y)){
@@ -273,32 +292,32 @@ public class Main extends Application
 
 				TranslateTransition t1 =new TranslateTransition();
 		        t1.setDuration(Duration.seconds(0.5));
-		        t1.setToX(xc-67.5);
+		        t1.setToX(xc-61.0);
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
 		        t1.play();
 
 		        TranslateTransition t2 =new TranslateTransition();
 		        t2.setDuration(Duration.seconds(0.5));
-		        t2.setToX(xc+67.5);
+		        t2.setToX(xc+61.0);
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(1));
 		        t2.play();
 		        
 		        TranslateTransition t3 =new TranslateTransition();
 		        t3.setDuration(Duration.seconds(0.5));
-		        t3.setToX(xc+67.5);
-		        t3.setToY(yc-67.5);
+		        t3.setToX(xc);
+		        t3.setToY(yc-61.0);
 		        t3.setNode(s1.get(2));
 		        t3.play();
 
 				a[x][y]=0;
 				conquer(r, x-1, y, s1.get(0), root);
 				conquer(r, x+1, y, s1.get(1), root);
-				conquer(r, x+1, y-1, s1.get(2), root);
-				burst(r,x-1,y,i,xc-60,yc,root);
-				burst(r,x+1,y,i,xc+60,yc,root);
-				burst(r,x+1,y-1,i,xc+60,yc-60,root);
+				conquer(r, x, y-1, s1.get(2), root);
+				burst(r,x-1,y,i,xc-61,yc,root);
+				burst(r,x+1,y,i,xc+61,yc,root);
+				burst(r,x,y-1,i,xc,yc-61,root);
 			}
 		}
 		else if(edge3(x,y)){
@@ -310,7 +329,7 @@ public class Main extends Application
 
 				TranslateTransition t1 =new TranslateTransition();
 		        t1.setDuration(Duration.seconds(0.5));
-		        t1.setToX(xc-67.5);
+		        t1.setToX(xc-61.0);
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
 		        t1.play();
@@ -318,14 +337,14 @@ public class Main extends Application
 		        TranslateTransition t3 =new TranslateTransition();
 		        t3.setDuration(Duration.seconds(0.5));
 		        t3.setToX(xc);
-		        t3.setToY(yc-67.5);
+		        t3.setToY(yc-61.0);
 		        t3.setNode(s1.get(1));
 		        t3.play();
 
 		        TranslateTransition t4 =new TranslateTransition();
 		        t4.setDuration(Duration.seconds(0.5));
 		        t4.setToX(xc);
-		        t4.setToY(yc+67.5);
+		        t4.setToY(yc+61.0);
 		        t4.setNode(s1.get(2));
 		        t4.play();
 
@@ -333,9 +352,9 @@ public class Main extends Application
 				conquer(r, x-1, y, s1.get(0), root);
 				conquer(r, x, y-1, s1.get(1), root);
 				conquer(r, x, y+1, s1.get(2), root);
-				burst(r,x-1,y,i,xc-60,yc,root);
-				burst(r,x,y-1,i,xc,yc-60,root);
-				burst(r,x,y+1,i,xc,yc+60,root);
+				burst(r,x-1,y,i,xc-61,yc,root);
+				burst(r,x,y-1,i,xc,yc-61,root);
+				burst(r,x,y+1,i,xc,yc+61,root);
 			}
 		}
 		else if(edge4(x,y)){
@@ -347,14 +366,14 @@ public class Main extends Application
 
 				TranslateTransition t1 =new TranslateTransition();
 		        t1.setDuration(Duration.seconds(0.5));
-		        t1.setToX(xc-67.5);
+		        t1.setToX(xc-61.0);
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
 		        t1.play();
 
 		        TranslateTransition t2 =new TranslateTransition();
 		        t2.setDuration(Duration.seconds(0.5));
-		        t2.setToX(xc+67.5);
+		        t2.setToX(xc+61.0);
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(1));
 		        t2.play();
@@ -362,7 +381,7 @@ public class Main extends Application
 		        TranslateTransition t4 =new TranslateTransition();
 		        t4.setDuration(Duration.seconds(0.5));
 		        t4.setToX(xc);
-		        t4.setToY(yc+67.5);
+		        t4.setToY(yc+61.0);
 		        t4.setNode(s1.get(2));
 		        t4.play();
 
@@ -370,9 +389,9 @@ public class Main extends Application
 				conquer(r, x-1, y, s1.get(0), root);
 				conquer(r, x+1, y, s1.get(1), root);
 				conquer(r, x, y+1, s1.get(2), root);
-				burst(r,x-1,y,i,xc-60,yc,root);
-				burst(r,x+1,y,i,xc+60,yc,root);
-				burst(r,x,y+1,i,xc,yc+60,root);
+				burst(r,x-1,y,i,xc-61,yc,root);
+				burst(r,x+1,y,i,xc+61,yc,root);
+				burst(r,x,y+1,i,xc,yc+61,root);
 			}
 		}
 		else{
@@ -384,14 +403,14 @@ public class Main extends Application
 
 				TranslateTransition t1 =new TranslateTransition();
 		        t1.setDuration(Duration.seconds(0.5));
-		        t1.setToX(xc-67.5);
+		        t1.setToX(xc-61.0);
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
 		        t1.play();
 
 		        TranslateTransition t2 =new TranslateTransition();
 		        t2.setDuration(Duration.seconds(0.5));
-		        t2.setToX(xc+67.5);
+		        t2.setToX(xc+61.0);
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(1));
 		        t2.play();
@@ -399,34 +418,17 @@ public class Main extends Application
 		        TranslateTransition t3 =new TranslateTransition();
 		        t3.setDuration(Duration.seconds(0.5));
 		        t3.setToX(xc);
-		        t3.setToY(yc-67.5);
+		        t3.setToY(yc-61.0);
 		        t3.setNode(s1.get(2));
 		        t3.play();
 
-		        if(r[x][y+1].getChildren().isEmpty()){
+		        
 		        	TranslateTransition t4 =new TranslateTransition();
 			        t4.setDuration(Duration.seconds(0.5));
 			        t4.setToX(xc);
 			        t4.setToY(yc+61.0);
 			        t4.setNode(s1.get(3));
 			        t4.play();	
-		        }
-		        else if(r[x][y+1].getChildren().size()==1){
-		        	TranslateTransition t4 =new TranslateTransition();
-			        t4.setDuration(Duration.seconds(0.5));
-			        t4.setToX(xc+7.5);
-			        t4.setToY(yc+61.0);
-			        t4.setNode(s1.get(3));
-			        t4.play();	
-		        }
-		        else if(r[x][y+1].getChildren().size()==2||r[x][y+1].getChildren().size()==3){
-		        	TranslateTransition t4 =new TranslateTransition();
-			        t4.setDuration(Duration.seconds(0.5));
-			        t4.setToX(xc);
-			        t4.setToY(yc+61.0-7.5);
-			        t4.setNode(s1.get(3));
-			        t4.play();	
-		        }
 		        
 
 				a[x][y]=0;
@@ -434,10 +436,10 @@ public class Main extends Application
 				conquer(r, x+1, y, s1.get(1), root);
 				conquer(r, x, y-1, s1.get(2), root);
 				conquer(r, x, y+1, s1.get(3), root);
-				burst(r,x-1,y,i, xc-50, yc,root);
-				burst(r,x+1,y,i, xc+50, yc,root);
-				burst(r,x,y-1,i, xc, yc-60,root);
-				burst(r,x,y+1,i, xc, yc+60,root);
+				burst(r,x-1,y,i, xc-61, yc,root);
+				burst(r,x+1,y,i, xc+61, yc,root);
+				burst(r,x,y-1,i, xc, yc-61,root);
+				burst(r,x,y+1,i, xc, yc+61,root);
 			}
 		}
 	}
