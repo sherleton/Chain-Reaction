@@ -40,7 +40,7 @@ public class Main extends Application
 
 	public static ArrayList<Color> c0;
 	public static int turn=0;
-	public static int n=6;
+	public static int n=5;
 	public static int sizex=6;
 	public static int sizey=9;
 	public static int [][]a=new int[6][9];
@@ -72,8 +72,8 @@ public class Main extends Application
 
 	public static void conquer(Group[][] r, int x, int y, Sphere s, Group root)
 	{
+		ArrayList<Sphere> s1=new ArrayList<Sphere>();
 		root.getChildren().remove(r[x][y]);
-		Sphere s1;
 		if(r[x][y].getChildren().isEmpty())
 		{
 			r[x][y].getChildren().add(s);
@@ -82,10 +82,15 @@ public class Main extends Application
 		{
 			for(int i = 0; i < r[x][y].getChildren().size(); i++)
 			{
-				s1 = (Sphere)r[x][y].getChildren().remove(i);
-				s1.setMaterial(s.getMaterial());
-        		r[x][y].getChildren().add(s1);
+				s1.add((Sphere)r[x][y].getChildren().get(i));
 			}
+			r[x][y].getChildren().clear();
+			for(int i=0;i<s1.size();i++){
+				s1.get(i).setMaterial(s.getMaterial());
+				r[x][y].getChildren().add(s1.get(i));
+
+			}
+
 			r[x][y].getChildren().add(s);
 		}
 		root.getChildren().add(r[x][y]);
@@ -189,8 +194,8 @@ public class Main extends Application
 				a[x][y]=0;
 				conquer(r, x-1, y, s1.get(0), root);
 				conquer(r, x, y+1, s1.get(1), root);
-				burst(r,x-1,y,i,xc-60,yc,root);
-				burst(r,x,y+1,i,xc,yc+60,root);			
+				burst(r,x-1,y,i,xc-61,yc,root);
+				burst(r,x,y+1,i,xc,yc+61,root);			
 			}
 	
 		}
@@ -398,12 +403,31 @@ public class Main extends Application
 		        t3.setNode(s1.get(2));
 		        t3.play();
 
-		        TranslateTransition t4 =new TranslateTransition();
-		        t4.setDuration(Duration.seconds(0.5));
-		        t4.setToX(xc);
-		        t4.setToY(yc+67.5);
-		        t4.setNode(s1.get(3));
-		        t4.play();
+		        if(r[x][y+1].getChildren().isEmpty()){
+		        	TranslateTransition t4 =new TranslateTransition();
+			        t4.setDuration(Duration.seconds(0.5));
+			        t4.setToX(xc);
+			        t4.setToY(yc+61.0);
+			        t4.setNode(s1.get(3));
+			        t4.play();	
+		        }
+		        else if(r[x][y+1].getChildren().size()==1){
+		        	TranslateTransition t4 =new TranslateTransition();
+			        t4.setDuration(Duration.seconds(0.5));
+			        t4.setToX(xc+7.5);
+			        t4.setToY(yc+61.0);
+			        t4.setNode(s1.get(3));
+			        t4.play();	
+		        }
+		        else if(r[x][y+1].getChildren().size()==2||r[x][y+1].getChildren().size()==3){
+		        	TranslateTransition t4 =new TranslateTransition();
+			        t4.setDuration(Duration.seconds(0.5));
+			        t4.setToX(xc);
+			        t4.setToY(yc+61.0-7.5);
+			        t4.setNode(s1.get(3));
+			        t4.play();	
+		        }
+		        
 
 				a[x][y]=0;
 				conquer(r, x-1, y, s1.get(0), root);
@@ -962,9 +986,9 @@ public class Main extends Application
      				rt.setCycleCount(Timeline.INDEFINITE);
      				rt.setInterpolator(Interpolator.LINEAR);
      				rt.play();
-              		for(int i=0;i<6;i++){
-              			for(int j=0;j<9;j++){
-              				System.out.print(a[i][j]+"  ");
+              		for(int i=0;i<9;i++){
+              			for(int j=0;j<6;j++){
+              				System.out.print(a[j][i]+"  ");
               			}
               			System.out.println("");
               		}
@@ -996,7 +1020,6 @@ public class Main extends Application
 		c0.add(Color.YELLOW);
 		c0.add(Color.BLUE);
 		c0.add(Color.WHITE);
-		c0.add(Color.CYAN);
 		launch(args);
 	}
 
