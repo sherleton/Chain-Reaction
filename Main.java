@@ -23,6 +23,10 @@ import javafx.event.*;
 import java.util.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.geometry.Insets;
+import javafx.scene.layout.CornerRadii;
 
 class Player{
 	private Color c;
@@ -48,6 +52,7 @@ public class Main extends Application
 
 	public static ArrayList<Player> p;
 	public static ArrayList<Player> total;
+	public static ArrayList<Color> c;
 	public static int turn=0;
 	public static int n;
 	public static int sizex=6;
@@ -981,57 +986,32 @@ public class Main extends Application
 		line.setEndY(65.0f);
 		line.setStroke(Color.CYAN);
 
-		Button p1 = new Button("Red Component of Color");
-		p1.setStyle("-fx-background-color:transparent;" + String.format("-fx-font-size: %dpx; -fx-text-fill: white;", (int)(0.35 * 70)));
-		p1.setMinSize(380, 60);
-		p1.setPrefSize(380, 60);
-		p1.setMaxSize(380, 60);
-		p1.setLayoutX(10.0f);
-		p1.setLayoutY(65.0f);
-		p1.setWrapText(true);
-
-		Line line1 = new Line();
-		line1.setStartX(10.0f);
-		line1.setStartY(120.0f);
-		line1.setEndX(390.0f);
-		line1.setEndY(120.0f);
-		line1.setStroke(Color.GRAY);
-
-		Button p2 = new Button("Green Component of Color");
-		p2.setStyle("-fx-background-color:transparent;" + String.format("-fx-font-size: %dpx; -fx-text-fill: white;", (int)(0.35 * 70)));
-		p2.setMinSize(380, 60);
-		p2.setPrefSize(380, 60);
-		p2.setMaxSize(380, 60);
-		p2.setLayoutX(10.0f);
-		p2.setLayoutY(122.0f);
-		p2.setWrapText(true);
-
-		Line line2 = new Line();
-		line2.setStartX(10.0f);
-		line2.setStartY(187.0f);
-		line2.setEndX(390.0f);
-		line2.setEndY(187.0f);
-		line2.setStroke(Color.GRAY);
-
-		Button p3 = new Button("Blue Component of Color");
-		p3.setStyle("-fx-background-color:transparent;" + String.format("-fx-font-size: %dpx; -fx-text-fill: white;", (int)(0.35 * 70)));
-		p3.setMinSize(380, 60);
-		p3.setPrefSize(380, 60);
-		p3.setMaxSize(380, 60);
-		p3.setLayoutX(10.0f);
-		p3.setLayoutY(187.0f);
-		p3.setWrapText(true);
-
-		Line line3 = new Line();
-		line3.setStartX(10.0f);
-		line3.setStartY(252.0f);
-		line3.setEndX(390.0f);
-		line3.setEndY(252.0f);
-		line3.setStroke(Color.GRAY);
+		Button[][] colors = new Button[5][3];
+		for(int i = 0; i < 5; i++)
+			for(int j = 0; j < 3; j++)
+			{
+				colors[i][j] = new Button();
+				colors[i][j].setMinSize(90, 90);
+				colors[i][j].setPrefSize(90, 90);
+				colors[i][j].setMaxSize(90, 90);
+				colors[i][j].setLayoutX(j*110 + 45);
+				colors[i][j].setLayoutY(i*110 + 90);
+				colors[i][j].setBackground(new Background(new BackgroundFill(c.get((i+1)*(j+1) - 1), CornerRadii.EMPTY, Insets.EMPTY)));
+				colors[i][j].setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent e)
+					{
+						total.set(turn, new Player(c.get((i+1)*(j+1) - 1)));
+					}
+				});
+			}
 
 		playascene = new Scene(new Group(), 400, 650, Color.BLACK);
 		Group playaroot = (Group)playascene.getRoot();
-		playaroot.getChildren().addAll(line, p1, line1, p2, line2, p3, line3, iv, t1);
+		playaroot.getChildren().addAll(iv, t1, line);
+		for(int i = 0; i < 5; i++)
+			for(int j = 0; j < 3; j++)
+				playaroot.getChildren().add(colors[i][j]);
 	}
 
 	public void playerSettingscall() throws FileNotFoundException
@@ -1383,6 +1363,24 @@ public class Main extends Application
 		total.add(new Player(Color.YELLOW));
 		total.add(new Player(Color.WHITE));
 		total.add(new Player(Color.OLIVE));
+
+		c = new ArrayList<Color>();
+		c.add(Color.RED);
+		c.add(Color.GREEN);
+		c.add(Color.BLUE);
+		c.add(Color.CYAN);
+		c.add(Color.ORANGE);
+		c.add(Color.YELLOW);
+		c.add(Color.WHITE);
+		c.add(Color.OLIVE);
+		c.add(Color.CORAL);
+		c.add(Color.PURPLE);
+		c.add(Color.MOCCASIN);
+		c.add(Color.AZURE);
+		c.add(Color.CRIMSON);
+		c.add(Color.IVORY);
+		c.add(Color.LIME);
+
 		launch(args);
 	}
 }
