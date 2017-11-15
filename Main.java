@@ -54,7 +54,7 @@ public class Main extends Application
 	public static ArrayList<Player> total;
 	public static ArrayList<Color> c;
 	public static int turn=0;
-	public static int n;
+	public static int n=2;
 	public static int sizex=6;
 	public static int sizey=9;
 	public static int [][]a=new int[6][9];
@@ -495,6 +495,8 @@ public class Main extends Application
 		player.setLayoutX(60);
 		player.setLayoutY(110);
 		player.setValue("2 Player Game");
+		for(int i = 0; i < n; i++)
+			p.add(total.get(i));
 		player.valueProperty().addListener(new ChangeListener<String>() {
 			public void changed(ObservableValue ov, String t1, String t2)
 			{
@@ -511,13 +513,14 @@ public class Main extends Application
 				else
 					player.setValue(t2);
 				n = Integer.parseInt(player.getValue().substring(0,1));
+				p=new ArrayList<Player>();
 				for(int i = 0; i < n; i++)
-				p.add(total.get(i));
+					p.add(total.get(i));
 			}
 		});
 
 		final ComboBox<String> game = new ComboBox<String>();
-		game.getItems().addAll("Normal Grid", "HD Ggamerid");
+		game.getItems().addAll("Normal Grid", "HD Grid");
 		game.setLayoutX(210);
 		game.setLayoutY(110);
 		game.setValue("Normal Grid");
@@ -547,7 +550,7 @@ public class Main extends Application
 					if(game.getValue().equals("Normal Grid"))
 						playGame("Normal Grid");
 					else
-						playGame("HD");
+						playGame("HD Grid");
 				}
 				catch(FileNotFoundException f)
 				{
@@ -1353,7 +1356,7 @@ public class Main extends Application
 	}
 
 	public static void main(String[] args) {
-		p = new ArrayList<Player>(n);
+		p = new ArrayList<Player>();
 		total = new ArrayList<Player>();
 		total.add(new Player(Color.RED));
 		total.add(new Player(Color.GREEN));
