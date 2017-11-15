@@ -72,7 +72,6 @@ class ColorChange implements EventHandler<ActionEvent>
 
 					if(Main.c.get(i*3 + j).equals(ci))
 					{
-						System.out.println(1);
 						xi = i;
 						yi = j;
 					}
@@ -544,8 +543,22 @@ public class Main extends Application
 		player.setLayoutX(60);
 		player.setLayoutY(110);
 		player.setValue("2 Player Game");
-		for(int i = 0; i < n; i++)
-			p.add(total.get(i));
+		if(p.size() == 0)
+		{
+			p = new ArrayList<Player>(n);
+			for(int i = 0; i < n; i++)
+				p.add(i,total.get(i));
+		}
+		else if (p.size() > 0 && p.size() < n)
+		{
+			for(int i = p.size() - 1; i < n; i++)
+				p.add(i,total.get(i));
+		}
+		else
+		{
+			for(int i = 0; i < n; i++)
+				p.set(i,total.get(i));
+		}
 		player.valueProperty().addListener(new ChangeListener<String>() {
 			public void changed(ObservableValue ov, String t1, String t2)
 			{
@@ -562,9 +575,29 @@ public class Main extends Application
 				else
 					player.setValue(t2);
 				n = Integer.parseInt(player.getValue().substring(0,1));
-				p=new ArrayList<Player>();
-				for(int i = 0; i < n; i++)
-					p.add(total.get(i));
+				if(p.size() == 0)
+				{
+					p = new ArrayList<Player>(n);
+					for(int i = 0; i < n; i++)
+						p.add(i,total.get(i));
+				}
+				else if (p.size() > 0 && p.size() < n)
+				{
+					for(int i = p.size(); i < n; i++)
+						p.add(total.get(i));
+				}
+				else if(p.size() > n)
+				{
+					p = new ArrayList<Player>(n);
+					for(int i = 0; i < n; i++)
+						p.add(i,total.get(i));
+
+				}
+				else if(p.size() == n)
+				{
+					for(int i = 0; i < n; i++)
+						p.set(i,total.get(i));
+				}
 			}
 		});
 
@@ -753,6 +786,7 @@ public class Main extends Application
 					}
 					else
 					{
+						turn = 0;
 						callmain(turn, p.get(turn).getColor());
 					}
 				}
