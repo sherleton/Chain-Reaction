@@ -25,8 +25,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.geometry.Insets;
-import javafx.scene.layout.CornerRadii;
 
 class Player{
 	private Color c;
@@ -45,14 +43,21 @@ class Player{
 
 class ColorChange implements EventHandler<ActionEvent>
 {
-	Main o;
-	int turn;
-	Color c;
-	ColorChange(int turn, Color c, Main o1)
+	private Main o;
+	private int turn;
+	private Color c;
+	private int x;
+	private int y;
+	private Color ci;
+
+	ColorChange(int turn, Color c, Main o1, int x, int y, Color ci)
 	{
 		this.turn = turn;
 		this.c = c;
 		this.o = o1;
+		this.x = x;
+		this.y = y;
+		this.ci = ci;
 	}
 
 	@Override
@@ -60,6 +65,22 @@ class ColorChange implements EventHandler<ActionEvent>
 	{
 		try
 		{
+			int xi = 0, yi = 0;
+			for(int i = 0; i < 5; i++)
+				for(int j = 0; j < 3; j++)
+				{
+
+					if(Main.c.get(i*3 + j).equals(ci))
+					{
+						System.out.println(1);
+						xi = i;
+						yi = j;
+					}
+				}
+			Main.cvalue[x][y] = 1;
+			Main.cvalue[xi][yi] = 0;
+			o.colors[xi][yi].setDisable(false);
+			o.colors[x][y].setDisable(true);
 			o.callmain(turn, c);
 		}
 		catch(FileNotFoundException f)
@@ -85,6 +106,8 @@ public class Main extends Application
 	public static int sizey=9;
 	public static int [][]a=new int[6][9];
 	public static int lol=0;
+	public Button[][] colors = new Button[5][3];;
+	public static int[][] cvalue;
 	public static boolean corner1(int i,int j){
 		return (i==0&&j==0);
 	}
@@ -127,31 +150,17 @@ public class Main extends Application
 			r[x][y].getChildren().clear();
 			for(int i=0;i<s1.size();i++){
 				s1.get(i).setMaterial(s.getMaterial());
-				if(i==1){
-					s1.get(i).setTranslateX(s1.get(i).getTranslateX()+7.5);
-				}
-				else if(i==2){
-					s1.get(i).setTranslateY(s1.get(i).getTranslateY()+7.5);
-				}
 				r[x][y].getChildren().add(s1.get(i));
 
 			}
-			if(s1.size()==2){
-				s.setTranslateX(s.getTranslateX()+7.5);
-			}
-			else if(s1.size()==3){
-				s.setTranslateY(s.getTranslateY()+7.5);
-			}
+
 			r[x][y].getChildren().add(s);
 		}
 		root.getChildren().add(r[x][y]);
 		r[x][y].toBack();
 	}
 
-	public static void burst(Group r[][],int x,int y,int i, Group root,Rectangle [][]grid2){
-		Bounds b=grid2[x][y].getBoundsInLocal();
-		Double xc=b.getMinX()+b.getWidth()/2;
-		Double yc=b.getMinY()+b.getHeight()/2;
+	public static void burst(Group r[][],int x,int y,int i, double xc, double yc, Group root){
 		ArrayList<Sphere> s1=new ArrayList<Sphere>();	
 		if(a[x][y]/4!=i){
 			int r1=a[x][y]/4;
@@ -176,7 +185,7 @@ public class Main extends Application
 
 		        TranslateTransition t2 =new TranslateTransition();
 		        t2.setDuration(Duration.seconds(0.5));
-		        t2.setToX(xc+b.getWidth());
+		        t2.setToX(xc+67.5);
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(0));
 		        t2.play();
@@ -184,15 +193,15 @@ public class Main extends Application
 		        TranslateTransition t4 =new TranslateTransition();
 		        t4.setDuration(Duration.seconds(0.5));
 		        t4.setToX(xc);
-		        t4.setToY(yc+b.getHeight());
+		        t4.setToY(yc+67.5);
 		        t4.setNode(s1.get(1));
 		        t4.play();
 
 				a[x][y]=0;
 				conquer(r, x+1, y, s1.get(0), root);
 				conquer(r, x, y+1, s1.get(1), root);
-				burst(r,x+1,y,i,root,grid2);
-				burst(r,x,y+1,i,root,grid2);			
+				burst(r,x+1,y,i,xc+60,yc,root);
+				burst(r,x,y+1,i,xc,yc+60,root);			
 			}
 	
 		}
@@ -205,7 +214,7 @@ public class Main extends Application
 
 		        TranslateTransition t2 =new TranslateTransition();
 		        t2.setDuration(Duration.seconds(0.5));
-		        t2.setToX(xc+b.getWidth());
+		        t2.setToX(xc+67.5);
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(0));
 		        t2.play();
@@ -213,15 +222,15 @@ public class Main extends Application
 		        TranslateTransition t3 =new TranslateTransition();
 		        t3.setDuration(Duration.seconds(0.5));
 		        t3.setToX(xc);
-		        t3.setToY(yc-b.getHeight());
+		        t3.setToY(yc-62.5);
 		        t3.setNode(s1.get(1));
 		        t3.play();
 
 				a[x][y]=0;
 				conquer(r, x+1, y, s1.get(0), root);
 				conquer(r, x, y-1, s1.get(1), root);
-				burst(r,x+1,y,i,root,grid2);
-				burst(r,x,y-1,i,root,grid2);				
+				burst(r,x+1,y,i,xc+60,yc,root);
+				burst(r,x,y-1,i,xc,yc-60,root);				
 			}
 		}
 		else if(corner3(x,y)){
@@ -233,7 +242,7 @@ public class Main extends Application
 
 				TranslateTransition t1 =new TranslateTransition();
 		        t1.setDuration(Duration.seconds(0.5));
-		        t1.setToX(xc-b.getWidth());
+		        t1.setToX(xc-62.5);
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
 		        t1.play();
@@ -241,15 +250,15 @@ public class Main extends Application
 		        TranslateTransition t4 =new TranslateTransition();
 		        t4.setDuration(Duration.seconds(0.5));
 		        t4.setToX(xc);
-		        t4.setToY(yc+b.getHeight());
+		        t4.setToY(yc+67.5);
 		        t4.setNode(s1.get(1));
 		        t4.play();
 
 				a[x][y]=0;
 				conquer(r, x-1, y, s1.get(0), root);
 				conquer(r, x, y+1, s1.get(1), root);
-				burst(r,x-1,y,i,root,grid2);
-				burst(r,x,y+1,i,root,grid2);			
+				burst(r,x-1,y,i,xc-60,yc,root);
+				burst(r,x,y+1,i,xc,yc+60,root);			
 			}
 	
 		}
@@ -262,7 +271,7 @@ public class Main extends Application
 
 				TranslateTransition t1 =new TranslateTransition();
 		        t1.setDuration(Duration.seconds(0.5));
-		        t1.setToX(xc-b.getWidth());
+		        t1.setToX(xc-62.5);
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
 		        t1.play();
@@ -270,15 +279,15 @@ public class Main extends Application
 		        TranslateTransition t3 =new TranslateTransition();
 		        t3.setDuration(Duration.seconds(0.5));
 		        t3.setToX(xc);
-		        t3.setToY(yc-b.getHeight());
+		        t3.setToY(yc-62.5);
 		        t3.setNode(s1.get(1));
 		        t3.play();
 
 				a[x][y]=0;
 				conquer(r, x-1, y, s1.get(0), root);
 				conquer(r, x, y-1, s1.get(1), root);
-				burst(r,x-1,y,i,root,grid2);
-				burst(r,x,y-1,i,root,grid2);
+				burst(r,x-1,y,i,xc-60,yc,root);
+				burst(r,x,y-1,i,xc,yc-60,root);
 			}		
 		}
 		else if(edge1(x,y)){
@@ -290,7 +299,7 @@ public class Main extends Application
 
 		        TranslateTransition t2 =new TranslateTransition();
 		        t2.setDuration(Duration.seconds(0.5));
-		        t2.setToX(xc+b.getWidth());
+		        t2.setToX(xc+67.5);
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(0));
 		        t2.play();
@@ -298,14 +307,14 @@ public class Main extends Application
 		        TranslateTransition t3 =new TranslateTransition();
 		        t3.setDuration(Duration.seconds(0.5));
 		        t3.setToX(xc);
-		        t3.setToY(yc-b.getHeight());
+		        t3.setToY(yc-62.5);
 		        t3.setNode(s1.get(1));
 		        t3.play();
 
 		        TranslateTransition t4 =new TranslateTransition();
 		        t4.setDuration(Duration.seconds(0.5));
 		        t4.setToX(xc);
-		        t4.setToY(yc+b.getHeight());
+		        t4.setToY(yc+67.5);
 		        t4.setNode(s1.get(2));
 		        t4.play();
 
@@ -313,9 +322,9 @@ public class Main extends Application
 				conquer(r, x+1, y, s1.get(0), root);
 				conquer(r, x, y-1, s1.get(1), root);
 				conquer(r, x, y+1, s1.get(2), root);
-				burst(r,x,y-1,i,root,grid2);
-				burst(r,x,y+1,i,root,grid2);
-				burst(r,x+1,y,i,root,grid2);
+				burst(r,x,y-1,i,xc,yc-60,root);
+				burst(r,x,y+1,i,xc,yc+60,root);
+				burst(r,x+1,y,i,xc+60,yc,root);
 			}
 		}
 		else if(edge2(x,y)){
@@ -327,32 +336,32 @@ public class Main extends Application
 
 				TranslateTransition t1 =new TranslateTransition();
 		        t1.setDuration(Duration.seconds(0.5));
-		        t1.setToX(xc-b.getWidth());
+		        t1.setToX(xc-62.5);
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
 		        t1.play();
 
 		        TranslateTransition t2 =new TranslateTransition();
 		        t2.setDuration(Duration.seconds(0.5));
-		        t2.setToX(xc+b.getWidth());
+		        t2.setToX(xc+67.5);
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(1));
 		        t2.play();
 		        
 		        TranslateTransition t3 =new TranslateTransition();
 		        t3.setDuration(Duration.seconds(0.5));
-		        t3.setToX(xc);
-		        t3.setToY(yc-b.getHeight());
+		        t3.setToX(xc+67.5);
+		        t3.setToY(yc-62.5);
 		        t3.setNode(s1.get(2));
 		        t3.play();
 
 				a[x][y]=0;
 				conquer(r, x-1, y, s1.get(0), root);
 				conquer(r, x+1, y, s1.get(1), root);
-				conquer(r, x, y-1, s1.get(2), root);
-				burst(r,x-1,y,i,root,grid2);
-				burst(r,x+1,y,i,root,grid2);
-				burst(r,x,y-1,i,root,grid2);
+				conquer(r, x+1, y-1, s1.get(2), root);
+				burst(r,x-1,y,i,xc-60,yc,root);
+				burst(r,x+1,y,i,xc+60,yc,root);
+				burst(r,x+1,y-1,i,xc+60,yc-60,root);
 			}
 		}
 		else if(edge3(x,y)){
@@ -364,7 +373,7 @@ public class Main extends Application
 
 				TranslateTransition t1 =new TranslateTransition();
 		        t1.setDuration(Duration.seconds(0.5));
-		        t1.setToX(xc-b.getWidth());
+		        t1.setToX(xc-62.5);
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
 		        t1.play();
@@ -372,14 +381,14 @@ public class Main extends Application
 		        TranslateTransition t3 =new TranslateTransition();
 		        t3.setDuration(Duration.seconds(0.5));
 		        t3.setToX(xc);
-		        t3.setToY(yc-b.getHeight());
+		        t3.setToY(yc-62.5);
 		        t3.setNode(s1.get(1));
 		        t3.play();
 
 		        TranslateTransition t4 =new TranslateTransition();
 		        t4.setDuration(Duration.seconds(0.5));
 		        t4.setToX(xc);
-		        t4.setToY(yc+b.getHeight());
+		        t4.setToY(yc+67.5);
 		        t4.setNode(s1.get(2));
 		        t4.play();
 
@@ -387,9 +396,9 @@ public class Main extends Application
 				conquer(r, x-1, y, s1.get(0), root);
 				conquer(r, x, y-1, s1.get(1), root);
 				conquer(r, x, y+1, s1.get(2), root);
-				burst(r,x-1,y,i,root,grid2);
-				burst(r,x,y-1,i,root,grid2);
-				burst(r,x,y+1,i,root,grid2);
+				burst(r,x-1,y,i,xc-60,yc,root);
+				burst(r,x,y-1,i,xc,yc-60,root);
+				burst(r,x,y+1,i,xc,yc+60,root);
 			}
 		}
 		else if(edge4(x,y)){
@@ -401,14 +410,14 @@ public class Main extends Application
 
 				TranslateTransition t1 =new TranslateTransition();
 		        t1.setDuration(Duration.seconds(0.5));
-		        t1.setToX(xc-b.getWidth());
+		        t1.setToX(xc-62.5);
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
 		        t1.play();
 
 		        TranslateTransition t2 =new TranslateTransition();
 		        t2.setDuration(Duration.seconds(0.5));
-		        t2.setToX(xc+b.getWidth());
+		        t2.setToX(xc+67.5);
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(1));
 		        t2.play();
@@ -416,7 +425,7 @@ public class Main extends Application
 		        TranslateTransition t4 =new TranslateTransition();
 		        t4.setDuration(Duration.seconds(0.5));
 		        t4.setToX(xc);
-		        t4.setToY(yc+b.getHeight());
+		        t4.setToY(yc+67.5);
 		        t4.setNode(s1.get(2));
 		        t4.play();
 
@@ -424,9 +433,9 @@ public class Main extends Application
 				conquer(r, x-1, y, s1.get(0), root);
 				conquer(r, x+1, y, s1.get(1), root);
 				conquer(r, x, y+1, s1.get(2), root);
-				burst(r,x-1,y,i,root,grid2);
-				burst(r,x+1,y,i,root,grid2);
-				burst(r,x,y+1,i,root,grid2);
+				burst(r,x-1,y,i,xc-60,yc,root);
+				burst(r,x+1,y,i,xc+60,yc,root);
+				burst(r,x,y+1,i,xc,yc+60,root);
 			}
 		}
 		else{
@@ -438,14 +447,14 @@ public class Main extends Application
 
 				TranslateTransition t1 =new TranslateTransition();
 		        t1.setDuration(Duration.seconds(0.5));
-		        t1.setToX(xc-b.getWidth());
+		        t1.setToX(xc-62.5);
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
 		        t1.play();
 
 		        TranslateTransition t2 =new TranslateTransition();
 		        t2.setDuration(Duration.seconds(0.5));
-		        t2.setToX(xc+b.getWidth());
+		        t2.setToX(xc+67.5);
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(1));
 		        t2.play();
@@ -453,14 +462,14 @@ public class Main extends Application
 		        TranslateTransition t3 =new TranslateTransition();
 		        t3.setDuration(Duration.seconds(0.5));
 		        t3.setToX(xc);
-		        t3.setToY(yc-b.getHeight());
+		        t3.setToY(yc-62.5);
 		        t3.setNode(s1.get(2));
 		        t3.play();
 
 		        TranslateTransition t4 =new TranslateTransition();
 		        t4.setDuration(Duration.seconds(0.5));
 		        t4.setToX(xc);
-		        t4.setToY(yc+b.getHeight());
+		        t4.setToY(yc+67.5);
 		        t4.setNode(s1.get(3));
 		        t4.play();
 
@@ -469,10 +478,10 @@ public class Main extends Application
 				conquer(r, x+1, y, s1.get(1), root);
 				conquer(r, x, y-1, s1.get(2), root);
 				conquer(r, x, y+1, s1.get(3), root);
-				burst(r,x-1,y,i, root,grid2);
-				burst(r,x+1,y,i, root,grid2);
-				burst(r,x,y-1,i, root,grid2);
-				burst(r,x,y+1,i, root,grid2);
+				burst(r,x-1,y,i, xc-50, yc,root);
+				burst(r,x+1,y,i, xc+50, yc,root);
+				burst(r,x,y-1,i, xc, yc-60,root);
+				burst(r,x,y+1,i, xc, yc+60,root);
 			}
 		}
 	}
@@ -711,13 +720,48 @@ public class Main extends Application
 		line2.setEndY(50.0f);
 		line2.setStroke(Color.GRAY);
 
-		Image gimage1 = new Image(new FileInputStream("2.png"));
+		/*Image gimage1 = new Image(new FileInputStream("2.png"));
 		ImageView giv1 = new ImageView(gimage1);
 		giv1.setX(335);
 		giv1.setY(20);
 		giv1.setFitHeight(30);
 		giv1.setFitWidth(30);
-		giv1.setPreserveRatio(true);
+		giv1.setPreserveRatio(true);*/
+
+		ComboBox<String> option = new ComboBox<String>();
+		option.getItems().addAll("New Game", "Exit");
+		option.setLayoutX(335);
+		option.setLayoutY(20);
+		option.setStyle("-fx-background-image:url('2.png');" + String.format("-fx-font-size: %dpx;", (int)(0.35*40)));
+		option.valueProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue ov, String t1, String t2)
+			{
+				try
+				{
+					if(t2.equals("New Game"))
+					{
+						if(xd == 6)
+						{
+							turn = 0;
+							playGame("Normal Grid");
+						}
+						else
+						{
+							playGame("HD Grid");
+						}
+					}
+					else
+					{
+						callmain(turn, p.get(turn).getColor());
+					}
+				}
+				catch(FileNotFoundException f)
+				{
+
+				}
+			}
+		});
 
 		Rectangle[][] grid1 = new Rectangle[xd][yd];
 		Rectangle[][] grid2 = new Rectangle[xd][yd];
@@ -848,7 +892,7 @@ public class Main extends Application
               			s.setTranslateY(y);
               			s.setMaterial(redMaterial);
               			r[xxx][yyy].getChildren().add(s);
-              			burst(r,xxx,yyy,turn,root,grid2);
+              			burst(r,xxx,yyy,turn, x, y, root);
               			root.getChildren().remove(r[xxx][yyy]);
 						root.getChildren().add(r[xxx][yyy]);
 						r[xxx][yyy].toBack();
@@ -879,7 +923,7 @@ public class Main extends Application
 	              			s.setTranslateY(y);
 	              			s.setMaterial(redMaterial);
 	              			r[xxx][yyy].getChildren().add(s);
-	              			burst(r,xxx,yyy,turn,root,grid2);
+	              			burst(r,xxx,yyy,turn, x, y, root);
 	              			root.getChildren().remove(r[xxx][yyy]);
 							root.getChildren().add(r[xxx][yyy]);
 							r[xxx][yyy].toBack();
@@ -911,7 +955,7 @@ public class Main extends Application
 	              			s.setTranslateY(y+rt);
 	              			s.setMaterial(redMaterial);
 	              			r[xxx][yyy].getChildren().add(s);
-	              			burst(r,xxx,yyy,turn,root,grid2);
+	              			burst(r,xxx,yyy,turn, x, y, root);
 	              			root.getChildren().remove(r[xxx][yyy]);
 							root.getChildren().add(r[xxx][yyy]);
 							r[xxx][yyy].toBack();
@@ -943,7 +987,7 @@ public class Main extends Application
 	              			s.setTranslateY(y+rt);
 	              			s.setMaterial(redMaterial);
 	              			r[xxx][yyy].getChildren().add(s);
-	              			burst(r,xxx,yyy,turn,root,grid2);
+	              			burst(r,xxx,yyy,turn, x, y, root);
 	              			root.getChildren().remove(r[xxx][yyy]);
 							root.getChildren().add(r[xxx][yyy]);
 							r[xxx][yyy].toBack();
@@ -995,7 +1039,7 @@ public class Main extends Application
 			}
 		});
 
-		gridroot.getChildren().addAll(bar12, extra, un, line2, giv, g1, giv1);
+		gridroot.getChildren().addAll(bar12, extra, un, line2, giv, g1, option);
 		for(int i = 0; i < xd; i++)
 			for(int j = 0; j < yd; j++)
 				gridroot.getChildren().addAll(grid1[i][j], grid2[i][j], line[i][j]);
@@ -1029,19 +1073,31 @@ public class Main extends Application
 		line.setEndY(65.0f);
 		line.setStroke(Color.CYAN);
 
-		Button[][] colors = new Button[5][3];
+		int flag = 0;
+		if(colors[0][0] != null)
+			flag = 1;
+
 		for(int i = 0; i < 5; i++)
 			for(int j = 0; j < 3; j++)
 			{
-				colors[i][j] = new Button();
+				if(colors[i][j] == null)
+					colors[i][j] = new Button();
 				colors[i][j].setMinSize(90, 90);
 				colors[i][j].setPrefSize(90, 90);
 				colors[i][j].setMaxSize(90, 90);
 				colors[i][j].setLayoutX(j*110 + 45);
 				colors[i][j].setLayoutY(i*110 + 90);
-				colors[i][j].setBackground(new Background(new BackgroundFill(c.get(j + 3*i), CornerRadii.EMPTY, Insets.EMPTY)));
-				colors[i][j].setOnAction(new ColorChange(turn, c.get(j + 3*i), this));
+				colors[i][j].setBackground(new Background(new BackgroundFill(c.get(j + 3*i),null, null)));
+				colors[i][j].setOnAction(new ColorChange(turn, c.get(j + 3*i), this, i, j, total.get(turn).getColor()));
 			}
+		if(flag == 0)
+		{	
+			for(int i = 0; i < 3; i++)
+				for(int j = 0; j < 3; j++)
+					colors[i][j].setDisable(true);
+		}
+
+		colors[2][2].setDisable(false);
 
 		playascene = new Scene(new Group(), 400, 650, Color.BLACK);
 		Group playaroot = (Group)playascene.getRoot();
@@ -1424,6 +1480,12 @@ public class Main extends Application
 		c.add(Color.DARKBLUE);
 		c.add(Color.LIME);
 
+		cvalue = new int[5][3];
+		for(int i = 0; i < 3; i++)
+			for(int j = 0; j < 3; j++)
+				cvalue[i][j] = 1;
+
+		cvalue[2][2] = 0;
 		launch(args);
 	}
 }
