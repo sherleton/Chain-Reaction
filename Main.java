@@ -997,13 +997,13 @@ public class Main extends Application
 				colors[i][j].setLayoutX(j*110 + 45);
 				colors[i][j].setLayoutY(i*110 + 90);
 				colors[i][j].setBackground(new Background(new BackgroundFill(c.get((i+1)*(j+1) - 1), CornerRadii.EMPTY, Insets.EMPTY)));
-				colors[i][j].setOnAction(new EventHandler<ActionEvent>() {
+				/*colors[i][j].setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent e)
 					{
 						total.set(turn, new Player(c.get((i+1)*(j+1) - 1)));
 					}
-				});
+				});*/
 			}
 
 		playascene = new Scene(new Group(), 400, 650, Color.BLACK);
