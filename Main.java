@@ -50,7 +50,7 @@ public class Main extends Application
 	public static int sizex=6;
 	public static int sizey=9;
 	public static int [][]a=new int[6][9];
-
+	public static int lol=0;
 	public static boolean corner1(int i,int j){
 		return (i==0&&j==0);
 	}
@@ -693,6 +693,26 @@ public class Main extends Application
 				Bounds b=grid2[i][j].getBoundsInLocal();
 				grid2[i][j].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>(){
 					@Override public void handle(MouseEvent event) {
+					if(lol==0){
+						File f=new File("abc.txt");
+						f.delete();
+              			lol++;
+              		}
+              		else if(lol!=0){
+              			try{
+              				BufferedWriter br=new BufferedWriter(new FileWriter(new File("abc.txt")) );
+	              			for(int i=0;i<sizex;i++){
+	              				for(int j=0;j<sizey;j++){
+	              					br.write(Integer.toString(a[i][j]));
+	              					br.newLine();
+	              				}
+	              			}
+	              			br.flush();
+	              			br.close();
+              			}
+              			catch(IOException e){}
+	              			
+              		}
 					double x=b.getMinX()+b.getWidth()/2;
     				double y=b.getMinY()+b.getHeight()/2;
               		PhongMaterial redMaterial=material[turn];
@@ -837,11 +857,37 @@ public class Main extends Application
               			System.out.println("");
               		}
               		System.out.println("");	
+              		un.setDisable(false);
 				}
 			});
 			}
 		}
+		un.setOnAction(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent e){
+				if(turn==0){
+					turn=n-1;
+				}
+				else{
+					turn--;					
+				}
+				for(int k = 0; k < 6; k++)
+	              	for(int l = 0; l < 9; l++){
+	              		grid1[k][l].setStroke(p.get((turn)%n).getColor());
+	            		grid2[k][l].setStroke(p.get((turn )%n).getColor());
+	             		line[k][l].setStroke(p.get((turn)%n).getColor());
+	             	}
 
+	            for(int k = 0; k < 9; k++)
+					line[6][k].setStroke(p.get((turn )%n).getColor());
+				for(int k = 0; k < 6; k++)
+					line[k][9].setStroke(p.get((turn )%n).getColor());
+				line[6][9].setStroke(p.get((turn )%n).getColor());
+				extra.setStroke(p.get((turn) % n).getColor());
+				recreate(r,root,grid2,material);
+				un.setDisable(true);
+			}
+		});
 		gridroot.getChildren().addAll(bar12, extra, un, line2, giv, g1, giv1);
 		for(int i = 0; i < 6; i++)
 			for(int j = 0; j < 9; j++)
@@ -1202,7 +1248,62 @@ public class Main extends Application
 		launch(args);
 	}
 
-
+	public static void recreate(Group r[][],Group root,Rectangle grid2[][],PhongMaterial[] m){
+		int [][] beforeundo=new int [sizex][sizey];
+		try{
+			Scanner br=new Scanner(new File("abc.txt"));
+			for(int i=0;i<sizex;i++){
+				for(int j=0;j<sizey;j++){
+					beforeundo[i][j]=br.nextInt();
+				}
+			}
+			br.close();
+		}
+		catch(IOException e){}
+		for(int i=0;i<sizex;i++){
+			for(int j=0;j<sizey;j++){
+				Bounds b=grid2[i][j].getBoundsInLocal();
+				root.getChildren().remove(r[i][j]);
+				if(beforeundo[i][j]==0){
+					r[i][j].getChildren().clear();
+				}
+				else{
+					double x=b.getMinX()+b.getWidth()/2;
+    				double y=b.getMinY()+b.getHeight()/2;
+					int a=beforeundo[i][j]/4;
+					int number=beforeundo[i][j]%4;
+					r[i][j].getChildren().clear();
+					for(int k=0;k<number;k++){
+						Sphere s=new Sphere();
+	              		s.setRadius(15.0);
+	              		s.setMaterial(m[a]);
+						if(k==0){
+	              			s.setTranslateX(x);
+	              			s.setTranslateY(y);
+						}
+						else if(k==1){
+	              			s.setTranslateX(x+7.5);
+	              			s.setTranslateY(y);
+						}
+						else if(k==2){
+	              			s.setTranslateX(x);
+	              			s.setTranslateY(y+7.5);
+						}
+						RotateTransition rt=new RotateTransition(Duration.millis(1000),r[i][j]);
+        				rt.setByAngle(360);
+	     				rt.setCycleCount(Timeline.INDEFINITE);
+	     				rt.setInterpolator(Interpolator.LINEAR);
+	     				rt.play();	
+						r[i][j].getChildren().add(s);
+						
+					}
+				}
+				root.getChildren().add(r[i][j]);
+				r[i][j].toBack();
+			}
+		}
+		a=beforeundo;
+	}
 	public void playerSettings() throws FileNotFoundException
 	{
 		playerSettingscall();
