@@ -21,6 +21,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.event.*; 
 import java.util.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 class Player{
 	private Color c;
@@ -45,8 +47,9 @@ public class Main extends Application
 	/*Game Attributes*/
 
 	public static ArrayList<Player> p;
+	public static ArrayList<Player> total;
 	public static int turn=0;
-	public static int n=3;
+	public static int n;
 	public static int sizex=6;
 	public static int sizey=9;
 	public static int [][]a=new int[6][9];
@@ -432,7 +435,6 @@ public class Main extends Application
 	public static void lit(int x, int y, Group aw){
 		Sphere s=(Sphere)aw.getChildren().get(0);
 		aw.getChildren().remove(0);
-
 		TranslateTransition t1 =new TranslateTransition();
         t1.setDuration(Duration.seconds(1));
         t1.setToX();
@@ -453,6 +455,7 @@ public class Main extends Application
 	public void start(Stage stage) throws FileNotFoundException
 	{
 		pstage = stage;
+		String cgrid = "";
 
 		Image image = new Image(new FileInputStream("1.png"));
 		ImageView iv = new ImageView(image);
@@ -486,13 +489,43 @@ public class Main extends Application
 		player.getItems().addAll("2 Player Game", "3 Player Game", "4 Player Game", "5 Player Game", "6 Player Game", "7 Player Game", "8 Player Game");
 		player.setLayoutX(60);
 		player.setLayoutY(110);
-		player.setValue("No. of Players");
+		player.setValue("2 Player Game");
+		player.valueProperty().addListener(new ChangeListener<String>() {
+			public void changed(ObservableValue ov, String t1, String t2)
+			{
+				for(int i = 0; i < player.getItems().size(); i++)
+				{
+					if(ov.equals(player.getItems().get(i)))
+					{
+						player.setValue(player.getItems().get(i));
+						break;
+					}
+				}
+				if(ov.equals(t1))
+					player.setValue(t1);
+				else
+					player.setValue(t2);
+				n = Integer.parseInt(player.getValue().substring(0,1));
+				for(int i = 0; i < n; i++)
+				p.add(total.get(i));
+			}
+		});
 
 		final ComboBox<String> game = new ComboBox<String>();
-		game.getItems().addAll("Normal Grid", "HD Grid");
+		game.getItems().addAll("Normal Grid", "HD Ggamerid");
 		game.setLayoutX(210);
 		game.setLayoutY(110);
-		game.setValue("Grid");
+		game.setValue("Normal Grid");
+		game.valueProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue ov, String t1, String t2)
+			{
+				if(ov.equals(t1))
+					game.setValue(t1);
+				else
+					game.setValue(t2);
+			}
+		});
 
 		Button play = new Button("Play");
 		play.setStyle("-fx-background-color:transparent;" + String.format("-fx-font-size: %dpx; -fx-text-fill:white;", (int)(0.65*40)));
@@ -501,7 +534,22 @@ public class Main extends Application
 		play.setMaxSize(105, 60);
 		play.setLayoutX(70.0f);
 		play.setLayoutY(140.0f);
-		play.setOnAction(e -> playGame());
+		play.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e)
+			{
+				try
+				{
+					if(game.getValue().equals("Normal Grid"))
+						playGame("Normal Grid");
+					else
+						playGame("HD");
+				}
+				catch(FileNotFoundException f)
+				{
+
+				}
+			}
+		});
 
 		Line line1 = new Line();
 		line1.setStartX(175.0f);
@@ -561,12 +609,20 @@ public class Main extends Application
 		content.wrappingWidthProperty().bind(mainscene.widthProperty().subtract(25));
 		content1.wrappingWidthProperty().bind(mainscene.widthProperty().subtract(25));
 
-		/*Game */
+		stage.setTitle("Chain Reaction");
+		stage.setScene(mainscene);
+		stage.show();
+	}
 
+	public void play(int gx1, int gy1, int gx2, int gy2, int xd, int yd, float sbs, float bbs, double rad, double rt) throws FileNotFoundException
+	{
+		sizex = xd;
+		sizey = yd;
+		a=new int[xd][yd];
 		Color ccc=p.get(turn).getColor();
-		Group[][] r=new Group[6][9];
-		for(int i=0;i<6;i++){
-			for(int j=0;j<9;j++){
+		Group[][] r=new Group[xd][yd];
+		for(int i=0;i<xd;i++){
+			for(int j=0;j<yd;j++){
 				r[i][j]=new Group();
 			}
 		}
@@ -599,6 +655,7 @@ public class Main extends Application
 		un.setLayoutX(240.0f);
 		un.setLayoutY(10.0f);
 
+
 		Line line2 = new Line();
 		line2.setStartX(315.0f);
 		line2.setStartY(10.0f);
@@ -614,19 +671,19 @@ public class Main extends Application
 		giv1.setFitWidth(30);
 		giv1.setPreserveRatio(true);
 
-		Rectangle[][] grid1 = new Rectangle[6][9];
-		Rectangle[][] grid2 = new Rectangle[6][9];
-		Line[][] line = new Line[7][10];
+		Rectangle[][] grid1 = new Rectangle[xd][yd];
+		Rectangle[][] grid2 = new Rectangle[xd][yd];
+		Line[][] line = new Line[xd+1][yd+1];
 
-		for(int i = 0; i < 6; i++)
+		for(int i = 0; i < xd; i++)
 		{
-			for(int j = 0; j < 9; j++)
+			for(int j = 0; j < yd; j++)
 			{
-				grid1[i][j] = new Rectangle(35 + i*55, 100 + j*55, 55, 55);
+				grid1[i][j] = new Rectangle(gx1 + i*sbs, gy1 + j*sbs, sbs, sbs);
 				grid1[i][j].setFill(Color.TRANSPARENT);
 				grid1[i][j].setStroke(ccc);
 
-				grid2[i][j] = new Rectangle(20 + i*60, 80 + j*60, 60, 60);
+				grid2[i][j] = new Rectangle(gx2 + i*bbs, gy2 + j*bbs, bbs, bbs);
 				grid2[i][j].setFill(Color.TRANSPARENT);
 				grid2[i][j].setStroke(ccc);
 
@@ -639,38 +696,38 @@ public class Main extends Application
 			}
 		}
 
-		for(int j = 0; j < 9; j++)
+		for(int j = 0; j < yd; j++)
 		{
-			line[6][j] = new Line();
-			line[6][j].setStartX(grid1[5][j].getX() + 55);
-			line[6][j].setEndX(grid2[5][j].getX() + 60);
-			line[6][j].setStartY(grid1[5][j].getY() + 55);
-			line[6][j].setEndY(grid2[5][j].getY() + 60);
-			line[6][j].setStroke(ccc);
+			line[xd][j] = new Line();
+			line[xd][j].setStartX(grid1[xd-1][j].getX() + sbs);
+			line[xd][j].setEndX(grid2[xd-1][j].getX() + bbs);
+			line[xd][j].setStartY(grid1[xd-1][j].getY() + sbs);
+			line[xd][j].setEndY(grid2[xd-1][j].getY() + bbs);
+			line[xd][j].setStroke(ccc);
 		}
 
-		for(int i = 0; i < 6; i++)
+		for(int i = 0; i < xd; i++)
 		{
-			line[i][9] = new Line();
-			line[i][9].setStartX(grid1[i][8].getX() + 55);
-			line[i][9].setEndX(grid2[i][8].getX() + 60);
-			line[i][9].setStartY(grid1[i][8].getY() + 55);
-			line[i][9].setEndY(grid2[i][8].getY() + 60);
-			line[i][9].setStroke(ccc);
+			line[i][yd] = new Line();
+			line[i][yd].setStartX(grid1[i][yd-1].getX() + sbs);
+			line[i][yd].setEndX(grid2[i][yd-1].getX() + bbs);
+			line[i][yd].setStartY(grid1[i][yd-1].getY() + sbs);
+			line[i][yd].setEndY(grid2[i][yd-1].getY() + bbs);
+			line[i][yd].setStroke(ccc);
 		}
 
-		line[6][9] = new Line();
-		line[6][9].setStartX(grid1[5][0].getX() + 55);
-		line[6][9].setEndX(grid2[5][0].getX() + 60);
-		line[6][9].setStartY(grid1[5][0].getY());
-		line[6][9].setEndY(grid2[5][0].getY());
-		line[6][9].setStroke(ccc);
+		line[xd][yd] = new Line();
+		line[xd][yd].setStartX(grid1[xd-1][0].getX() + sbs);
+		line[xd][yd].setEndX(grid2[xd-1][0].getX() + bbs);
+		line[xd][yd].setStartY(grid1[xd-1][0].getY());
+		line[xd][yd].setEndY(grid2[xd-1][0].getY());
+		line[xd][yd].setStroke(ccc);
 
 		Line extra = new Line();
-		extra.setStartX(grid1[0][8].getX());
-		extra.setEndX(grid2[0][8].getX());
-		extra.setStartY(grid1[0][8].getY() + 55);
-		extra.setEndY(grid2[0][8].getY() + 60);
+		extra.setStartX(grid1[0][yd-1].getX());
+		extra.setEndX(grid2[0][yd-1].getX());
+		extra.setStartY(grid1[0][yd-1].getY() + sbs);
+		extra.setEndY(grid2[0][yd-1].getY() + bbs);
 		extra.setStroke(ccc);
 
 		Group gridroot=new Group();
@@ -685,15 +742,17 @@ public class Main extends Application
 		}
 		 
         
-		for(int i=0;i<6;i++)
+		for(int i=0;i<xd;i++)
 		{
-			for(int j=0;j<9;j++){
+			for(int j=0;j<yd;j++){
 				int xxx=i;
 				int yyy=j;
 				Bounds b=grid2[i][j].getBoundsInLocal();
 				grid2[i][j].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>(){
 					@Override public void handle(MouseEvent event) {
-					if(lol==0){
+					double x=b.getMinX()+b.getWidth()/2;
+    				double y=b.getMinY()+b.getHeight()/2;
+    				if(lol==0){
 						File f=new File("abc.txt");
 						f.delete();
               			lol++;
@@ -713,8 +772,6 @@ public class Main extends Application
               			catch(IOException e){}
 	              			
               		}
-					double x=b.getMinX()+b.getWidth()/2;
-    				double y=b.getMinY()+b.getHeight()/2;
               		PhongMaterial redMaterial=material[turn];
               		//changeColor();
               		if(a[xxx][yyy]%4==0){
@@ -722,23 +779,23 @@ public class Main extends Application
               		}
               		if(a[xxx][yyy]%4==0){
 
-              			for(int k = 0; k < 6; k++)
-              				for(int l = 0; l < 9; l++)
+              			for(int k = 0; k < xd; k++)
+              				for(int l = 0; l < yd; l++)
               				{
               					grid1[k][l].setStroke(p.get((turn + 1)%n).getColor());
               					grid2[k][l].setStroke(p.get((turn + 1)%n).getColor());
               					line[k][l].setStroke(p.get((turn + 1)%n).getColor());
               				}
 
-              			for(int k = 0; k < 9; k++)
-							line[6][k].setStroke(p.get((turn + 1)%n).getColor());
-						for(int k = 0; k < 6; k++)
-							line[k][9].setStroke(p.get((turn + 1)%n).getColor());
-						line[6][9].setStroke(p.get((turn + 1)%n).getColor());
+              			for(int k = 0; k < yd; k++)
+							line[xd][k].setStroke(p.get((turn + 1)%n).getColor());
+						for(int k = 0; k < xd; k++)
+							line[k][yd].setStroke(p.get((turn + 1)%n).getColor());
+						line[xd][yd].setStroke(p.get((turn + 1)%n).getColor());
 						extra.setStroke(p.get((turn + 1) % n).getColor());
 
               			Sphere s=new Sphere();
-              			s.setRadius(15.0);
+              			s.setRadius(rad);
               			s.setTranslateX(x);
               			s.setTranslateY(y);
               			s.setMaterial(redMaterial);
@@ -753,24 +810,24 @@ public class Main extends Application
               			Sphere v=find(new Sphere(),r[xxx][yyy]);
 
               			if(v.getMaterial().equals(redMaterial)){
-              				for(int k = 0; k < 6; k++)
-	              				for(int l = 0; l < 9; l++)
+              				for(int k = 0; k < xd; k++)
+	              				for(int l = 0; l < yd; l++)
 	              				{
 	              					grid1[k][l].setStroke(p.get((turn + 1)%n).getColor());
 	              					grid2[k][l].setStroke(p.get((turn + 1)%n).getColor());
 	              					line[k][l].setStroke(p.get((turn + 1)%n).getColor());
 	              				}
 
-	              			for(int k = 0; k < 9; k++)
-								line[6][k].setStroke(p.get((turn + 1)%n).getColor());
-							for(int k = 0; k < 6; k++)
-								line[k][9].setStroke(p.get((turn + 1)%n).getColor());
-							line[6][9].setStroke(p.get((turn + 1)%n).getColor());
+	              			for(int k = 0; k < yd; k++)
+								line[xd][k].setStroke(p.get((turn + 1)%n).getColor());
+							for(int k = 0; k < xd; k++)
+								line[k][yd].setStroke(p.get((turn + 1)%n).getColor());
+							line[xd][yd].setStroke(p.get((turn + 1)%n).getColor());
 							extra.setStroke(p.get((turn + 1) % n).getColor());
 
 	              			Sphere s=new Sphere();
-	              			s.setRadius(15.0);
-	              			s.setTranslateX(x+7.5);
+	              			s.setRadius(rad);
+	              			s.setTranslateX(x+rt);
 	              			s.setTranslateY(y);
 	              			s.setMaterial(redMaterial);
 	              			r[xxx][yyy].getChildren().add(s);
@@ -785,25 +842,25 @@ public class Main extends Application
 
               			Sphere v=find(new Sphere(),r[xxx][yyy]);
               			if(v.getMaterial().equals(redMaterial)){
-              				for(int k = 0; k < 6; k++)
-	              				for(int l = 0; l < 9; l++)
+              				for(int k = 0; k < xd; k++)
+	              				for(int l = 0; l < yd; l++)
 	              				{
 	              					grid1[k][l].setStroke(p.get((turn + 1)%n).getColor());
 	              					grid2[k][l].setStroke(p.get((turn + 1)%n).getColor());
 	              					line[k][l].setStroke(p.get((turn + 1)%n).getColor());
 	              				}
 
-	              			for(int k = 0; k < 9; k++)
-								line[6][k].setStroke(p.get((turn + 1)%n).getColor());
-							for(int k = 0; k < 6; k++)
-								line[k][9].setStroke(p.get((turn + 1)%n).getColor());
-							line[6][9].setStroke(p.get((turn + 1)%n).getColor());
+	              			for(int k = 0; k < yd; k++)
+								line[xd][k].setStroke(p.get((turn + 1)%n).getColor());
+							for(int k = 0; k < xd; k++)
+								line[k][yd].setStroke(p.get((turn + 1)%n).getColor());
+							line[xd][yd].setStroke(p.get((turn + 1)%n).getColor());
 							extra.setStroke(p.get((turn + 1) % n).getColor());
 
 	              			Sphere s=new Sphere();
-	              			s.setRadius(15.0);
+	              			s.setRadius(rad);
 	              			s.setTranslateX(x);
-	              			s.setTranslateY(y+7.5);
+	              			s.setTranslateY(y+rt);
 	              			s.setMaterial(redMaterial);
 	              			r[xxx][yyy].getChildren().add(s);
 	              			burst(r,xxx,yyy,turn, x, y, root);
@@ -817,25 +874,25 @@ public class Main extends Application
               			Sphere v=find(new Sphere(),r[xxx][yyy]);
 
               			if(v.getMaterial().equals(redMaterial)){
-              				for(int k = 0; k < 6; k++)
-	              				for(int l = 0; l < 9; l++)
+              				for(int k = 0; k < xd; k++)
+	              				for(int l = 0; l < yd; l++)
 	              				{
 	              					grid1[k][l].setStroke(p.get((turn + 1)%n).getColor());
 	              					grid2[k][l].setStroke(p.get((turn + 1)%n).getColor());
 	              					line[k][l].setStroke(p.get((turn + 1)%n).getColor());
 	              				}
 
-	              			for(int k = 0; k < 9; k++)
-								line[6][k].setStroke(p.get((turn + 1)%n).getColor());
-							for(int k = 0; k < 6; k++)
-								line[k][9].setStroke(p.get((turn + 1)%n).getColor());
-							line[6][9].setStroke(p.get((turn + 1)%n).getColor());
+	              			for(int k = 0; k < yd; k++)
+								line[xd][k].setStroke(p.get((turn + 1)%n).getColor());
+							for(int k = 0; k < xd; k++)
+								line[k][yd].setStroke(p.get((turn + 1)%n).getColor());
+							line[xd][yd].setStroke(p.get((turn + 1)%n).getColor());
 							extra.setStroke(p.get((turn + 1) % n).getColor());
 
 	              			Sphere s=new Sphere();
-	              			s.setRadius(15.0);
+	              			s.setRadius(rad);
 	              			s.setTranslateX(x);
-	              			s.setTranslateY(y+7.5);
+	              			s.setTranslateY(y+rt);
 	              			s.setMaterial(redMaterial);
 	              			r[xxx][yyy].getChildren().add(s);
 	              			burst(r,xxx,yyy,turn, x, y, root);
@@ -850,8 +907,8 @@ public class Main extends Application
      				rt.setCycleCount(Timeline.INDEFINITE);
      				rt.setInterpolator(Interpolator.LINEAR);
      				rt.play();
-              		for(int i=0;i<9;i++){
-              			for(int j=0;j<6;j++){
+              		for(int i=0;i<yd;i++){
+              			for(int j=0;j<xd;j++){
               				System.out.print(a[j][i]+"  ");
               			}
               			System.out.println("");
@@ -862,6 +919,7 @@ public class Main extends Application
 			});
 			}
 		}
+
 		un.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent e){
@@ -871,36 +929,33 @@ public class Main extends Application
 				else{
 					turn--;					
 				}
-				for(int k = 0; k < 6; k++)
-	              	for(int l = 0; l < 9; l++){
+				for(int k = 0; k < xd; k++)
+	              	for(int l = 0; l < yd; l++){
 	              		grid1[k][l].setStroke(p.get((turn)%n).getColor());
 	            		grid2[k][l].setStroke(p.get((turn )%n).getColor());
 	             		line[k][l].setStroke(p.get((turn)%n).getColor());
 	             	}
 
-	            for(int k = 0; k < 9; k++)
-					line[6][k].setStroke(p.get((turn )%n).getColor());
-				for(int k = 0; k < 6; k++)
-					line[k][9].setStroke(p.get((turn )%n).getColor());
-				line[6][9].setStroke(p.get((turn )%n).getColor());
+	            for(int k = 0; k < yd; k++)
+					line[xd][k].setStroke(p.get((turn )%n).getColor());
+				for(int k = 0; k < xd; k++)
+					line[k][yd].setStroke(p.get((turn )%n).getColor());
+				line[xd][yd].setStroke(p.get((turn )%n).getColor());
 				extra.setStroke(p.get((turn) % n).getColor());
-				recreate(r,root,grid2,material);
+				recreate(r,root,grid2,material,rad);
 				un.setDisable(true);
 			}
 		});
-		gridroot.getChildren().addAll(bar12, extra, un, line2, giv, g1, giv1);
-		for(int i = 0; i < 6; i++)
-			for(int j = 0; j < 9; j++)
-				gridroot.getChildren().addAll(grid1[i][j], grid2[i][j], line[i][j]);
-		for(int i = 0 ; i < 7; i++)
-			gridroot.getChildren().add(line[i][9]);
-		for(int i = 0; i < 9; i++)
-			gridroot.getChildren().add(line[6][i]);
-		root.getChildren().add(gridroot);
 
-		stage.setTitle("Chain Reaction");
-		stage.setScene(mainscene);
-		stage.show();
+		gridroot.getChildren().addAll(bar12, extra, un, line2, giv, g1, giv1);
+		for(int i = 0; i < xd; i++)
+			for(int j = 0; j < yd; j++)
+				gridroot.getChildren().addAll(grid1[i][j], grid2[i][j], line[i][j]);
+		for(int i = 0 ; i < xd+1; i++)
+			gridroot.getChildren().add(line[i][yd]);
+		for(int i = 0; i < yd; i++)
+			gridroot.getChildren().add(line[xd][i]);
+		root.getChildren().add(gridroot);
 	}
 
 	public void pcolor(int turn) throws FileNotFoundException
@@ -1240,15 +1295,7 @@ public class Main extends Application
 
 	}
 
-	public static void main(String[] args) {
-		p = new ArrayList<Player>();
-		p.add(new Player(Color.RED));
-		p.add(new Player(Color.GREEN));
-		p.add(new Player(Color.BLUE));
-		launch(args);
-	}
-
-	public static void recreate(Group r[][],Group root,Rectangle grid2[][],PhongMaterial[] m){
+	public static void recreate(Group r[][],Group root,Rectangle grid2[][],PhongMaterial[] m,double rad){
 		int [][] beforeundo=new int [sizex][sizey];
 		try{
 			Scanner br=new Scanner(new File("abc.txt"));
@@ -1275,7 +1322,7 @@ public class Main extends Application
 					r[i][j].getChildren().clear();
 					for(int k=0;k<number;k++){
 						Sphere s=new Sphere();
-	              		s.setRadius(15.0);
+	              		s.setRadius(rad);
 	              		s.setMaterial(m[a]);
 						if(k==0){
 	              			s.setTranslateX(x);
@@ -1310,8 +1357,12 @@ public class Main extends Application
 		pstage.setScene(playerscene);
 	}
 
-	public void playGame()
+	public void playGame(String s) throws FileNotFoundException
 	{
+		if(s.equals("Normal Grid"))
+			play(35, 100, 20, 80, 6, 9, 55, 60, 15.0, 7.5);
+		else
+			play(25, 90, 16, 80, 10, 15, 35.45f, 37, 10.0, 2.5);
 		pstage.setScene(gamescene);
 	}
 
@@ -1319,5 +1370,19 @@ public class Main extends Application
 	{
 		pcolor(turn);
 		pstage.setScene(playascene);
+	}
+
+	public static void main(String[] args) {
+		p = new ArrayList<Player>(n);
+		total = new ArrayList<Player>();
+		total.add(new Player(Color.RED));
+		total.add(new Player(Color.GREEN));
+		total.add(new Player(Color.BLUE));
+		total.add(new Player(Color.CYAN));
+		total.add(new Player(Color.ORANGE));
+		total.add(new Player(Color.YELLOW));
+		total.add(new Player(Color.WHITE));
+		total.add(new Player(Color.OLIVE));
+		launch(args);
 	}
 }
