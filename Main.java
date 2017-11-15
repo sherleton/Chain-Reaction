@@ -43,6 +43,32 @@ class Player{
 	}
 }
 
+class ColorChange implements EventHandler<ActionEvent>
+{
+	Main o;
+	int turn;
+	Color c;
+	ColorChange(int turn, Color c, Main o1)
+	{
+		this.turn = turn;
+		this.c = c;
+		this.o = o1;
+	}
+
+	@Override
+	public void handle(ActionEvent e)
+	{
+		try
+		{
+			o.callmain(turn, c);
+		}
+		catch(FileNotFoundException f)
+		{
+
+		}
+	}
+}
+
 public class Main extends Application
 {
 	Stage pstage;
@@ -51,7 +77,7 @@ public class Main extends Application
 	/*Game Attributes*/
 
 	public static ArrayList<Player> p;
-	public static ArrayList<Player> total;
+	private static ArrayList<Player> total;
 	public static ArrayList<Color> c;
 	public static int turn=0;
 	public static int n=2;
@@ -999,14 +1025,8 @@ public class Main extends Application
 				colors[i][j].setMaxSize(90, 90);
 				colors[i][j].setLayoutX(j*110 + 45);
 				colors[i][j].setLayoutY(i*110 + 90);
-				colors[i][j].setBackground(new Background(new BackgroundFill(c.get((i+1)*(j+1) - 1), CornerRadii.EMPTY, Insets.EMPTY)));
-				/*colors[i][j].setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent e)
-					{
-						total.set(turn, new Player(c.get((i+1)*(j+1) - 1)));
-					}
-				});*/
+				colors[i][j].setBackground(new Background(new BackgroundFill(c.get(j + 3*i), CornerRadii.EMPTY, Insets.EMPTY)));
+				colors[i][j].setOnAction(new ColorChange(turn, c.get(j + 3*i), this));
 			}
 
 		playascene = new Scene(new Group(), 400, 650, Color.BLACK);
@@ -1355,6 +1375,12 @@ public class Main extends Application
 		pstage.setScene(playascene);
 	}
 
+	public void callmain(int turn, Color c) throws FileNotFoundException
+	{
+		total.set(turn, new Player(c));
+		start(pstage);
+	}
+
 	public static void main(String[] args) {
 		p = new ArrayList<Player>();
 		total = new ArrayList<Player>();
@@ -1365,7 +1391,7 @@ public class Main extends Application
 		total.add(new Player(Color.ORANGE));
 		total.add(new Player(Color.YELLOW));
 		total.add(new Player(Color.WHITE));
-		total.add(new Player(Color.OLIVE));
+		total.add(new Player(Color.DEEPPINK));
 
 		c = new ArrayList<Color>();
 		c.add(Color.RED);
@@ -1375,13 +1401,13 @@ public class Main extends Application
 		c.add(Color.ORANGE);
 		c.add(Color.YELLOW);
 		c.add(Color.WHITE);
-		c.add(Color.OLIVE);
+		c.add(Color.DEEPPINK);
 		c.add(Color.CORAL);
 		c.add(Color.PURPLE);
 		c.add(Color.MOCCASIN);
-		c.add(Color.AZURE);
-		c.add(Color.CRIMSON);
-		c.add(Color.IVORY);
+		c.add(Color.DIMGRAY);
+		c.add(Color.BROWN);
+		c.add(Color.DARKBLUE);
 		c.add(Color.LIME);
 
 		launch(args);
