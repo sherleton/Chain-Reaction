@@ -184,7 +184,32 @@ public class Main extends Application
 		pt.setAutoReverse(false);
 		pt.play();
 	}*/
-
+	public static void write() {
+		try{
+            	BufferedWriter br=new BufferedWriter(new FileWriter(new File("resume.txt")) );
+            	br.write(Integer.toString(n));
+            	br.newLine();
+            	for(int i=0;i<n;i++){
+            		String s=p.get(i).getColor().toString();
+            		br.write(s);
+              		br.newLine();
+              	}
+              	br.write(Integer.toString(sizex));
+              	br.newLine();
+              	br.write(Integer.toString(sizey));
+              	br.newLine();
+	            for(int i=0;i<sizex;i++){
+	            	for(int j=0;j<sizey;j++){
+	            		br.write(Integer.toString(a[i][j]));
+	            		br.newLine();
+	            	}
+	            }
+	           	br.write(Integer.toString(turn));
+	        	br.flush();
+	        	br.close();
+            }
+        catch(IOException e){}
+	}
 	public static void burst(Group r[][],int x,int y,int i, Group root,Rectangle[][] grid2){
 		Bounds b=grid2[x][y].getBoundsInLocal();
 		Double xc=b.getMinX()+b.getWidth()/2;
@@ -227,13 +252,13 @@ public class Main extends Application
 		        p1.play();
 
 		        root.getChildren().addAll(s1.get(0), s1.get(1));
-
+		        a[x][y]=0;
 		        p1.setOnFinished(e -> {
-		        a[x][y] = 0;
 				conquer(r, x+1, y, s1.get(0), root,grid2);
 				conquer(r, x, y+1, s1.get(1), root,grid2);
 				burst(r,x+1,y,i,root,grid2);
 				burst(r,x,y+1,i,root,grid2);
+				write();
 		        });
 				
 
@@ -263,13 +288,13 @@ public class Main extends Application
 		        p1.play();
 
 		        root.getChildren().addAll(s1.get(0), s1.get(1));
-
+		        a[x][y]=0;
 		        p1.setOnFinished(e -> {
-					a[x][y]=0;
 					conquer(r, x+1, y, s1.get(0), root,grid2);
 					conquer(r, x, y-1, s1.get(1), root,grid2);
 					burst(r,x+1,y,i,root,grid2);
 					burst(r,x,y-1,i,root,grid2);
+					write();
 		        });
 
 			}
@@ -297,13 +322,13 @@ public class Main extends Application
 		        p1.play();
 
 		        root.getChildren().addAll(s1.get(0), s1.get(1));
-
+		        a[x][y]=0;
 		        p1.setOnFinished(e -> {
-		        	a[x][y]=0;
 					conquer(r, x-1, y, s1.get(0), root,grid2);
 					conquer(r, x, y+1, s1.get(1), root,grid2);
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x,y+1,i,root,grid2);
+					write();
 		        });
 				
 
@@ -333,13 +358,13 @@ public class Main extends Application
 		        p1.play();
 
 		        root.getChildren().addAll(s1.get(0), s1.get(1));
-
+		        a[x][y]=0;
 		        p1.setOnFinished(e -> {
-		        	a[x][y]=0;
 					conquer(r, x-1, y, s1.get(0), root,grid2);
 					conquer(r, x, y-1, s1.get(1), root,grid2);
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x,y-1,i,root,grid2);
+					write();
 		        });
 				
 			}
@@ -373,15 +398,15 @@ public class Main extends Application
 		        p1.play();
 
 		        root.getChildren().addAll(s1.get(0), s1.get(1), s1.get(2));
-
+		        a[x][y]=0;
 		        p1.setOnFinished(e -> {
-		        	a[x][y]=0;
 					conquer(r, x+1, y, s1.get(0), root,grid2);
 					conquer(r, x, y-1, s1.get(1), root,grid2);
 					conquer(r, x, y+1, s1.get(2), root,grid2);
 					burst(r,x,y-1,i,root,grid2);
 					burst(r,x,y+1,i,root,grid2);
 					burst(r,x+1,y,i,root,grid2);
+					write();
 		        });				
 			}
 		}
@@ -414,15 +439,15 @@ public class Main extends Application
 		        p1.play();
 
 		        root.getChildren().addAll(s1.get(0), s1.get(1), s1.get(2));
-
+		        a[x][y]=0;
 		        p1.setOnFinished(e -> {
-		        	a[x][y]=0;
 					conquer(r, x-1, y, s1.get(0), root,grid2);
 					conquer(r, x+1, y, s1.get(1), root,grid2);
 					conquer(r, x, y-1, s1.get(2), root,grid2);
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x+1,y,i,root,grid2);
 					burst(r,x,y-1,i,root,grid2);
+					write();
 		        });
 			}
 		}
@@ -455,16 +480,16 @@ public class Main extends Application
 		        p1.play();
 
 		        root.getChildren().addAll(s1.get(0), s1.get(1), s1.get(2));
-
+		        a[x][y]=0;
 		        p1.setOnFinished(e -> {
 
-		        	a[x][y]=0;
 					conquer(r, x-1, y, s1.get(0), root,grid2);
 					conquer(r, x, y-1, s1.get(1), root,grid2);
 					conquer(r, x, y+1, s1.get(2), root,grid2);
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x,y-1,i,root,grid2);
 					burst(r,x,y+1,i,root,grid2);
+					write();
 		        });
 			}
 		}
@@ -497,15 +522,15 @@ public class Main extends Application
 		        p1.play();
 
 		        root.getChildren().addAll(s1.get(0), s1.get(1), s1.get(2));
-
+		        a[x][y]=0;
 		        p1.setOnFinished(e -> {
-		        	a[x][y]=0;
 					conquer(r, x-1, y, s1.get(0), root,grid2);
 					conquer(r, x+1, y, s1.get(1), root,grid2);
 					conquer(r, x, y+1, s1.get(2), root,grid2);
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x+1,y,i,root,grid2);
 					burst(r,x,y+1,i,root,grid2);
+					write();
 		        });
 			}
 		}
@@ -544,10 +569,8 @@ public class Main extends Application
 		        p1.play();
 
 		        root.getChildren().addAll(s1.get(0), s1.get(1), s1.get(2), s1.get(3));
-
-		        p1.setOnFinished(e -> {
-		        	System.out.println("yo");
-		        	a[x][y]=0;
+		        a[x][y]=0;
+		        p1.setOnFinished(e -> {		        	
 					conquer(r, x-1, y, s1.get(0), root,grid2);
 					conquer(r, x+1, y, s1.get(1), root,grid2);
 					conquer(r, x, y-1, s1.get(2), root,grid2);
@@ -556,7 +579,9 @@ public class Main extends Application
 					burst(r,x+1,y,i, root,grid2);
 					burst(r,x,y-1,i, root,grid2);
 					burst(r,x,y+1,i, root,grid2);
+					write();
 		        });
+
 			}
 		}
 	}
@@ -1123,7 +1148,6 @@ public class Main extends Application
 							line[k][sizey].setStroke(p.get((turn + 1)%n).getColor());
 						line[sizex][sizey].setStroke(p.get((turn + 1)%n).getColor());
 						extra.setStroke(p.get((turn + 1) % n).getColor());
-
 	              			Sphere s=new Sphere();
 	              			s.setRadius(rad);
 	              			s.setTranslateX(x);
@@ -1150,33 +1174,6 @@ public class Main extends Application
               			System.out.println("");
               		}
               		System.out.println("");
-              		try{
-              				BufferedWriter br=new BufferedWriter(new FileWriter(new File("resume.txt")) );
-              				br.write(Integer.toString(n));
-              				br.newLine();
-              				for(int i=0;i<n;i++){
-              					String s=p.get(i).getColor().toString();
-              					br.write(s);
-              					br.newLine();
-              				}
-              				br.write(Integer.toString(sizex));
-              				br.newLine();
-              				br.write(Integer.toString(sizey));
-              				br.newLine();
-	              			for(int i=0;i<sizex;i++){
-	              				for(int j=0;j<sizey;j++){
-	              					br.write(Integer.toString(a[i][j]));
-	              					br.newLine();
-	              				}
-	              			}
-	              			br.write(Integer.toString(turn));
-	              			br.flush();
-	              			br.close();
-              			}
-              			catch(IOException e){}	
-
-
-              		
 				}
 			});
 			}
