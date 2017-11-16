@@ -150,9 +150,17 @@ public class Main extends Application
 				s1.add((Sphere)r[x][y].getChildren().get(i));
 			}
 			r[x][y].getChildren().clear();
-			s1.add(s);
+			r[x][y].getChildren().add(s);
 			for(int i=0;i<s1.size();i++){
 				s1.get(i).setMaterial(s.getMaterial());
+				if(i==0){
+					s1.get(i).setTranslateX(a0+7.5);
+					s1.get(i).setTranslateY(b0);
+				}				
+				else if(i==1){
+					s1.get(i).setTranslateX(a0);
+					s1.get(i).setTranslateY(b0+7.5);
+				}
 				r[x][y].getChildren().add(s1.get(i));
 
 			}
@@ -449,6 +457,7 @@ public class Main extends Application
 		        root.getChildren().addAll(s1.get(0), s1.get(1), s1.get(2));
 
 		        p1.setOnFinished(e -> {
+
 		        	a[x][y]=0;
 					conquer(r, x-1, y, s1.get(0), root,grid2);
 					conquer(r, x, y-1, s1.get(1), root,grid2);
@@ -537,6 +546,7 @@ public class Main extends Application
 		        root.getChildren().addAll(s1.get(0), s1.get(1), s1.get(2), s1.get(3));
 
 		        p1.setOnFinished(e -> {
+		        	System.out.println("yo");
 		        	a[x][y]=0;
 					conquer(r, x-1, y, s1.get(0), root,grid2);
 					conquer(r, x+1, y, s1.get(1), root,grid2);
