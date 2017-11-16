@@ -28,13 +28,19 @@ import javafx.scene.layout.BackgroundFill;
 
 class Player{
 	private Color c;
+	private int i;
 
-	Player(Color c)
+	Player(Color c, int i)
 	{
 		this.c = c;
+		this.i = i;
 	}
 	public Color getColor(){
 		return c;
+	}
+	public int getTurn()
+	{
+		return i;
 	}
 	public void setColor(Color c){
 		this.c=c;
@@ -91,8 +97,8 @@ class ColorChange implements EventHandler<ActionEvent>
 
 public class Main extends Application
 {
-	Stage pstage;
-	Scene mainscene, playerscene, gamescene, playascene;
+	static Stage pstage;
+	static Scene mainscene, playerscene, gamescene, playascene, winnerscene;
 
 	/*Game Attributes*/
 
@@ -170,21 +176,65 @@ public class Main extends Application
 		r[x][y].toBack();
 	}
 
-	/*public void move(Sphere s, float x, float y)
+	public static boolean checkWinner(Group[][] r)
 	{
-		Path path = new Path();
-		MoveTo moveto = new MoveTo();
-		LineTo line1 = new LineTo(x,y);
-		path.getElements().add(moveto);
-		path.getElements().add(line1);
+		ArrayList<Color> ch = new ArrayList<Color>();
+		for(int i = 0; i < sizex; i++)
+			for(int j = 0; j < sizey; j++)
+			{
+				if(r[i][j].getChildren().size() != 0)
+					ch.add(((PhongMaterial)((Sphere)(r[i][j].getChildren().get(0))).getMaterial()).getDiffuseColor());
+			}
+		Color c = ch.get(0);
+		int flag = 0;
+		for(int i = 1; i < ch.size(); i++)
+		{
+			if(!c.equals(ch.get(i)))
+			{
+				flag = 1;
+				break;
+			}
+		}
 
-		PathTransition pt = new PathTransition();
-		pt.setDuration(Duration.millis(1000));
-		pt.setNode(s);
-		pt.setPath(path);
-		pt.setAutoReverse(false);
-		pt.play();
-	}*/
+		if(flag == 0)
+			return true;
+		return false;
+	}
+
+	public static void updateplayers(Group[][] r)
+	{
+		ArrayList<Color> ch = new ArrayList<Color>();
+		for(int i = 0; i < sizex; i++)
+			for(int j = 0; j < sizey; j++)
+			{
+				if(r[i][j].getChildren().size() != 0)
+					ch.add(((PhongMaterial)((Sphere)(r[i][j].getChildren().get(0))).getMaterial()).getDiffuseColor());
+			}
+
+		Color c;
+		p.clear();
+
+		//Colors found in the grid
+
+		for(int i = 0; i < ch.size(); i++)
+			System.out.println(ch.get(i));
+
+		n = 0;
+		for(int j = 0; j < 8; j++)
+		{
+			c = total.get(j).getColor();
+			for(int i = 0; i < ch.size(); i++)
+			{
+				if(c.equals(ch.get(i)))
+				{
+					p.add(total.get(i));
+					n++;
+					break;
+				}
+			}
+		}
+	}
+
 	public static void write() {
 		try{
             	BufferedWriter br=new BufferedWriter(new FileWriter(new File("resume.txt")) );
@@ -221,14 +271,6 @@ public class Main extends Application
 			a[x][y]=a[x][y]+4*(i-r1);
 		}
 		a[x][y]++;
-		/*
-		if(Main.winA(A.a)){
-			return ;
-		}
-		if(Main.winB(A.a)){
-			return;
-		}
-		*/
 		if(corner1(x,y)){
 			if(a[x][y]%4==2){
 				
@@ -238,13 +280,13 @@ public class Main extends Application
 				}
 
 		        TranslateTransition t2 =new TranslateTransition();
-		        //t2.setDuration(Duration.seconds(0.5));
+		        t2.setDuration(Duration.seconds(0.5));
 		        t2.setToX(xc+b.getWidth()-5);
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(0));
 		      	
 		        TranslateTransition t4 =new TranslateTransition();
-		        //t4.setDuration(Duration.seconds(0.5));
+		        t4.setDuration(Duration.seconds(0.5));
 		        t4.setToX(xc);
 		        t4.setToY(yc+b.getHeight()-5);
 		        t4.setNode(s1.get(1));
@@ -255,14 +297,14 @@ public class Main extends Application
 		        root.getChildren().addAll(s1.get(0), s1.get(1));
 		        a[x][y]=0;
 		        p1.setOnFinished(e -> {
-				conquer(r, x+1, y, s1.get(0), root,grid2);
-				conquer(r, x, y+1, s1.get(1), root,grid2);
-				burst(r,x+1,y,i,root,grid2);
-				burst(r,x,y+1,i,root,grid2);
-				write();
+					conquer(r, x+1, y, s1.get(0), root,grid2);
+					conquer(r, x, y+1, s1.get(1), root,grid2);
+					if(checkWinner(r))
+						callwinner(i);
+					burst(r,x+1,y,i,root,grid2);
+					burst(r,x,y+1,i,root,grid2);
+					write();
 		        });
-				
-
 			}
 	
 		}
@@ -274,13 +316,13 @@ public class Main extends Application
 				}
 
 		        TranslateTransition t2 =new TranslateTransition();
-		        //t2.setDuration(Duration.seconds(0.5));
+		        t2.setDuration(Duration.seconds(0.5));
 		        t2.setToX(xc+b.getWidth());
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(0));
 		        
 		        TranslateTransition t3 =new TranslateTransition();
-		        //t3.setDuration(Duration.seconds(0.5));
+		        t3.setDuration(Duration.seconds(0.5));
 		        t3.setToX(xc);
 		        t3.setToY(yc-b.getHeight());
 		        t3.setNode(s1.get(1));
@@ -293,6 +335,8 @@ public class Main extends Application
 		        p1.setOnFinished(e -> {
 					conquer(r, x+1, y, s1.get(0), root,grid2);
 					conquer(r, x, y-1, s1.get(1), root,grid2);
+					if(checkWinner(r))
+						callwinner(i);
 					burst(r,x+1,y,i,root,grid2);
 					burst(r,x,y-1,i,root,grid2);
 					write();
@@ -327,6 +371,8 @@ public class Main extends Application
 		        p1.setOnFinished(e -> {
 					conquer(r, x-1, y, s1.get(0), root,grid2);
 					conquer(r, x, y+1, s1.get(1), root,grid2);
+					if(checkWinner(r))
+						callwinner(i);
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x,y+1,i,root,grid2);
 					write();
@@ -363,6 +409,8 @@ public class Main extends Application
 		        p1.setOnFinished(e -> {
 					conquer(r, x-1, y, s1.get(0), root,grid2);
 					conquer(r, x, y-1, s1.get(1), root,grid2);
+					if(checkWinner(r))
+						callwinner(i);
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x,y-1,i,root,grid2);
 					write();
@@ -404,6 +452,8 @@ public class Main extends Application
 					conquer(r, x+1, y, s1.get(0), root,grid2);
 					conquer(r, x, y-1, s1.get(1), root,grid2);
 					conquer(r, x, y+1, s1.get(2), root,grid2);
+					if(checkWinner(r))
+						callwinner(i);
 					burst(r,x,y-1,i,root,grid2);
 					burst(r,x,y+1,i,root,grid2);
 					burst(r,x+1,y,i,root,grid2);
@@ -445,6 +495,8 @@ public class Main extends Application
 					conquer(r, x-1, y, s1.get(0), root,grid2);
 					conquer(r, x+1, y, s1.get(1), root,grid2);
 					conquer(r, x, y-1, s1.get(2), root,grid2);
+					if(checkWinner(r))
+						callwinner(i);
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x+1,y,i,root,grid2);
 					burst(r,x,y-1,i,root,grid2);
@@ -487,6 +539,8 @@ public class Main extends Application
 					conquer(r, x-1, y, s1.get(0), root,grid2);
 					conquer(r, x, y-1, s1.get(1), root,grid2);
 					conquer(r, x, y+1, s1.get(2), root,grid2);
+					if(checkWinner(r))
+						callwinner(i);
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x,y-1,i,root,grid2);
 					burst(r,x,y+1,i,root,grid2);
@@ -528,6 +582,8 @@ public class Main extends Application
 					conquer(r, x-1, y, s1.get(0), root,grid2);
 					conquer(r, x+1, y, s1.get(1), root,grid2);
 					conquer(r, x, y+1, s1.get(2), root,grid2);
+					if(checkWinner(r))
+						callwinner(i);
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x+1,y,i,root,grid2);
 					burst(r,x,y+1,i,root,grid2);
@@ -543,25 +599,25 @@ public class Main extends Application
 				}
 
 				TranslateTransition t1 =new TranslateTransition();
-		        t1.setDuration(Duration.seconds(1));
+		        t1.setDuration(Duration.seconds(0.5));
 		        t1.setToX(xc-b.getWidth());
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
 
 		        TranslateTransition t2 =new TranslateTransition();
-		        t2.setDuration(Duration.seconds(1));
+		        t2.setDuration(Duration.seconds(0.5));
 		        t2.setToX(xc+b.getWidth());
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(1));
 
 		        TranslateTransition t3 =new TranslateTransition();
-		        t3.setDuration(Duration.seconds(1));
+		        t3.setDuration(Duration.seconds(0.5));
 		        t3.setToX(xc);
 		        t3.setToY(yc-b.getHeight());
 		        t3.setNode(s1.get(2));
 
 		        TranslateTransition t4 =new TranslateTransition();
-		        t4.setDuration(Duration.seconds(1));
+		        t4.setDuration(Duration.seconds(0.5));
 		        t4.setToX(xc);
 		        t4.setToY(yc+b.getHeight());
 		        t4.setNode(s1.get(3));
@@ -576,6 +632,8 @@ public class Main extends Application
 					conquer(r, x+1, y, s1.get(1), root,grid2);
 					conquer(r, x, y-1, s1.get(2), root,grid2);
 					conquer(r, x, y+1, s1.get(3), root,grid2);
+					if(checkWinner(r))
+						callwinner(i);
 					burst(r,x-1,y,i, root,grid2);
 					burst(r,x+1,y,i, root,grid2);
 					burst(r,x,y-1,i, root,grid2);
@@ -586,17 +644,7 @@ public class Main extends Application
 			}
 		}
 	}
-	/*
-	public static void lit(int x, int y, Group aw){
-		Sphere s=(Sphere)aw.getChildren().get(0);
-		aw.getChildren().remove(0);
-		TranslateTransition t1 =new TranslateTransition();
-        t1.setDuration(Duration.seconds(1));
-        t1.setToX();
-        t1.setToY();
-        t1.setNode(s);
-        t1.play();
-	}*/
+
 	public static Sphere find(Sphere s,Group r){
 		for(Node n:r.getChildren()){
 			if(n.getClass().getName().equals(s.getClass().getName())){
@@ -768,7 +816,7 @@ public class Main extends Application
 					p=new ArrayList<Player>();
 					for(int i=0;i<n;i++){
 						Color c=Color.web(br.next());
-						Player p0=new Player(c);
+						Player p0=new Player(c, i+1);
 						p.add(p0);
 					}
 					sizex=br.nextInt();
@@ -845,6 +893,7 @@ public class Main extends Application
 				r[i][j]=new Group();
 			}
 		}
+
 		Image gimage = new Image(new FileInputStream("1.png"));
 		ImageView giv = new ImageView(gimage);
 		giv.setX(15);
@@ -1036,22 +1085,6 @@ public class Main extends Application
               			r[xxx][yyy]=new Group();
               		}
               		if(a[xxx][yyy]%4==0){
-
-              			for(int k = 0; k < sizex; k++)
-              				for(int l = 0; l < sizey; l++)
-              				{
-              					grid1[k][l].setStroke(p.get((turn + 1)%n).getColor());
-              					grid2[k][l].setStroke(p.get((turn + 1)%n).getColor());
-              					line[k][l].setStroke(p.get((turn + 1)%n).getColor());
-              				}
-
-              			for(int k = 0; k < sizey; k++)
-							line[sizex][k].setStroke(p.get((turn + 1)%n).getColor());
-						for(int k = 0; k < sizex; k++)
-							line[k][sizey].setStroke(p.get((turn + 1)%n).getColor());
-						line[sizex][sizey].setStroke(p.get((turn + 1)%n).getColor());
-						extra.setStroke(p.get((turn + 1) % n).getColor());
-
               			Sphere s=new Sphere();
               			s.setRadius(rad);
               			s.setTranslateX(x);
@@ -1062,14 +1095,9 @@ public class Main extends Application
               			root.getChildren().remove(r[xxx][yyy]);
 						root.getChildren().add(r[xxx][yyy]);
 						r[xxx][yyy].toBack();
-						turn=(turn+1)%n;
-						un.setDisable(false);
-              		}
-              		else if(a[xxx][yyy]%4==1){
-              			Sphere v=find(new Sphere(),r[xxx][yyy]);
-
-              			if(v.getMaterial().equals(redMaterial)){
-              				for(int k = 0; k < sizex; k++)
+						if(lol/n > 0)
+							updateplayers(r);
+						for(int k = 0; k < sizex; k++)
               				for(int l = 0; l < sizey; l++)
               				{
               					grid1[k][l].setStroke(p.get((turn + 1)%n).getColor());
@@ -1083,7 +1111,13 @@ public class Main extends Application
 							line[k][sizey].setStroke(p.get((turn + 1)%n).getColor());
 						line[sizex][sizey].setStroke(p.get((turn + 1)%n).getColor());
 						extra.setStroke(p.get((turn + 1) % n).getColor());
+						turn=(turn+1)%n;
+						un.setDisable(false);
+              		}
+              		else if(a[xxx][yyy]%4==1){
+              			Sphere v=find(new Sphere(),r[xxx][yyy]);
 
+              			if(v.getMaterial().equals(redMaterial)){
 	              			Sphere s=new Sphere();
 	              			s.setRadius(rad);
 	              			s.setTranslateX(x+rt);
@@ -1094,6 +1128,21 @@ public class Main extends Application
 	              			root.getChildren().remove(r[xxx][yyy]);
 							root.getChildren().add(r[xxx][yyy]);
 							r[xxx][yyy].toBack();
+							updateplayers(r);
+							for(int k = 0; k < sizex; k++)
+	              				for(int l = 0; l < sizey; l++)
+	              				{
+	              					grid1[k][l].setStroke(p.get((turn + 1)%n).getColor());
+	              					grid2[k][l].setStroke(p.get((turn + 1)%n).getColor());
+	              					line[k][l].setStroke(p.get((turn + 1)%n).getColor());
+	              				}
+
+	              			for(int k = 0; k < sizey; k++)
+								line[sizex][k].setStroke(p.get((turn + 1)%n).getColor());
+							for(int k = 0; k < sizex; k++)
+								line[k][sizey].setStroke(p.get((turn + 1)%n).getColor());
+							line[sizex][sizey].setStroke(p.get((turn + 1)%n).getColor());
+							extra.setStroke(p.get((turn + 1) % n).getColor());
 							turn=(turn+1)%n;
 							un.setDisable(false);
 						}
@@ -1102,20 +1151,6 @@ public class Main extends Application
 
               			Sphere v=find(new Sphere(),r[xxx][yyy]);
               			if(v.getMaterial().equals(redMaterial)){
-              				for(int k = 0; k < sizex; k++)
-              				for(int l = 0; l < sizey; l++)
-              				{
-              					grid1[k][l].setStroke(p.get((turn + 1)%n).getColor());
-              					grid2[k][l].setStroke(p.get((turn + 1)%n).getColor());
-              					line[k][l].setStroke(p.get((turn + 1)%n).getColor());
-              				}
-
-              			for(int k = 0; k < sizey; k++)
-							line[sizex][k].setStroke(p.get((turn + 1)%n).getColor());
-						for(int k = 0; k < sizex; k++)
-							line[k][sizey].setStroke(p.get((turn + 1)%n).getColor());
-						line[sizex][sizey].setStroke(p.get((turn + 1)%n).getColor());
-						extra.setStroke(p.get((turn + 1) % n).getColor());
 
 	              			Sphere s=new Sphere();
 	              			s.setRadius(rad);
@@ -1127,6 +1162,21 @@ public class Main extends Application
 	              			root.getChildren().remove(r[xxx][yyy]);
 							root.getChildren().add(r[xxx][yyy]);
 							r[xxx][yyy].toBack();
+							updateplayers(r);
+							for(int k = 0; k < sizex; k++)
+	              				for(int l = 0; l < sizey; l++)
+	              				{
+	              					grid1[k][l].setStroke(p.get((turn + 1)%n).getColor());
+	              					grid2[k][l].setStroke(p.get((turn + 1)%n).getColor());
+	              					line[k][l].setStroke(p.get((turn + 1)%n).getColor());
+	              				}
+
+	              			for(int k = 0; k < sizey; k++)
+								line[sizex][k].setStroke(p.get((turn + 1)%n).getColor());
+							for(int k = 0; k < sizex; k++)
+								line[k][sizey].setStroke(p.get((turn + 1)%n).getColor());
+							line[sizex][sizey].setStroke(p.get((turn + 1)%n).getColor());
+							extra.setStroke(p.get((turn + 1) % n).getColor());
 							turn=(turn+1)%n;
 							un.setDisable(false);
 						}
@@ -1135,20 +1185,7 @@ public class Main extends Application
               			Sphere v=find(new Sphere(),r[xxx][yyy]);
 
               			if(v.getMaterial().equals(redMaterial)){
-              				for(int k = 0; k < sizex; k++)
-              				for(int l = 0; l < sizey; l++)
-              				{
-              					grid1[k][l].setStroke(p.get((turn + 1)%n).getColor());
-              					grid2[k][l].setStroke(p.get((turn + 1)%n).getColor());
-              					line[k][l].setStroke(p.get((turn + 1)%n).getColor());
-              				}
-
-              			for(int k = 0; k < sizey; k++)
-							line[sizex][k].setStroke(p.get((turn + 1)%n).getColor());
-						for(int k = 0; k < sizex; k++)
-							line[k][sizey].setStroke(p.get((turn + 1)%n).getColor());
-						line[sizex][sizey].setStroke(p.get((turn + 1)%n).getColor());
-						extra.setStroke(p.get((turn + 1) % n).getColor());
+              				
 	              			Sphere s=new Sphere();
 	              			s.setRadius(rad);
 	              			s.setTranslateX(x);
@@ -1159,6 +1196,21 @@ public class Main extends Application
 	              			root.getChildren().remove(r[xxx][yyy]);
 							root.getChildren().add(r[xxx][yyy]);
 							r[xxx][yyy].toBack();
+							updateplayers(r);
+							for(int k = 0; k < sizex; k++)
+	              				for(int l = 0; l < sizey; l++)
+	              				{
+	              					grid1[k][l].setStroke(p.get((turn + 1)%n).getColor());
+	              					grid2[k][l].setStroke(p.get((turn + 1)%n).getColor());
+	              					line[k][l].setStroke(p.get((turn + 1)%n).getColor());
+	              				}
+
+	              			for(int k = 0; k < sizey; k++)
+								line[sizex][k].setStroke(p.get((turn + 1)%n).getColor());
+							for(int k = 0; k < sizex; k++)
+								line[k][sizey].setStroke(p.get((turn + 1)%n).getColor());
+							line[sizex][sizey].setStroke(p.get((turn + 1)%n).getColor());
+							extra.setStroke(p.get((turn + 1) % n).getColor());
 							turn=(turn+1)%n;
 							un.setDisable(false);
 						}
@@ -1618,6 +1670,28 @@ public class Main extends Application
 		pstage.setScene(gamescene);
 	}
 
+	public static void callwinner(int i)
+	{
+		/*Image image = new Image(new FileInputStream("3.png"));
+		ImageView iv = new ImageView(image);
+		iv.setX(120);
+		iv.setY(200);
+		iv.setFitHeight(150);
+		iv.setFitWidth(150);
+		iv.setPreserveRatio(true);*/
+
+		Text t2 = new Text("Player " + (turn+1) + " Won!!!");
+		t2.setX(80);
+		t2.setY(400);
+		t2.setFill(Color.WHITE);
+		t2.setFont(Font.font("", FontWeight.NORMAL, FontPosture.REGULAR, 30));
+
+		winnerscene = new Scene(new Group(), 400, 650, Color.BLACK);
+		Group winnerroot = (Group)winnerscene.getRoot();
+		winnerroot.getChildren().addAll(t2);
+		pstage.setScene(winnerscene);
+	}
+
 	public void resumeGame() throws FileNotFoundException
 	{
 		if(sizex==6){
@@ -1640,21 +1714,21 @@ public class Main extends Application
 
 	public void callmain(int turn, Color c) throws FileNotFoundException
 	{
-		total.set(turn, new Player(c));
+		total.set(turn, new Player(c, total.get(turn).getTurn()));
 		start(pstage);
 	}
 
 	public static void main(String[] args) {
 		p = new ArrayList<Player>();
 		total = new ArrayList<Player>();
-		total.add(new Player(Color.RED));
-		total.add(new Player(Color.GREEN));
-		total.add(new Player(Color.BLUE));
-		total.add(new Player(Color.CYAN));
-		total.add(new Player(Color.ORANGE));
-		total.add(new Player(Color.YELLOW));
-		total.add(new Player(Color.WHITE));
-		total.add(new Player(Color.DEEPPINK));
+		total.add(new Player(Color.RED, 1));
+		total.add(new Player(Color.GREEN, 2));
+		total.add(new Player(Color.BLUE, 3));
+		total.add(new Player(Color.CYAN, 4));
+		total.add(new Player(Color.ORANGE, 5));
+		total.add(new Player(Color.YELLOW, 6));
+		total.add(new Player(Color.WHITE, 7));
+		total.add(new Player(Color.DEEPPINK, 8));
 
 		c = new ArrayList<Color>();
 		c.add(Color.RED);
