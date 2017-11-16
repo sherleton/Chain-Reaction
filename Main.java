@@ -137,6 +137,7 @@ public class Main extends Application
 		ArrayList<Sphere> s1=new ArrayList<Sphere>();
 		Bounds b=grid2[x][y].getBoundsInLocal();
 		double a0=b.getMinX()+b.getWidth()/2;
+		double coree=s.getRadius()/2;
 		double b0=b.getMinY()+b.getWidth()/2;
 		root.getChildren().remove(r[x][y]);
 		if(r[x][y].getChildren().isEmpty())
@@ -154,12 +155,12 @@ public class Main extends Application
 			for(int i=0;i<s1.size();i++){
 				s1.get(i).setMaterial(s.getMaterial());
 				if(i==0){
-					s1.get(i).setTranslateX(a0+7.5);
+					s1.get(i).setTranslateX(a0+coree);
 					s1.get(i).setTranslateY(b0);
 				}				
 				else if(i==1){
 					s1.get(i).setTranslateX(a0);
-					s1.get(i).setTranslateY(b0+7.5);
+					s1.get(i).setTranslateY(b0+coree);
 				}
 				r[x][y].getChildren().add(s1.get(i));
 
