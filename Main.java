@@ -558,7 +558,7 @@ public class Main extends Application
 		player.setValue("2 Player Game");
 		if(p.size() == 0)
 		{
-			p = new ArrayList<Player>(n);
+			p = new ArrayList<Player>();
 			for(int i = 0; i < n; i++)
 				p.add(i,total.get(i));
 		}
@@ -670,6 +670,34 @@ public class Main extends Application
 		resume.setMaxSize(145, 60);
 		resume.setLayoutX(175.0f);
 		resume.setLayoutY(140.0f);
+		resume.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent e)
+			{
+				try{
+					Scanner br=new Scanner(new File("resume.txt"));
+					n=br.nextInt();
+					p=new ArrayList<Player>();
+					for(int i=0;i<n;i++){
+						Color c=Color.web(br.next());
+						Player p0=new Player(c);
+						p.add(p0);
+					}
+					sizex=br.nextInt();
+					sizey=br.nextInt();
+					a=new int[sizex][sizey];
+					for(int i=0;i<sizex;i++){
+						for(int j=0;j<sizey;j++){
+							a[i][j]=br.nextInt();
+						}
+					}
+					turn=br.nextInt();
+					br.close();
+					resumeGame();
+					System.out.println(p.size());
+				}
+		catch(IOException e1){}
+			}
+		});
 
 		Text content = new Text();
 		content.setFont(Font.font("", FontWeight.BOLD, FontPosture.REGULAR, 16));
@@ -719,7 +747,7 @@ public class Main extends Application
 		stage.show();
 	}
 
-	public void play(int gx1, int gy1, int gx2, int gy2,  float sbs, float bbs, double rad, double rt) throws FileNotFoundException
+	public void play(int gx1, int gy1, int gx2, int gy2,  float sbs, float bbs, double rad, double rt,boolean axy) throws FileNotFoundException
 	{
 		Color ccc=p.get(turn).getColor();
 		Group[][] r=new Group[sizex][sizey];
@@ -878,7 +906,10 @@ public class Main extends Application
         	material[i].setSpecularColor(p.get(i).getColor()); 
         	
 		}
-		
+		if(axy){
+			check(r,root,grid2,material,rad,a);
+			axy=false;
+		}
         
 		for(int i=0;i<sizex;i++)
 		{
@@ -1055,7 +1086,32 @@ public class Main extends Application
               			}
               			System.out.println("");
               		}
-              		System.out.println("");	
+              		System.out.println("");
+              		try{
+              				BufferedWriter br=new BufferedWriter(new FileWriter(new File("resume.txt")) );
+              				br.write(Integer.toString(n));
+              				br.newLine();
+              				for(int i=0;i<n;i++){
+              					String s=p.get(i).getColor().toString();
+              					br.write(s);
+              					br.newLine();
+              				}
+              				br.write(Integer.toString(sizex));
+              				br.newLine();
+              				br.write(Integer.toString(sizey));
+              				br.newLine();
+	              			for(int i=0;i<sizex;i++){
+	              				for(int j=0;j<sizey;j++){
+	              					br.write(Integer.toString(a[i][j]));
+	              					br.newLine();
+	              				}
+	              			}
+	              			br.write(Integer.toString(turn));
+	              			br.flush();
+	              			br.close();
+              			}
+              			catch(IOException e){}	
+
 
               		
 				}
@@ -1490,14 +1546,20 @@ public class Main extends Application
 			sizex = 6;
 			sizey = 9;
 			a=new int[sizex][sizey];
-			play(35, 100, 20, 80,55, 60, 15.0, 7.5);
+			play(35, 100, 20, 80,55, 60, 15.0, 7.5,false);
 		}
 		else{
 			sizex = 10;
 			sizey = 15;
 			a=new int[sizex][sizey];
-			play(25, 90, 16, 80, 35.45f, 37, 10.0, 2.5);
+			play(25, 90, 16, 80, 35.45f, 37, 10.0, 2.5,false);
 		}
+		pstage.setScene(gamescene);
+	}
+
+	public void resumeGame() throws FileNotFoundException
+	{
+		play(35, 100, 20, 80,55, 60, 15.0, 7.5,true);
 		pstage.setScene(gamescene);
 	}
 
