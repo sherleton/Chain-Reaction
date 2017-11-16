@@ -132,7 +132,7 @@ public class Main extends Application
 		return (j==0&&i>0&&i<sizex-1);
 	}
 
-	public static void conquer(Group[][] r, int x, int y, Sphere s, Group root,Rectangle [][]grid2)
+	public static void conquer(Group[][] r, int x, int y, Sphere s, Group root,Rectangle[][] grid2)
 	{
 		ArrayList<Sphere> s1=new ArrayList<Sphere>();
 		Bounds b=grid2[x][y].getBoundsInLocal();
@@ -153,14 +153,6 @@ public class Main extends Application
 			s1.add(s);
 			for(int i=0;i<s1.size();i++){
 				s1.get(i).setMaterial(s.getMaterial());
-				if(i==1){
-					s1.get(i).setTranslateX(a0);
-					s1.get(i).setTranslateY(b0);
-				}
-				else if(i==2){
-					s1.get(i).setTranslateX(a0);
-					s1.get(i).setTranslateY(b0+7.5);
-				}
 				r[x][y].getChildren().add(s1.get(i));
 
 			}
@@ -169,7 +161,23 @@ public class Main extends Application
 		r[x][y].toBack();
 	}
 
-	public static void burst(Group r[][],int x,int y,int i, Group root,Rectangle [][]grid2){
+	/*public void move(Sphere s, float x, float y)
+	{
+		Path path = new Path();
+		MoveTo moveto = new MoveTo();
+		LineTo line1 = new LineTo(x,y);
+		path.getElements().add(moveto);
+		path.getElements().add(line1);
+
+		PathTransition pt = new PathTransition();
+		pt.setDuration(Duration.millis(1000));
+		pt.setNode(s);
+		pt.setPath(path);
+		pt.setAutoReverse(false);
+		pt.play();
+	}*/
+
+	public static void burst(Group r[][],int x,int y,int i, Group root,Rectangle[][] grid2){
 		Bounds b=grid2[x][y].getBoundsInLocal();
 		Double xc=b.getMinX()+b.getWidth()/2;
 		Double yc=b.getMinY()+b.getHeight()/2;
@@ -196,24 +204,31 @@ public class Main extends Application
 				}
 
 		        TranslateTransition t2 =new TranslateTransition();
-		        t2.setDuration(Duration.seconds(0.5));
-		        t2.setToX(xc+b.getWidth());
+		        //t2.setDuration(Duration.seconds(0.5));
+		        t2.setToX(xc+b.getWidth()-5);
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(0));
-		        t2.play();
 		      	
 		        TranslateTransition t4 =new TranslateTransition();
-		        t4.setDuration(Duration.seconds(0.5));
+		        //t4.setDuration(Duration.seconds(0.5));
 		        t4.setToX(xc);
-		        t4.setToY(yc+b.getHeight());
+		        t4.setToY(yc+b.getHeight()-5);
 		        t4.setNode(s1.get(1));
-		        t4.play();
 
-				a[x][y]=0;
+		        ParallelTransition p1 = new ParallelTransition(t2, t4);
+		        p1.play();
+
+		        root.getChildren().addAll(s1.get(0), s1.get(1));
+
+		        p1.setOnFinished(e -> {
+		        a[x][y] = 0;
 				conquer(r, x+1, y, s1.get(0), root,grid2);
 				conquer(r, x, y+1, s1.get(1), root,grid2);
 				burst(r,x+1,y,i,root,grid2);
-				burst(r,x,y+1,i,root,grid2);			
+				burst(r,x,y+1,i,root,grid2);
+		        });
+				
+
 			}
 	
 		}
@@ -225,24 +240,30 @@ public class Main extends Application
 				}
 
 		        TranslateTransition t2 =new TranslateTransition();
-		        t2.setDuration(Duration.seconds(0.5));
+		        //t2.setDuration(Duration.seconds(0.5));
 		        t2.setToX(xc+b.getWidth());
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(0));
-		        t2.play();
 		        
 		        TranslateTransition t3 =new TranslateTransition();
-		        t3.setDuration(Duration.seconds(0.5));
+		        //t3.setDuration(Duration.seconds(0.5));
 		        t3.setToX(xc);
 		        t3.setToY(yc-b.getHeight());
 		        t3.setNode(s1.get(1));
-		        t3.play();
 
-				a[x][y]=0;
-				conquer(r, x+1, y, s1.get(0), root,grid2);
-				conquer(r, x, y-1, s1.get(1), root,grid2);
-				burst(r,x+1,y,i,root,grid2);
-				burst(r,x,y-1,i,root,grid2);				
+		        ParallelTransition p1 = new ParallelTransition(t2, t3);
+		        p1.play();
+
+		        root.getChildren().addAll(s1.get(0), s1.get(1));
+
+		        p1.setOnFinished(e -> {
+					a[x][y]=0;
+					conquer(r, x+1, y, s1.get(0), root,grid2);
+					conquer(r, x, y-1, s1.get(1), root,grid2);
+					burst(r,x+1,y,i,root,grid2);
+					burst(r,x,y-1,i,root,grid2);
+		        });
+
 			}
 		}
 		else if(corner3(x,y)){
@@ -257,20 +278,27 @@ public class Main extends Application
 		        t1.setToX(xc-b.getWidth());
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
-		        t1.play();
 
 		        TranslateTransition t4 =new TranslateTransition();
 		        t4.setDuration(Duration.seconds(0.5));
 		        t4.setToX(xc);
 		        t4.setToY(yc+b.getHeight());
 		        t4.setNode(s1.get(1));
-		        t4.play();
 
-				a[x][y]=0;
-				conquer(r, x-1, y, s1.get(0), root,grid2);
-				conquer(r, x, y+1, s1.get(1), root,grid2);
-				burst(r,x-1,y,i,root,grid2);
-				burst(r,x,y+1,i,root,grid2);			
+		        ParallelTransition p1 = new ParallelTransition(t1, t4);
+		        p1.play();
+
+		        root.getChildren().addAll(s1.get(0), s1.get(1));
+
+		        p1.setOnFinished(e -> {
+		        	a[x][y]=0;
+					conquer(r, x-1, y, s1.get(0), root,grid2);
+					conquer(r, x, y+1, s1.get(1), root,grid2);
+					burst(r,x-1,y,i,root,grid2);
+					burst(r,x,y+1,i,root,grid2);
+		        });
+				
+
 			}
 	
 		}
@@ -286,21 +314,27 @@ public class Main extends Application
 		        t1.setToX(xc-b.getWidth());
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
-		        t1.play();
 
 		        TranslateTransition t3 =new TranslateTransition();
 		        t3.setDuration(Duration.seconds(0.5));
 		        t3.setToX(xc);
 		        t3.setToY(yc-b.getHeight());
 		        t3.setNode(s1.get(1));
-		        t3.play();
 
-				a[x][y]=0;
-				conquer(r, x-1, y, s1.get(0), root,grid2);
-				conquer(r, x, y-1, s1.get(1), root,grid2);
-				burst(r,x-1,y,i,root,grid2);
-				burst(r,x,y-1,i,root,grid2);
-			}		
+		        ParallelTransition p1 = new ParallelTransition(t1, t3);
+		        p1.play();
+
+		        root.getChildren().addAll(s1.get(0), s1.get(1));
+
+		        p1.setOnFinished(e -> {
+		        	a[x][y]=0;
+					conquer(r, x-1, y, s1.get(0), root,grid2);
+					conquer(r, x, y-1, s1.get(1), root,grid2);
+					burst(r,x-1,y,i,root,grid2);
+					burst(r,x,y-1,i,root,grid2);
+		        });
+				
+			}
 		}
 		else if(edge1(x,y)){
 			if(a[x][y]%4==3){
@@ -314,29 +348,33 @@ public class Main extends Application
 		        t2.setToX(xc+b.getWidth());
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(0));
-		        t2.play();
 		        
 		        TranslateTransition t3 =new TranslateTransition();
 		        t3.setDuration(Duration.seconds(0.5));
 		        t3.setToX(xc);
 		        t3.setToY(yc-b.getHeight());
 		        t3.setNode(s1.get(1));
-		        t3.play();
 
 		        TranslateTransition t4 =new TranslateTransition();
 		        t4.setDuration(Duration.seconds(0.5));
 		        t4.setToX(xc);
 		        t4.setToY(yc+b.getHeight());
 		        t4.setNode(s1.get(2));
-		        t4.play();
 
-				a[x][y]=0;
-				conquer(r, x+1, y, s1.get(0), root,grid2);
-				conquer(r, x, y-1, s1.get(1), root,grid2);
-				conquer(r, x, y+1, s1.get(2), root,grid2);
-				burst(r,x,y-1,i,root,grid2);
-				burst(r,x,y+1,i,root,grid2);
-				burst(r,x+1,y,i,root,grid2);
+		        ParallelTransition p1 = new ParallelTransition(t2, t3, t4);
+		        p1.play();
+
+		        root.getChildren().addAll(s1.get(0), s1.get(1), s1.get(2));
+
+		        p1.setOnFinished(e -> {
+		        	a[x][y]=0;
+					conquer(r, x+1, y, s1.get(0), root,grid2);
+					conquer(r, x, y-1, s1.get(1), root,grid2);
+					conquer(r, x, y+1, s1.get(2), root,grid2);
+					burst(r,x,y-1,i,root,grid2);
+					burst(r,x,y+1,i,root,grid2);
+					burst(r,x+1,y,i,root,grid2);
+		        });				
 			}
 		}
 		else if(edge2(x,y)){
@@ -351,29 +389,33 @@ public class Main extends Application
 		        t1.setToX(xc-b.getWidth());
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
-		        t1.play();
 
 		        TranslateTransition t2 =new TranslateTransition();
 		        t2.setDuration(Duration.seconds(0.5));
 		        t2.setToX(xc+b.getWidth());
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(1));
-		        t2.play();
 		        
 		        TranslateTransition t3 =new TranslateTransition();
 		        t3.setDuration(Duration.seconds(0.5));
 		        t3.setToX(xc);
 		        t3.setToY(yc-b.getHeight());
 		        t3.setNode(s1.get(2));
-		        t3.play();
 
-				a[x][y]=0;
-				conquer(r, x-1, y, s1.get(0), root,grid2);
-				conquer(r, x+1, y, s1.get(1), root,grid2);
-				conquer(r, x, y-1, s1.get(2), root,grid2);
-				burst(r,x-1,y,i,root,grid2);
-				burst(r,x+1,y,i,root,grid2);
-				burst(r,x,y-1,i,root,grid2);
+		        ParallelTransition p1 = new ParallelTransition(t2, t3, t1);
+		        p1.play();
+
+		        root.getChildren().addAll(s1.get(0), s1.get(1), s1.get(2));
+
+		        p1.setOnFinished(e -> {
+		        	a[x][y]=0;
+					conquer(r, x-1, y, s1.get(0), root,grid2);
+					conquer(r, x+1, y, s1.get(1), root,grid2);
+					conquer(r, x, y-1, s1.get(2), root,grid2);
+					burst(r,x-1,y,i,root,grid2);
+					burst(r,x+1,y,i,root,grid2);
+					burst(r,x,y-1,i,root,grid2);
+		        });
 			}
 		}
 		else if(edge3(x,y)){
@@ -388,29 +430,33 @@ public class Main extends Application
 		        t1.setToX(xc-b.getWidth());
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
-		        t1.play();
 		        
 		        TranslateTransition t3 =new TranslateTransition();
 		        t3.setDuration(Duration.seconds(0.5));
 		        t3.setToX(xc);
 		        t3.setToY(yc-b.getHeight());
 		        t3.setNode(s1.get(1));
-		        t3.play();
 
 		        TranslateTransition t4 =new TranslateTransition();
 		        t4.setDuration(Duration.seconds(0.5));
 		        t4.setToX(xc);
 		        t4.setToY(yc+b.getHeight());
 		        t4.setNode(s1.get(2));
-		        t4.play();
 
-				a[x][y]=0;
-				conquer(r, x-1, y, s1.get(0), root,grid2);
-				conquer(r, x, y-1, s1.get(1), root,grid2);
-				conquer(r, x, y+1, s1.get(2), root,grid2);
-				burst(r,x-1,y,i,root,grid2);
-				burst(r,x,y-1,i,root,grid2);
-				burst(r,x,y+1,i,root,grid2);
+		        ParallelTransition p1 = new ParallelTransition(t1, t3, t4);
+		        p1.play();
+
+		        root.getChildren().addAll(s1.get(0), s1.get(1), s1.get(2));
+
+		        p1.setOnFinished(e -> {
+		        	a[x][y]=0;
+					conquer(r, x-1, y, s1.get(0), root,grid2);
+					conquer(r, x, y-1, s1.get(1), root,grid2);
+					conquer(r, x, y+1, s1.get(2), root,grid2);
+					burst(r,x-1,y,i,root,grid2);
+					burst(r,x,y-1,i,root,grid2);
+					burst(r,x,y+1,i,root,grid2);
+		        });
 			}
 		}
 		else if(edge4(x,y)){
@@ -425,29 +471,33 @@ public class Main extends Application
 		        t1.setToX(xc-b.getWidth());
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
-		        t1.play();
 
 		        TranslateTransition t2 =new TranslateTransition();
 		        t2.setDuration(Duration.seconds(0.5));
 		        t2.setToX(xc+b.getWidth());
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(1));
-		        t2.play();
 
 		        TranslateTransition t4 =new TranslateTransition();
 		        t4.setDuration(Duration.seconds(0.5));
 		        t4.setToX(xc);
 		        t4.setToY(yc+b.getHeight());
 		        t4.setNode(s1.get(2));
-		        t4.play();
 
-				a[x][y]=0;
-				conquer(r, x-1, y, s1.get(0), root,grid2);
-				conquer(r, x+1, y, s1.get(1), root,grid2);
-				conquer(r, x, y+1, s1.get(2), root,grid2);
-				burst(r,x-1,y,i,root,grid2);
-				burst(r,x+1,y,i,root,grid2);
-				burst(r,x,y+1,i,root,grid2);
+		        ParallelTransition p1 = new ParallelTransition(t1, t2, t4);
+		        p1.play();
+
+		        root.getChildren().addAll(s1.get(0), s1.get(1), s1.get(2));
+
+		        p1.setOnFinished(e -> {
+		        	a[x][y]=0;
+					conquer(r, x-1, y, s1.get(0), root,grid2);
+					conquer(r, x+1, y, s1.get(1), root,grid2);
+					conquer(r, x, y+1, s1.get(2), root,grid2);
+					burst(r,x-1,y,i,root,grid2);
+					burst(r,x+1,y,i,root,grid2);
+					burst(r,x,y+1,i,root,grid2);
+		        });
 			}
 		}
 		else{
@@ -458,42 +508,45 @@ public class Main extends Application
 				}
 
 				TranslateTransition t1 =new TranslateTransition();
-		        t1.setDuration(Duration.seconds(0.5));
+		        t1.setDuration(Duration.seconds(1));
 		        t1.setToX(xc-b.getWidth());
 		        t1.setToY(yc);
 		        t1.setNode(s1.get(0));
-		        t1.play();
 
 		        TranslateTransition t2 =new TranslateTransition();
-		        t2.setDuration(Duration.seconds(0.5));
+		        t2.setDuration(Duration.seconds(1));
 		        t2.setToX(xc+b.getWidth());
 		        t2.setToY(yc);
 		        t2.setNode(s1.get(1));
-		        t2.play();
 
 		        TranslateTransition t3 =new TranslateTransition();
-		        t3.setDuration(Duration.seconds(0.5));
+		        t3.setDuration(Duration.seconds(1));
 		        t3.setToX(xc);
 		        t3.setToY(yc-b.getHeight());
 		        t3.setNode(s1.get(2));
-		        t3.play();
 
 		        TranslateTransition t4 =new TranslateTransition();
-		        t4.setDuration(Duration.seconds(0.5));
+		        t4.setDuration(Duration.seconds(1));
 		        t4.setToX(xc);
 		        t4.setToY(yc+b.getHeight());
 		        t4.setNode(s1.get(3));
-		        t4.play();
 
-				a[x][y]=0;
-				conquer(r, x-1, y, s1.get(0), root,grid2);
-				conquer(r, x+1, y, s1.get(1), root,grid2);
-				conquer(r, x, y-1, s1.get(2), root,grid2);
-				conquer(r, x, y+1, s1.get(3), root,grid2);
-				burst(r,x-1,y,i, root,grid2);
-				burst(r,x+1,y,i, root,grid2);
-				burst(r,x,y-1,i, root,grid2);
-				burst(r,x,y+1,i, root,grid2);
+		        ParallelTransition p1 = new ParallelTransition(t1, t3, t2, t4);
+		        p1.play();
+
+		        root.getChildren().addAll(s1.get(0), s1.get(1), s1.get(2), s1.get(3));
+
+		        p1.setOnFinished(e -> {
+		        	a[x][y]=0;
+					conquer(r, x-1, y, s1.get(0), root,grid2);
+					conquer(r, x+1, y, s1.get(1), root,grid2);
+					conquer(r, x, y-1, s1.get(2), root,grid2);
+					conquer(r, x, y+1, s1.get(3), root,grid2);
+					burst(r,x-1,y,i, root,grid2);
+					burst(r,x+1,y,i, root,grid2);
+					burst(r,x,y-1,i, root,grid2);
+					burst(r,x,y+1,i, root,grid2);
+		        });
 			}
 		}
 	}
