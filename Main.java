@@ -1620,8 +1620,16 @@ public class Main extends Application
 
 	public void resumeGame() throws FileNotFoundException
 	{
-		play(35, 100, 20, 80,55, 60, 15.0, 7.5,true);
+		if(sizex==6){
+			play(35, 100, 20, 80,55, 60, 15.0, 7.5,true);
+		}
+		else{
+			play(25, 90, 16, 80, 35.45f, 37, 10.0, 2.5,false);
+
+		}
 		pstage.setScene(gamescene);
+
+			
 	}
 
 	public void playercolor(int turn) throws FileNotFoundException
