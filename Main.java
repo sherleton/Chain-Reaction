@@ -201,43 +201,12 @@ public class Main extends Application
 		return false;
 	}
 
-	public static void updateplayers(Group[][] r)
-	{
-		ArrayList<Color> ch = new ArrayList<Color>();
-		for(int i = 0; i < sizex; i++)
-			for(int j = 0; j < sizey; j++)
-			{
-				if(r[i][j].getChildren().size() != 0)
-					ch.add(((PhongMaterial)((Sphere)(r[i][j].getChildren().get(0))).getMaterial()).getDiffuseColor());
-			}
-
-		Color c;
-		p.clear();
-
-		//Colors found in the grid
-
-		for(int i = 0; i < ch.size(); i++)
-			System.out.println(ch.get(i));
-
-		n = 0;
-		for(int j = 0; j < 8; j++)
-		{
-			c = total.get(j).getColor();
-			for(int i = 0; i < ch.size(); i++)
-			{
-				if(c.equals(ch.get(i)))
-				{
-					p.add(total.get(i));
-					n++;
-					break;
-				}
-			}
-		}
-	}
+	
 
 	public static void write() {
 		try{
             	BufferedWriter br=new BufferedWriter(new FileWriter(new File("resume.txt")) );
+            	System.out.println(n+"yodolio");
             	br.write(Integer.toString(n));
             	br.newLine();
             	for(int i=0;i<n;i++){
@@ -271,6 +240,15 @@ public class Main extends Application
 			a[x][y]=a[x][y]+4*(i-r1);
 		}
 		a[x][y]++;
+		for(int k=0;k<sizey;k++){
+              			for(int j=0;j<sizex;j++){
+              				System.out.print(a[j][k]+"  ");
+              			}
+              			System.out.println("");
+              		}
+              		System.out.println("yahoo");
+		write();
+        
 		if(corner1(x,y)){
 			if(a[x][y]%4==2){
 				
@@ -303,7 +281,6 @@ public class Main extends Application
 						callwinner(i);
 					burst(r,x+1,y,i,root,grid2);
 					burst(r,x,y+1,i,root,grid2);
-					write();
 		        });
 			}
 	
@@ -339,7 +316,6 @@ public class Main extends Application
 						callwinner(i);
 					burst(r,x+1,y,i,root,grid2);
 					burst(r,x,y-1,i,root,grid2);
-					write();
 		        });
 
 			}
@@ -375,7 +351,6 @@ public class Main extends Application
 						callwinner(i);
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x,y+1,i,root,grid2);
-					write();
 		        });
 				
 
@@ -413,7 +388,6 @@ public class Main extends Application
 						callwinner(i);
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x,y-1,i,root,grid2);
-					write();
 		        });
 				
 			}
@@ -457,7 +431,6 @@ public class Main extends Application
 					burst(r,x,y-1,i,root,grid2);
 					burst(r,x,y+1,i,root,grid2);
 					burst(r,x+1,y,i,root,grid2);
-					write();
 		        });				
 			}
 		}
@@ -500,7 +473,6 @@ public class Main extends Application
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x+1,y,i,root,grid2);
 					burst(r,x,y-1,i,root,grid2);
-					write();
 		        });
 			}
 		}
@@ -544,7 +516,6 @@ public class Main extends Application
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x,y-1,i,root,grid2);
 					burst(r,x,y+1,i,root,grid2);
-					write();
 		        });
 			}
 		}
@@ -587,7 +558,6 @@ public class Main extends Application
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x+1,y,i,root,grid2);
 					burst(r,x,y+1,i,root,grid2);
-					write();
 		        });
 			}
 		}
@@ -638,7 +608,6 @@ public class Main extends Application
 					burst(r,x+1,y,i, root,grid2);
 					burst(r,x,y-1,i, root,grid2);
 					burst(r,x,y+1,i, root,grid2);
-					write();
 		        });
 
 			}
@@ -1037,7 +1006,7 @@ public class Main extends Application
 		Group gridroot=new Group();
 		gamescene = new Scene(new Group(), 400, 650, Color.BLACK);
 		Group root = (Group)gamescene.getRoot();
-		PhongMaterial material[] = new PhongMaterial[n];
+			PhongMaterial material[] = new PhongMaterial[n];
 		for(int i=0;i<n;i++){
 			material[i] = new PhongMaterial(); 
         	material[i].setDiffuseColor(p.get(i).getColor()); 
@@ -1075,6 +1044,7 @@ public class Main extends Application
 	              			}
 	              			br.flush();
 	              			br.close();
+	              			lol++;
               			}
               			catch(IOException e){}
 	              			
@@ -1095,8 +1065,6 @@ public class Main extends Application
               			root.getChildren().remove(r[xxx][yyy]);
 						root.getChildren().add(r[xxx][yyy]);
 						r[xxx][yyy].toBack();
-						if(lol/n > 0)
-							updateplayers(r);
 						for(int k = 0; k < sizex; k++)
               				for(int l = 0; l < sizey; l++)
               				{
@@ -1128,7 +1096,6 @@ public class Main extends Application
 	              			root.getChildren().remove(r[xxx][yyy]);
 							root.getChildren().add(r[xxx][yyy]);
 							r[xxx][yyy].toBack();
-							updateplayers(r);
 							for(int k = 0; k < sizex; k++)
 	              				for(int l = 0; l < sizey; l++)
 	              				{
@@ -1162,7 +1129,6 @@ public class Main extends Application
 	              			root.getChildren().remove(r[xxx][yyy]);
 							root.getChildren().add(r[xxx][yyy]);
 							r[xxx][yyy].toBack();
-							updateplayers(r);
 							for(int k = 0; k < sizex; k++)
 	              				for(int l = 0; l < sizey; l++)
 	              				{
@@ -1196,7 +1162,7 @@ public class Main extends Application
 	              			root.getChildren().remove(r[xxx][yyy]);
 							root.getChildren().add(r[xxx][yyy]);
 							r[xxx][yyy].toBack();
-							updateplayers(r);
+							
 							for(int k = 0; k < sizex; k++)
 	              				for(int l = 0; l < sizey; l++)
 	              				{
@@ -1220,13 +1186,7 @@ public class Main extends Application
      				rt.setCycleCount(Timeline.INDEFINITE);
      				rt.setInterpolator(Interpolator.LINEAR);
      				rt.play();
-              		for(int i=0;i<sizey;i++){
-              			for(int j=0;j<sizex;j++){
-              				System.out.print(a[j][i]+"  ");
-              			}
-              			System.out.println("");
-              		}
-              		System.out.println("");
+              		System.out.println(n);
 				}
 			});
 			}
@@ -1249,7 +1209,7 @@ public class Main extends Application
 	             	}
 
 	            for(int k = 0; k < sizey; k++)
-					line[sizex][k].setStroke(p.get((turn )%n).getColor());
+					line[sizex][k].setStroke(p.get((turn)%n).getColor());
 				for(int k = 0; k < sizex; k++)
 					line[k][sizey].setStroke(p.get((turn )%n).getColor());
 				line[sizex][sizey].setStroke(p.get((turn )%n).getColor());
@@ -1679,8 +1639,10 @@ public class Main extends Application
 		iv.setFitHeight(150);
 		iv.setFitWidth(150);
 		iv.setPreserveRatio(true);*/
-
-		Text t2 = new Text("Player " + (turn+1) + " Won!!!");
+		i++;
+			File f=new File("resume.txt");
+			f.delete();
+		Text t2 = new Text("Player " + i + " Won!!!");
 		t2.setX(80);
 		t2.setY(400);
 		t2.setFill(Color.WHITE);
