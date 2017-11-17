@@ -1884,7 +1884,7 @@ public class Main extends Application
 		Main.pstage.setScene(Main.playascene);
 	}
 
-	public static void callwinner(int i) throws FileNotFoundException
+	public void callwinner(int i) throws FileNotFoundException
 	{
 		Image image = new Image(new FileInputStream("3.png"));
 		ImageView iv = new ImageView(image);
@@ -1893,6 +1893,68 @@ public class Main extends Application
 		iv.setFitHeight(200);
 		iv.setFitWidth(200);
 		iv.setPreserveRatio(true);
+
+		Image image1 = new Image(new FileInputStream("4.png"));
+		ImageView iv1 = new ImageView(image1);
+		iv1.setX(5);
+		iv1.setY(5);
+		iv1.setFitHeight(100);
+		iv1.setFitWidth(390);
+
+		Button play = new Button("New Game");
+		play.setStyle("-fx-background-color:transparent; -fx-border-color:white;" + String.format("-fx-font-size: %dpx; -fx-text-fill:white;", (int)(0.45*40)));
+		play.setMinSize(150, 60);
+		play.setPrefSize(150, 60);
+		play.setMaxSize(150, 60);
+		play.setLayoutX(50.0f);
+		play.setLayoutY(450.0f);
+		play.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e)
+			{
+				try
+				{
+					if(Game.sizex == 6)
+					{
+						Game.turn = 0;
+						System.out.println("DFDFDDFD");
+						playGame("Normal Grid");
+					}
+					else
+					{
+						playGame("HD Grid");
+					}
+				}
+				catch(FileNotFoundException f)
+				{
+
+				}
+			}
+		});
+
+		Button resume = new Button("Menu");
+		resume.setStyle("-fx-background-color:transparent; -fx-border-color:white;" + String.format("-fx-font-size: %dpx; -fx-text-fill:white;", (int)(0.65*40)));
+		resume.setMinSize(145, 60);
+		resume.setPrefSize(145, 60);
+		resume.setMaxSize(145, 60);
+		resume.setLayoutX(210.0f);
+		resume.setLayoutY(450.0f);
+		resume.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e)
+			{
+				try
+				{
+					Game.turn = 0;
+					callmain(Game.turn, Game.p.get(Game.turn).getColor());
+				}
+				catch(FileNotFoundException f)
+				{
+
+				}
+			}
+		});
+
 		i++;
 			File f=new File("resume.txt");
 			f.delete();
@@ -1904,7 +1966,7 @@ public class Main extends Application
 
 		winnerscene = new Scene(new Group(), 400, 650, Color.BLACK);
 		Group winnerroot = (Group)winnerscene.getRoot();
-		winnerroot.getChildren().addAll(t2, iv);
+		winnerroot.getChildren().addAll(t2, iv, iv1, play,resume);
 		pstage.setScene(winnerscene);
 	}
 
