@@ -129,6 +129,29 @@ class Settings
 		bar.setEndY(65.0f);
 		bar.setStroke(Color.CYAN);
 
+		Button un = new Button("Menu");
+		un.setStyle("-fx-background-color:transparent; -fx-border-color:white;" + String.format("-fx-font-size: %dpx; -fx-text-fill:white;", (int)(0.40*40)));
+		un.setMinSize(75, 30);
+		un.setPrefSize(75, 30);
+		un.setMaxSize(75, 30);
+		un.setLayoutX(320.0f);
+		un.setLayoutY(15.0f);
+		un.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e)
+			{
+				try
+				{
+					Game.turn = 0;
+					o.callmain(Game.turn, Game.p.get(Game.turn).getColor());
+				}
+				catch(FileNotFoundException f)
+				{
+
+				}
+			}
+		});
+
 		Button p1 = new Button("Player 1 Settings                      Customisation for Player 1");
 		p1.setStyle("-fx-background-color:transparent;-fx-padding:0;-fx-background-size:0;" + String.format("-fx-font-size: %dpx; -fx-alignment: LEFT; -fx-text-fill: white;", (int)(0.35 * 70)));
 		p1.setMinSize(380, 60);
@@ -363,7 +386,7 @@ class Settings
 
 		Main.playerscene = new Scene(new Group(), 400, 650, Color.BLACK);
 		Group playerroot = (Group)Main.playerscene.getRoot();
-		playerroot.getChildren().addAll(bar, p1, bar1, p2, bar2, p3, bar3, p4, bar4, p5, bar5, p6, bar6, p7, bar7, p8, bar8, t2, iv1);
+		playerroot.getChildren().addAll(bar, p1, bar1, p2, bar2, p3, bar3, p4, bar4, p5, bar5, p6, bar6, p7, bar7, p8, bar8, t2, iv1, un);
 
 	}
 
@@ -389,6 +412,29 @@ class Settings
 		line.setEndX(390.0f);
 		line.setEndY(65.0f);
 		line.setStroke(Color.CYAN);
+
+		Button un = new Button("Menu");
+		un.setStyle("-fx-background-color:transparent; -fx-border-color:white;" + String.format("-fx-font-size: %dpx; -fx-text-fill:white;", (int)(0.40*40)));
+		un.setMinSize(75, 30);
+		un.setPrefSize(75, 30);
+		un.setMaxSize(75, 30);
+		un.setLayoutX(320.0f);
+		un.setLayoutY(15.0f);
+		un.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e)
+			{
+				try
+				{
+					Game.turn = 0;
+					o.callmain(Game.turn, Game.p.get(Game.turn).getColor());
+				}
+				catch(FileNotFoundException f)
+				{
+
+				}
+			}
+		});
 
 		int flag = 0;
 		if(colors[0][0] != null)
@@ -418,7 +464,7 @@ class Settings
 
 		Main.playascene = new Scene(new Group(), 400, 650, Color.BLACK);
 		Group playaroot = (Group)Main.playascene.getRoot();
-		playaroot.getChildren().addAll(iv, t1, line);
+		playaroot.getChildren().addAll(iv, t1, line, un);
 		for(int i = 0; i < 5; i++)
 			for(int j = 0; j < 3; j++)
 				playaroot.getChildren().add(colors[i][j]);
@@ -1134,30 +1180,22 @@ class Game
 		un.setMinSize(75, 40);
 		un.setPrefSize(75, 40);
 		un.setMaxSize(75, 40);
-		un.setLayoutX(240.0f);
+		un.setLayoutX(200.0f);
 		un.setLayoutY(10.0f);
 
 
 		Line line2 = new Line();
-		line2.setStartX(315.0f);
+		line2.setStartX(270.0f);
 		line2.setStartY(10.0f);
-		line2.setEndX(315.0f);
+		line2.setEndX(270.0f);
 		line2.setEndY(50.0f);
 		line2.setStroke(Color.GRAY);
 
-		/*Image gimage1 = new Image(new FileInputStream("2.png"));
-		ImageView giv1 = new ImageView(gimage1);
-		giv1.setX(335);
-		giv1.setY(20);
-		giv1.setFitHeight(30);
-		giv1.setFitWidth(30);
-		giv1.setPreserveRatio(true);*/
-
 		ComboBox<String> option = new ComboBox<String>();
 		option.getItems().addAll("New Game", "Exit");
-		option.setLayoutX(335);
-		option.setLayoutY(20);
-		option.setStyle("-fx-background-image:url('2.png');" + String.format("-fx-font-size: %dpx;", (int)(0.35*40)));
+		option.setLayoutX(280);
+		option.setLayoutY(15);
+		option.setStyle("-fx-background-image:url('2.png'); -fx-pref-width:50;" + String.format("-fx-font-size: %dpx;", (int)(0.35*40)));
 		option.valueProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue ov, String t1, String t2)
@@ -1861,6 +1899,7 @@ public class Main extends Application
 	public void playGame(String s) throws FileNotFoundException
 	{
 		Game.arr = new int[8];
+		System.out.println(Game.n);
 		for(int i = 0; i < Game.n; i++)
 			Game.arr[i] = 1;
 		if(s.equals("Normal Grid")){
@@ -1917,7 +1956,6 @@ public class Main extends Application
 					if(Game.sizex == 6)
 					{
 						Game.turn = 0;
-						System.out.println("DFDFDDFD");
 						playGame("Normal Grid");
 					}
 					else
