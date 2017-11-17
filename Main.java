@@ -111,8 +111,10 @@ public class Main extends Application
 	public static int sizey=9;
 	public static int [][]a=new int[6][9];
 	public static int lol=0;
-	public Button[][] colors = new Button[5][3];;
+	public Button[][] colors = new Button[5][3];
 	public static int[][] cvalue;
+	public static int flagcheck = 0;
+	public static int[] arr = new int[8];
 	public static boolean corner1(int i,int j){
 		return (i==0&&j==0);
 	}
@@ -136,6 +138,86 @@ public class Main extends Application
 	}
 	public static boolean edge4(int i,int j){
 		return (j==0&&i>0&&i<sizex-1);
+	}
+
+	public static void backburst(int[][] b, int x,int y,int i){
+		if(b[x][y]/4!=i){
+			int r=b[x][y]/4;
+			b[x][y]=b[x][y]+4*(i-r);
+		}
+		b[x][y]++;
+		
+		if(corner1(x,y)){
+			if(b[x][y]%4==2){
+				b[x][y]=0;
+				backburst(b,x+1,y,i);
+				backburst(b,x,y+1,i);			
+			}
+	
+		}
+		else if(corner2(x,y)){
+			if(b[x][y]%4==2){
+				b[x][y]=0;
+				backburst(b,x+1,y,i);
+				backburst(b,x,y-1,i);				
+			}
+		}
+		else if(corner3(x,y)){
+			if(b[x][y]%4==2){
+				b[x][y]=0;
+				backburst(b,x-1,y,i);
+				backburst(b,x,y+1,i);			
+			}
+	
+		}
+		else if(corner4(x,y)){
+			if(b[x][y]%4==2){
+				b[x][y]=0;
+				backburst(b,x-1,y,i);
+				backburst(b,x,y-1,i);
+			}		
+		}
+		else if(edge1(x,y)){
+			if(b[x][y]%4==3){
+				b[x][y]=0;
+				backburst(b,x,y-1,i);
+				backburst(b,x,y+1,i);
+				backburst(b,x+1,y,i);
+			}
+		}
+		else if(edge2(x,y)){
+			if(b[x][y]%4==3){
+				b[x][y]=0;
+				backburst(b,x-1,y,i);
+				backburst(b,x+1,y,i);
+				backburst(b,x,y-1,i);
+			}
+		}
+		else if(edge3(x,y)){
+			if(b[x][y]%4==3){
+				b[x][y]=0;
+				backburst(b,x,y-1,i);
+				backburst(b,x,y+1,i);
+				backburst(b,x-1,y,i);
+			}
+		}
+		else if(edge4(x,y)){
+			if(b[x][y]%4==3){
+				b[x][y]=0;
+				backburst(b,x-1,y,i);
+				backburst(b,x+1,y,i);
+				backburst(b,x,y+1,i);
+			}
+		}
+		else{
+			if(b[x][y]%4==0){
+				b[x][y]=0;
+				backburst(b,x-1,y,i);
+				backburst(b,x+1,y,i);
+				backburst(b,x,y-1,i);
+				backburst(b,x,y+1,i);
+			}
+		}
 	}
 
 	public static void conquer(Group[][] r, int x, int y, Sphere s, Group root,Rectangle[][] grid2)
@@ -201,12 +283,22 @@ public class Main extends Application
 		return false;
 	}
 
-	
+	public static int[] updateplayers(int[][] t)
+	{
+		int[] x = new int[8];
+		for(int i = 0; i < sizey; i++)
+			for(int j = 0; j < sizex; j++)
+			{
+				int te = t[j][i]/4;
+				x[te] = 1;
+			}
+		
+		return x;
+	}	
 
 	public static void write() {
 		try{
             	BufferedWriter br=new BufferedWriter(new FileWriter(new File("resume.txt")) );
-            	System.out.println(n+"yodolio");
             	br.write(Integer.toString(n));
             	br.newLine();
             	for(int i=0;i<n;i++){
@@ -246,7 +338,7 @@ public class Main extends Application
               			}
               			System.out.println("");
               		}
-              		System.out.println("yahoo");
+		
 		write();
         
 		if(corner1(x,y)){
@@ -628,6 +720,7 @@ public class Main extends Application
 	{
 		pstage = stage;
 		String cgrid = "";
+		flagcheck = 0;
 
 		Image image = new Image(new FileInputStream("1.png"));
 		ImageView iv = new ImageView(image);
@@ -1017,6 +1110,10 @@ public class Main extends Application
 			check(r,root,grid2,material,rad,a);
 			axy=false;
 		}
+
+		arr = new int[8];
+		for(int i = 0; i < n; i++)
+			arr[i] = 1;
         
 		for(int i=0;i<sizex;i++)
 		{
@@ -1026,69 +1123,48 @@ public class Main extends Application
 				Bounds b=grid2[i][j].getBoundsInLocal();
 				grid2[i][j].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>(){
 					@Override public void handle(MouseEvent event) {
-					double x=b.getMinX()+b.getWidth()/2;
-    				double y=b.getMinY()+b.getHeight()/2;
-    				if(lol==0){
-						File f=new File("abc.txt");
-						f.delete();
-              			lol++;
-              		}
-              		else if(lol!=0){
-              			try{
-              				BufferedWriter br=new BufferedWriter(new FileWriter(new File("abc.txt")) );
-	              			for(int i=0;i<sizex;i++){
-	              				for(int j=0;j<sizey;j++){
-	              					br.write(Integer.toString(a[i][j]));
-	              					br.newLine();
-	              				}
-	              			}
-	              			br.flush();
-	              			br.close();
+					if(arr[turn] == 1)
+					{
+						double x=b.getMinX()+b.getWidth()/2;
+	    				double y=b.getMinY()+b.getHeight()/2;
+	    				int flag = 0;
+	    				if(lol==0){
+							File f=new File("abc.txt");
+							f.delete();
 	              			lol++;
-              			}
-              			catch(IOException e){}
-	              			
-              		}
-              		PhongMaterial redMaterial=material[turn];
-              		//changeColor();
-              		if(a[xxx][yyy]%4==0){
-              			r[xxx][yyy]=new Group();
-              		}
-              		if(a[xxx][yyy]%4==0){
-              			Sphere s=new Sphere();
-              			s.setRadius(rad);
-              			s.setTranslateX(x);
-              			s.setTranslateY(y);
-              			s.setMaterial(redMaterial);
-              			r[xxx][yyy].getChildren().add(s);
-              			burst(r,xxx,yyy,turn,root,grid2);
-              			root.getChildren().remove(r[xxx][yyy]);
-						root.getChildren().add(r[xxx][yyy]);
-						r[xxx][yyy].toBack();
-						for(int k = 0; k < sizex; k++)
-              				for(int l = 0; l < sizey; l++)
-              				{
-              					grid1[k][l].setStroke(p.get((turn + 1)%n).getColor());
-              					grid2[k][l].setStroke(p.get((turn + 1)%n).getColor());
-              					line[k][l].setStroke(p.get((turn + 1)%n).getColor());
-              				}
+	              		}
+	              		else if(lol!=0){
+	              			try{
+	              				BufferedWriter br=new BufferedWriter(new FileWriter(new File("abc.txt")) );
+		              			for(int i=0;i<sizex;i++){
+		              				for(int j=0;j<sizey;j++){
+		              					br.write(Integer.toString(a[i][j]));
+		              					br.newLine();
+		              				}
+		              			}
+		              			br.flush();
+		              			br.close();
+		              			lol++;
+	              			}
+	              			catch(IOException e){}
+		              			
+	              		}
+	              		PhongMaterial redMaterial=material[turn];
+	              		//changeColor();
 
-              			for(int k = 0; k < sizey; k++)
-							line[sizex][k].setStroke(p.get((turn + 1)%n).getColor());
-						for(int k = 0; k < sizex; k++)
-							line[k][sizey].setStroke(p.get((turn + 1)%n).getColor());
-						line[sizex][sizey].setStroke(p.get((turn + 1)%n).getColor());
-						extra.setStroke(p.get((turn + 1) % n).getColor());
-						turn=(turn+1)%n;
-						un.setDisable(false);
-              		}
-              		else if(a[xxx][yyy]%4==1){
-              			Sphere v=find(new Sphere(),r[xxx][yyy]);
+	              		int[][] temp = new int[sizex][sizey];
+	              		for(int l = 0; l < sizey; l++)
+	              			for(int m = 0; m < sizex; m++)
+	              				temp[m][l] = a[m][l];
+	              		backburst(temp, xxx, yyy, turn);
 
-              			if(v.getMaterial().equals(redMaterial)){
+	              		if(a[xxx][yyy]%4==0){
+	              			r[xxx][yyy]=new Group();
+	              		}
+	              		if(a[xxx][yyy]%4==0){
 	              			Sphere s=new Sphere();
 	              			s.setRadius(rad);
-	              			s.setTranslateX(x+rt);
+	              			s.setTranslateX(x);
 	              			s.setTranslateY(y);
 	              			s.setMaterial(redMaterial);
 	              			r[xxx][yyy].getChildren().add(s);
@@ -1096,97 +1172,98 @@ public class Main extends Application
 	              			root.getChildren().remove(r[xxx][yyy]);
 							root.getChildren().add(r[xxx][yyy]);
 							r[xxx][yyy].toBack();
-							for(int k = 0; k < sizex; k++)
-	              				for(int l = 0; l < sizey; l++)
-	              				{
-	              					grid1[k][l].setStroke(p.get((turn + 1)%n).getColor());
-	              					grid2[k][l].setStroke(p.get((turn + 1)%n).getColor());
-	              					line[k][l].setStroke(p.get((turn + 1)%n).getColor());
-	              				}
-
-	              			for(int k = 0; k < sizey; k++)
-								line[sizex][k].setStroke(p.get((turn + 1)%n).getColor());
-							for(int k = 0; k < sizex; k++)
-								line[k][sizey].setStroke(p.get((turn + 1)%n).getColor());
-							line[sizex][sizey].setStroke(p.get((turn + 1)%n).getColor());
-							extra.setStroke(p.get((turn + 1) % n).getColor());
 							turn=(turn+1)%n;
 							un.setDisable(false);
-						}
-              		}
-              		else if(a[xxx][yyy]%4==2){
+	              		}
+	              		else if(a[xxx][yyy]%4==1){
+	              			Sphere v=find(new Sphere(),r[xxx][yyy]);
 
-              			Sphere v=find(new Sphere(),r[xxx][yyy]);
-              			if(v.getMaterial().equals(redMaterial)){
+	              			if(v.getMaterial().equals(redMaterial)){
+		              			Sphere s=new Sphere();
+		              			s.setRadius(rad);
+		              			s.setTranslateX(x+rt);
+		              			s.setTranslateY(y);
+		              			s.setMaterial(redMaterial);
+		              			r[xxx][yyy].getChildren().add(s);
+		              			flagcheck = 1;
+		              			burst(r,xxx,yyy,turn,root,grid2);
+		              			root.getChildren().remove(r[xxx][yyy]);
+								root.getChildren().add(r[xxx][yyy]);
+								r[xxx][yyy].toBack();
+								turn=(turn+1)%n;
+								un.setDisable(false);
+							}
+	              		}
+	              		else if(a[xxx][yyy]%4==2){
 
-	              			Sphere s=new Sphere();
-	              			s.setRadius(rad);
-	              			s.setTranslateX(x);
-	              			s.setTranslateY(y+rt);
-	              			s.setMaterial(redMaterial);
-	              			r[xxx][yyy].getChildren().add(s);
-	              			burst(r,xxx,yyy,turn,root,grid2);
-	              			root.getChildren().remove(r[xxx][yyy]);
-							root.getChildren().add(r[xxx][yyy]);
-							r[xxx][yyy].toBack();
-							for(int k = 0; k < sizex; k++)
-	              				for(int l = 0; l < sizey; l++)
-	              				{
-	              					grid1[k][l].setStroke(p.get((turn + 1)%n).getColor());
-	              					grid2[k][l].setStroke(p.get((turn + 1)%n).getColor());
-	              					line[k][l].setStroke(p.get((turn + 1)%n).getColor());
-	              				}
+	              			Sphere v=find(new Sphere(),r[xxx][yyy]);
+	              			if(v.getMaterial().equals(redMaterial)){
 
-	              			for(int k = 0; k < sizey; k++)
-								line[sizex][k].setStroke(p.get((turn + 1)%n).getColor());
-							for(int k = 0; k < sizex; k++)
-								line[k][sizey].setStroke(p.get((turn + 1)%n).getColor());
-							line[sizex][sizey].setStroke(p.get((turn + 1)%n).getColor());
-							extra.setStroke(p.get((turn + 1) % n).getColor());
-							turn=(turn+1)%n;
-							un.setDisable(false);
-						}
-              		}
-              		else if(a[xxx][yyy]%4==3){
-              			Sphere v=find(new Sphere(),r[xxx][yyy]);
+	              				flag = 1;
+		              			Sphere s=new Sphere();
+		              			s.setRadius(rad);
+		              			s.setTranslateX(x);
+		              			s.setTranslateY(y+rt);
+		              			s.setMaterial(redMaterial);
+		              			r[xxx][yyy].getChildren().add(s);
+		              			burst(r,xxx,yyy,turn,root,grid2);
+		              			root.getChildren().remove(r[xxx][yyy]);
+								root.getChildren().add(r[xxx][yyy]);
+								r[xxx][yyy].toBack();
+								turn=(turn+1)%n;
+								un.setDisable(false);
+							}
+	              		}
+	              		else if(a[xxx][yyy]%4==3){
+	              			Sphere v=find(new Sphere(),r[xxx][yyy]);
 
-              			if(v.getMaterial().equals(redMaterial)){
-              				
-	              			Sphere s=new Sphere();
-	              			s.setRadius(rad);
-	              			s.setTranslateX(x);
-	              			s.setTranslateY(y+rt);
-	              			s.setMaterial(redMaterial);
-	              			r[xxx][yyy].getChildren().add(s);
-	              			burst(r,xxx,yyy,turn,root,grid2);
-	              			root.getChildren().remove(r[xxx][yyy]);
-							root.getChildren().add(r[xxx][yyy]);
-							r[xxx][yyy].toBack();
-							
-							for(int k = 0; k < sizex; k++)
-	              				for(int l = 0; l < sizey; l++)
-	              				{
-	              					grid1[k][l].setStroke(p.get((turn + 1)%n).getColor());
-	              					grid2[k][l].setStroke(p.get((turn + 1)%n).getColor());
-	              					line[k][l].setStroke(p.get((turn + 1)%n).getColor());
-	              				}
+	              			if(v.getMaterial().equals(redMaterial)){
+	              				
+		              			Sphere s=new Sphere();
+		              			s.setRadius(rad);
+		              			s.setTranslateX(x);
+		              			s.setTranslateY(y+rt);
+		              			s.setMaterial(redMaterial);
+		              			r[xxx][yyy].getChildren().add(s);
+		              			burst(r,xxx,yyy,turn,root,grid2);
+		              			root.getChildren().remove(r[xxx][yyy]);
+								root.getChildren().add(r[xxx][yyy]);
+								r[xxx][yyy].toBack();
+								turn=(turn+1)%n;
+								un.setDisable(false);
+							}
+	              		}
 
-	              			for(int k = 0; k < sizey; k++)
-								line[sizex][k].setStroke(p.get((turn + 1)%n).getColor());
-							for(int k = 0; k < sizex; k++)
-								line[k][sizey].setStroke(p.get((turn + 1)%n).getColor());
-							line[sizex][sizey].setStroke(p.get((turn + 1)%n).getColor());
-							extra.setStroke(p.get((turn + 1) % n).getColor());
-							turn=(turn+1)%n;
-							un.setDisable(false);
-						}
-              		}
+	              		if(flagcheck == 1)
+	              			arr = updateplayers(temp);
+	              		while(arr[turn] != 1)
+	              			turn = (turn + 1)%n;
+	              		for(int k = 0; k < sizex; k++)
+          				for(int l = 0; l < sizey; l++)
+          				{
+          					grid1[k][l].setStroke(p.get(turn).getColor());
+          					grid2[k][l].setStroke(p.get(turn).getColor());
+          					line[k][l].setStroke(p.get(turn).getColor());
+          				}
+
+	          			for(int k = 0; k < sizey; k++)
+							line[sizex][k].setStroke(p.get(turn).getColor());
+						for(int k = 0; k < sizex; k++)
+							line[k][sizey].setStroke(p.get(turn).getColor());
+						line[sizex][sizey].setStroke(p.get(turn).getColor());
+						extra.setStroke(p.get(turn).getColor());
+	              	}
+	              	else
+	              	{
+	              		turn = (turn + 1)%n;
+	              	}
+	              	turn = turn % n;
+
               		RotateTransition rt=new RotateTransition(Duration.millis(1000),r[xxx][yyy]);
         			rt.setByAngle(360);
      				rt.setCycleCount(Timeline.INDEFINITE);
      				rt.setInterpolator(Interpolator.LINEAR);
      				rt.play();
-              		System.out.println(n);
 				}
 			});
 			}
