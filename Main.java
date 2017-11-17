@@ -1136,14 +1136,26 @@ public class Main extends Application
 	              		else if(lol!=0){
 	              			try{
 	              				BufferedWriter br=new BufferedWriter(new FileWriter(new File("abc.txt")) );
-		              			for(int i=0;i<sizex;i++){
-		              				for(int j=0;j<sizey;j++){
-		              					br.write(Integer.toString(a[i][j]));
-		              					br.newLine();
-		              				}
-		              			}
-		              			br.flush();
-		              			br.close();
+				            	br.write(Integer.toString(n));
+				            	br.newLine();
+				            	for(int i=0;i<n;i++){
+				            		String s=p.get(i).getColor().toString();
+				            		br.write(s);
+				              		br.newLine();
+				              	}
+				              	br.write(Integer.toString(sizex));
+				              	br.newLine();
+				              	br.write(Integer.toString(sizey));
+				              	br.newLine();
+					            for(int i=0;i<sizex;i++){
+					            	for(int j=0;j<sizey;j++){
+					            		br.write(Integer.toString(a[i][j]));
+					            		br.newLine();
+					            	}
+					            }
+					           	br.write(Integer.toString(turn));
+					        	br.flush();
+					        	br.close();
 		              			lol++;
 	              			}
 	              			catch(IOException e){}
@@ -1272,12 +1284,8 @@ public class Main extends Application
 		un.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent e){
-				if(turn==0){
-					turn=n-1;
-				}
-				else{
-					turn--;					
-				}
+				recreate(r,root,grid2,material,rad);
+				
 				for(int k = 0; k < sizex; k++)
 	              	for(int l = 0; l < sizey; l++){
 	              		grid1[k][l].setStroke(p.get((turn)%n).getColor());
@@ -1291,7 +1299,7 @@ public class Main extends Application
 					line[k][sizey].setStroke(p.get((turn )%n).getColor());
 				line[sizex][sizey].setStroke(p.get((turn )%n).getColor());
 				extra.setStroke(p.get((turn) % n).getColor());
-				recreate(r,root,grid2,material,rad);
+				
 				un.setDisable(true);
 			}
 		});
@@ -1629,12 +1637,23 @@ public class Main extends Application
 		int [][] beforeundo=new int [sizex][sizey];
 		try{
 			Scanner br=new Scanner(new File("abc.txt"));
-			for(int i=0;i<sizex;i++){
-				for(int j=0;j<sizey;j++){
-					beforeundo[i][j]=br.nextInt();
-				}
-			}
-			br.close();
+					n=br.nextInt();
+					p=new ArrayList<Player>();
+					for(int i=0;i<n;i++){
+						Color c=Color.web(br.next());
+						Player p0=new Player(c, i+1);
+						p.add(p0);
+					}
+					sizex=br.nextInt();
+					sizey=br.nextInt();
+					a=new int[sizex][sizey];
+					for(int i=0;i<sizex;i++){
+						for(int j=0;j<sizey;j++){
+							beforeundo[i][j]=br.nextInt();
+						}
+					}
+					turn=br.nextInt();
+					br.close();
 		}
 		catch(IOException e){}
 		check(r,root,grid2,m,rad,beforeundo);
