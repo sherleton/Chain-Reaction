@@ -302,6 +302,10 @@ public class Main extends Application
 	public static void write() {
 		try{
             	BufferedWriter br=new BufferedWriter(new FileWriter(new File("resume.txt")) );
+            	for(int i=0;i<8;i++){
+            		br.write(Integer.toString(arr[i]));
+            		br.newLine();
+            	}
             	br.write(Integer.toString(n));
             	br.newLine();
             	for(int i=0;i<n;i++){
@@ -319,7 +323,7 @@ public class Main extends Application
 	            		br.newLine();
 	            	}
 	            }
-	           	br.write(Integer.toString(turn));
+	           	br.write(Integer.toString((turn+1)%n));
 	        	br.flush();
 	        	br.close();
             }
@@ -878,6 +882,10 @@ public class Main extends Application
 			{
 				try{
 					Scanner br=new Scanner(new File("resume.txt"));
+					arr=new int[8];
+					for(int i=0;i<8;i++){
+						arr[i]=br.nextInt();
+					}
 					n=br.nextInt();
 					p=new ArrayList<Player>();
 					for(int i=0;i<n;i++){
@@ -1115,9 +1123,7 @@ public class Main extends Application
 			axy=false;
 		}
 
-		arr = new int[8];
-		for(int i = 0; i < n; i++)
-			arr[i] = 1;
+		
         
 		for(int i=0;i<sizex;i++)
 		{
@@ -1132,14 +1138,46 @@ public class Main extends Application
 						double x=b.getMinX()+b.getWidth()/2;
 	    				double y=b.getMinY()+b.getHeight()/2;
 	    				int flag = 0;
+
 	    				if(lol==0){
-							File f=new File("abc.txt");
-							f.delete();
+							try{
+	              				BufferedWriter br=new BufferedWriter(new FileWriter(new File("abc.txt")) );
+	              				for(int i=0;i<8;i++){
+				            		br.write(Integer.toString(arr[i]));
+				            		br.newLine();
+				            	}
+				            	br.write(Integer.toString(n));
+				            	br.newLine();
+				            	for(int i=0;i<n;i++){
+				            		String s=p.get(i).getColor().toString();
+				            		br.write(s);
+				              		br.newLine();
+				              	}
+				              	br.write(Integer.toString(sizex));
+				              	br.newLine();
+				              	br.write(Integer.toString(sizey));
+				              	br.newLine();
+					            for(int i=0;i<sizex;i++){
+					            	for(int j=0;j<sizey;j++){
+					            		br.write(Integer.toString(0));
+					            		br.newLine();
+					            	}
+					            }
+					           	br.write(Integer.toString(turn));
+					        	br.flush();
+					        	br.close();
+		              			lol++;
+	              			}
+	              			catch(IOException e){}
 	              			lol++;
 	              		}
 	              		else if(lol!=0){
 	              			try{
 	              				BufferedWriter br=new BufferedWriter(new FileWriter(new File("abc.txt")) );
+	              				for(int i=0;i<8;i++){
+				            		br.write(Integer.toString(arr[i]));
+				            		br.newLine();
+				            	}
 				            	br.write(Integer.toString(n));
 				            	br.newLine();
 				            	for(int i=0;i<n;i++){
@@ -1641,6 +1679,10 @@ public class Main extends Application
 		int [][] beforeundo=new int [sizex][sizey];
 		try{
 			Scanner br=new Scanner(new File("abc.txt"));
+			arr=new int[8];
+			for(int i=0;i<8;i++){
+				arr[i]=br.nextInt();
+			}
 					n=br.nextInt();
 					p=new ArrayList<Player>();
 					for(int i=0;i<n;i++){
@@ -1715,6 +1757,9 @@ public class Main extends Application
 
 	public void playGame(String s) throws FileNotFoundException
 	{
+		arr = new int[8];
+		for(int i = 0; i < n; i++)
+			arr[i] = 1;
 		if(s.equals("Normal Grid")){
 			sizex = 6;
 			sizey = 9;
