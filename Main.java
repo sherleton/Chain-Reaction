@@ -26,27 +26,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 
-class Player{
-	private Color c;
-	private int i;
-
-	Player(Color c, int i)
-	{
-		this.c = c;
-		this.i = i;
-	}
-	public Color getColor(){
-		return c;
-	}
-	public int getTurn()
-	{
-		return i;
-	}
-	public void setColor(Color c){
-		this.c=c;
-	}
-}
-
 class ColorChange implements EventHandler<ActionEvent>
 {
 	private Main o;
@@ -82,11 +61,11 @@ class ColorChange implements EventHandler<ActionEvent>
 						yi = j;
 					}
 				}
-			Main.cvalue[x][y] = 1;
-			Main.cvalue[xi][yi] = 0;
-			o.colors[xi][yi].setDisable(false);
-			o.colors[x][y].setDisable(true);
-			o.callmain(turn, c);
+			Game.cvalue[x][y] = 1;
+			Game.cvalue[xi][yi] = 0;
+			Settings.colors[xi][yi].setDisable(false);
+			Settings.colors[x][y].setDisable(true);
+			o.callmain(Game.turn, c);
 		}
 		catch(FileNotFoundException f)
 		{
@@ -95,26 +74,386 @@ class ColorChange implements EventHandler<ActionEvent>
 	}
 }
 
-public class Main extends Application
-{
-	static Stage pstage;
-	static Scene mainscene, playerscene, gamescene, playascene, winnerscene;
+class Player{
+	private Color c;
+	private int i;
 
-	/*Game Attributes*/
+	Player(Color c, int i)
+	{
+		this.c = c;
+		this.i = i;
+	}
+	public Color getColor(){
+		return c;
+	}
+	public int getTurn()
+	{
+		return i;
+	}
+	public void setColor(Color c){
+		this.c=c;
+	}
+}
+
+class Settings
+{
+	public static Main o;
+	public static Button[][] colors;
+
+	Settings(Main o)
+	{
+		this.o = o;
+		colors = new Button[5][3];
+	}
+
+	public void playerSettingscall() throws FileNotFoundException
+	{
+		Image image1 = new Image(new FileInputStream("1.png"));
+		ImageView iv1 = new ImageView(image1);
+		iv1.setX(15);
+		iv1.setY(10);
+		iv1.setFitHeight(40);
+		iv1.setFitWidth(40);
+		iv1.setPreserveRatio(true);
+
+		Text t2 = new Text("Chain Reaction Preferences");
+		t2.setX(65);
+		t2.setY(40);
+		t2.setFill(Color.WHITE);
+		t2.setFont(Font.font("", FontWeight.NORMAL, FontPosture.REGULAR, 18));
+
+		Line bar = new Line();
+		bar.setStartX(10.0f);
+		bar.setStartY(65.0f);
+		bar.setEndX(390.0f);
+		bar.setEndY(65.0f);
+		bar.setStroke(Color.CYAN);
+
+		Button p1 = new Button("Player 1 Settings                      Customisation for Player 1");
+		p1.setStyle("-fx-background-color:transparent;-fx-padding:0;-fx-background-size:0;" + String.format("-fx-font-size: %dpx; -fx-alignment: LEFT; -fx-text-fill: white;", (int)(0.35 * 70)));
+		p1.setMinSize(380, 60);
+		p1.setPrefSize(380, 60);
+		p1.setMaxSize(380, 60);
+		p1.setLayoutX(10.0f);
+		p1.setLayoutY(70.0f);
+		p1.setWrapText(true);
+		p1.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e)
+			{
+				try
+				{
+					o.playercolor(0);
+				}
+				catch(FileNotFoundException f)
+				{
+
+				}
+			}
+		});
+
+		Line bar1 = new Line();
+		bar1.setStartX(10.0f);
+		bar1.setStartY(135.0f);
+		bar1.setEndX(390.0f);
+		bar1.setEndY(135.0f);
+		bar1.setStroke(Color.GRAY);
+
+		Button p2 = new Button("Player 2 Settings                      Customisation for Player 2");
+		p2.setStyle("-fx-background-color:transparent;-fx-padding:0;-fx-background-size:0;" + String.format("-fx-font-size: %dpx; -fx-alignment: LEFT; -fx-text-fill: white;", (int)(0.35 * 70)));
+		p2.setMinSize(380, 60);
+		p2.setPrefSize(380, 60);
+		p2.setMaxSize(380, 60);
+		p2.setLayoutX(10.0f);
+		p2.setLayoutY(137.0f);
+		p2.setWrapText(true);
+		p2.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e)
+			{
+				try
+				{
+					o.playercolor(1);
+				}
+				catch(FileNotFoundException f)
+				{
+
+				}
+			}
+		});
+
+		Line bar2 = new Line();
+		bar2.setStartX(10.0f);
+		bar2.setStartY(202.0f);
+		bar2.setEndX(390.0f);
+		bar2.setEndY(202.0f);
+		bar2.setStroke(Color.GRAY);
+
+		Button p3 = new Button("Player 3 Settings                      Customisation for Player 3");
+		p3.setStyle("-fx-background-color:transparent;-fx-padding:0;-fx-background-size:0;" + String.format("-fx-font-size: %dpx; -fx-alignment: LEFT; -fx-text-fill: white;", (int)(0.35 * 70)));
+		p3.setMinSize(380, 60);
+		p3.setPrefSize(380, 60);
+		p3.setMaxSize(380, 60);
+		p3.setLayoutX(10.0f);
+		p3.setLayoutY(204.0f);
+		p3.setWrapText(true);
+		p3.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e)
+			{
+				try
+				{
+					o.playercolor(2);
+				}
+				catch(FileNotFoundException f)
+				{
+
+				}
+			}
+		});
+
+		Line bar3 = new Line();
+		bar3.setStartX(10.0f);
+		bar3.setStartY(269.0f);
+		bar3.setEndX(390.0f);
+		bar3.setEndY(269.0f);
+		bar3.setStroke(Color.GRAY);
+
+		Button p4 = new Button("Player 4 Settings                      Customisation for Player 4");
+		p4.setStyle("-fx-background-color:transparent;-fx-padding:0;-fx-background-size:0;" + String.format("-fx-font-size: %dpx; -fx-alignment: LEFT; -fx-text-fill: white;", (int)(0.35 * 70)));
+		p4.setMinSize(380, 60);
+		p4.setPrefSize(380, 60);
+		p4.setMaxSize(380, 60);
+		p4.setLayoutX(10.0f);
+		p4.setLayoutY(271.0f);
+		p4.setWrapText(true);
+		p4.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e)
+			{
+				try
+				{
+					o.playercolor(3);
+				}
+				catch(FileNotFoundException f)
+				{
+
+				}
+			}
+		});
+
+		Line bar4 = new Line();
+		bar4.setStartX(10.0f);
+		bar4.setStartY(336.0f);
+		bar4.setEndX(390.0f);
+		bar4.setEndY(336.0f);
+		bar4.setStroke(Color.GRAY);
+
+		Button p5 = new Button("Player 5 Settings                      Customisation for Player 5");
+		p5.setStyle("-fx-background-color:transparent;-fx-padding:0;-fx-background-size:0;" + String.format("-fx-font-size: %dpx; -fx-alignment: LEFT; -fx-text-fill: white;", (int)(0.35 * 70)));
+		p5.setMinSize(380, 60);
+		p5.setPrefSize(380, 60);
+		p5.setMaxSize(380, 60);
+		p5.setLayoutX(10.0f);
+		p5.setLayoutY(338.0f);
+		p5.setWrapText(true);
+		p5.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e)
+			{
+				try
+				{
+					o.playercolor(4);
+				}
+				catch(FileNotFoundException f)
+				{
+
+				}
+			}
+		});
+
+		Line bar5 = new Line();
+		bar5.setStartX(10.0f);
+		bar5.setStartY(403.0f);
+		bar5.setEndX(390.0f);
+		bar5.setEndY(403.0f);
+		bar5.setStroke(Color.GRAY);
+
+		Button p6 = new Button("Player 6 Settings                      Customisation for Player 6");
+		p6.setStyle("-fx-background-color:transparent;-fx-padding:0;-fx-background-size:0;" + String.format("-fx-font-size: %dpx; -fx-alignment: LEFT; -fx-text-fill: white;", (int)(0.35 * 70)));
+		p6.setMinSize(380, 60);
+		p6.setPrefSize(380, 60);
+		p6.setMaxSize(380, 60);
+		p6.setLayoutX(10.0f);
+		p6.setLayoutY(405.0f);
+		p6.setWrapText(true);
+		p6.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e)
+			{
+				try
+				{
+					o.playercolor(5);
+				}
+				catch(FileNotFoundException f)
+				{
+
+				}
+			}
+		});
+
+		Line bar6 = new Line();
+		bar6.setStartX(10.0f);
+		bar6.setStartY(470.0f);
+		bar6.setEndX(390.0f);
+		bar6.setEndY(470.0f);
+		bar6.setStroke(Color.GRAY);
+
+		Button p7 = new Button("Player 7 Settings                      Customisation for Player 7");
+		p7.setStyle("-fx-background-color:transparent;-fx-padding:0;-fx-background-size:0;" + String.format("-fx-font-size: %dpx; -fx-alignment: LEFT; -fx-text-fill: white;", (int)(0.35 * 70)));
+		p7.setMinSize(380, 60);
+		p7.setPrefSize(380, 60);
+		p7.setMaxSize(380, 60);
+		p7.setLayoutX(10.0f);
+		p7.setLayoutY(472.0f);
+		p7.setWrapText(true);
+		p7.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e)
+			{
+				try
+				{
+					o.playercolor(6);
+				}
+				catch(FileNotFoundException f)
+				{
+
+				}
+			}
+		});
+
+		Line bar7 = new Line();
+		bar7.setStartX(10.0f);
+		bar7.setStartY(537.0f);
+		bar7.setEndX(390.0f);
+		bar7.setEndY(537.0f);
+		bar7.setStroke(Color.GRAY);
+
+		Button p8 = new Button("Player 8 Settings                      Customisation for Player 8");
+		p8.setStyle("-fx-background-color:transparent;-fx-padding:0;-fx-background-size:0;" + String.format("-fx-font-size: %dpx; -fx-alignment: LEFT; -fx-text-fill: white;", (int)(0.35 * 70)));
+		p8.setMinSize(380, 60);
+		p8.setPrefSize(380, 60);
+		p8.setMaxSize(380, 60);
+		p8.setLayoutX(10.0f);
+		p8.setLayoutY(539.0f);
+		p8.setWrapText(true);
+		p8.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e)
+			{
+				try
+				{
+					o.playercolor(7);
+				}
+				catch(FileNotFoundException f)
+				{
+
+				}
+			}
+		});
+
+		Line bar8 = new Line();
+		bar8.setStartX(10.0f);
+		bar8.setStartY(604.0f);
+		bar8.setEndX(390.0f);
+		bar8.setEndY(604.0f);
+		bar8.setStroke(Color.GRAY);
+
+		Main.playerscene = new Scene(new Group(), 400, 650, Color.BLACK);
+		Group playerroot = (Group)Main.playerscene.getRoot();
+		playerroot.getChildren().addAll(bar, p1, bar1, p2, bar2, p3, bar3, p4, bar4, p5, bar5, p6, bar6, p7, bar7, p8, bar8, t2, iv1);
+
+	}
+
+	public static void pcolor(int turn) throws FileNotFoundException
+	{
+		Image image = new Image(new FileInputStream("1.png"));
+		ImageView iv = new ImageView(image);
+		iv.setX(15);
+		iv.setY(10);
+		iv.setFitHeight(40);
+		iv.setFitWidth(40);
+		iv.setPreserveRatio(true);
+
+		Text t1 = new Text("Chain Reaction Preferences");
+		t1.setX(65);
+		t1.setY(40);
+		t1.setFill(Color.WHITE);
+		t1.setFont(Font.font("", FontWeight.NORMAL, FontPosture.REGULAR, 18));
+
+		Line line = new Line();
+		line.setStartX(10.0f);
+		line.setStartY(65.0f);
+		line.setEndX(390.0f);
+		line.setEndY(65.0f);
+		line.setStroke(Color.CYAN);
+
+		int flag = 0;
+		if(colors[0][0] != null)
+			flag = 1;
+
+		for(int i = 0; i < 5; i++)
+			for(int j = 0; j < 3; j++)
+			{
+				if(colors[i][j] == null)
+					colors[i][j] = new Button();
+				colors[i][j].setMinSize(90, 90);
+				colors[i][j].setPrefSize(90, 90);
+				colors[i][j].setMaxSize(90, 90);
+				colors[i][j].setLayoutX(j*110 + 45);
+				colors[i][j].setLayoutY(i*110 + 90);
+				colors[i][j].setBackground(new Background(new BackgroundFill(Main.c.get(j + 3*i),null, null)));
+				colors[i][j].setOnAction(new ColorChange(turn, Main.c.get(j + 3*i), o, i, j, Main.total.get(turn).getColor()));
+			}
+		if(flag == 0)
+		{	
+			for(int i = 0; i < 3; i++)
+				for(int j = 0; j < 3; j++)
+					colors[i][j].setDisable(true);
+		}
+
+		colors[2][2].setDisable(false);
+
+		Main.playascene = new Scene(new Group(), 400, 650, Color.BLACK);
+		Group playaroot = (Group)Main.playascene.getRoot();
+		playaroot.getChildren().addAll(iv, t1, line);
+		for(int i = 0; i < 5; i++)
+			for(int j = 0; j < 3; j++)
+				playaroot.getChildren().add(colors[i][j]);
+	}
+}
+
+class Game
+{
+	static Main o;
 
 	public static ArrayList<Player> p;
-	private static ArrayList<Player> total;
-	public static ArrayList<Color> c;
-	public static int turn=0;
-	public static int n=2;
-	public static int sizex=6;
-	public static int sizey=9;
-	public static int [][]a=new int[6][9];
-	public static int lol=0;
-	public Button[][] colors = new Button[5][3];
+	public static int turn;
+	public static int n;
+	public static int sizex;
+	public static int sizey;
+	public static int [][]a;
+	public static int lol;
 	public static int[][] cvalue;
-	public static int flagcheck = 0;
-	public static int[] arr = new int[8];
+	public static int flagcheck;
+	public static int[] arr;
+
+	Game(Main o)
+	{
+		turn = 0;
+		n = 2;
+		sizex = 6;
+		sizey = 9;
+		a = new int[6][9];
+		lol = 0;
+		flagcheck = 0;
+		arr = new int[8];
+		this.o = o;
+	}
+
+
 	public static boolean corner1(int i,int j){
 		return (i==0&&j==0);
 	}
@@ -297,39 +636,10 @@ public class Main extends Application
 			}
 		
 		return x;
-	}	
-
-	public static void write() {
-		try{
-            	BufferedWriter br=new BufferedWriter(new FileWriter(new File("resume.txt")) );
-            	for(int i=0;i<8;i++){
-            		br.write(Integer.toString(arr[i]));
-            		br.newLine();
-            	}
-            	br.write(Integer.toString(n));
-            	br.newLine();
-            	for(int i=0;i<n;i++){
-            		String s=p.get(i).getColor().toString();
-            		br.write(s);
-              		br.newLine();
-              	}
-              	br.write(Integer.toString(sizex));
-              	br.newLine();
-              	br.write(Integer.toString(sizey));
-              	br.newLine();
-	            for(int i=0;i<sizex;i++){
-	            	for(int j=0;j<sizey;j++){
-	            		br.write(Integer.toString(a[i][j]));
-	            		br.newLine();
-	            	}
-	            }
-	           	br.write(Integer.toString((turn+1)%n));
-	        	br.flush();
-	        	br.close();
-            }
-        catch(IOException e){}
 	}
-	public static void burst(Group r[][],int x,int y,int i, Group root,Rectangle[][] grid2){
+
+	public static void burst(Group r[][],int x,int y,int i, Group root,Rectangle[][] grid2)
+	{
 		Bounds b=grid2[x][y].getBoundsInLocal();
 		Double xc=b.getMinX()+b.getWidth()/2;
 		Double yc=b.getMinY()+b.getHeight()/2;
@@ -347,7 +657,7 @@ public class Main extends Application
               			System.out.println("");
               		}*/
 		
-		write();
+		Main.write();
         
 		if(corner1(x,y)){
 			if(a[x][y]%4==2){
@@ -377,8 +687,17 @@ public class Main extends Application
 		        p1.setOnFinished(e -> {
 					conquer(r, x+1, y, s1.get(0), root,grid2);
 					conquer(r, x, y+1, s1.get(1), root,grid2);
-					if(checkWinner(r))
-						callwinner(i);
+					
+					try
+					{
+						if(checkWinner(r))
+							o.callwinner(i);
+					}
+					catch(FileNotFoundException f)
+					{
+
+					}
+
 					burst(r,x+1,y,i,root,grid2);
 					burst(r,x,y+1,i,root,grid2);
 		        });
@@ -412,8 +731,15 @@ public class Main extends Application
 		        p1.setOnFinished(e -> {
 					conquer(r, x+1, y, s1.get(0), root,grid2);
 					conquer(r, x, y-1, s1.get(1), root,grid2);
-					if(checkWinner(r))
-						callwinner(i);
+					try
+					{
+						if(checkWinner(r))
+							o.callwinner(i);
+					}
+					catch(FileNotFoundException f)
+					{
+
+					}
 					burst(r,x+1,y,i,root,grid2);
 					burst(r,x,y-1,i,root,grid2);
 		        });
@@ -447,8 +773,15 @@ public class Main extends Application
 		        p1.setOnFinished(e -> {
 					conquer(r, x-1, y, s1.get(0), root,grid2);
 					conquer(r, x, y+1, s1.get(1), root,grid2);
-					if(checkWinner(r))
-						callwinner(i);
+					try
+					{
+						if(checkWinner(r))
+							o.callwinner(i);
+					}
+					catch(FileNotFoundException f)
+					{
+
+					}
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x,y+1,i,root,grid2);
 		        });
@@ -484,8 +817,15 @@ public class Main extends Application
 		        p1.setOnFinished(e -> {
 					conquer(r, x-1, y, s1.get(0), root,grid2);
 					conquer(r, x, y-1, s1.get(1), root,grid2);
-					if(checkWinner(r))
-						callwinner(i);
+					try
+					{
+						if(checkWinner(r))
+							o.callwinner(i);
+					}
+					catch(FileNotFoundException f)
+					{
+
+					}
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x,y-1,i,root,grid2);
 		        });
@@ -526,8 +866,15 @@ public class Main extends Application
 					conquer(r, x+1, y, s1.get(0), root,grid2);
 					conquer(r, x, y-1, s1.get(1), root,grid2);
 					conquer(r, x, y+1, s1.get(2), root,grid2);
-					if(checkWinner(r))
-						callwinner(i);
+					try
+					{
+						if(checkWinner(r))
+							o.callwinner(i);
+					}
+					catch(FileNotFoundException f)
+					{
+
+					}
 					burst(r,x,y-1,i,root,grid2);
 					burst(r,x,y+1,i,root,grid2);
 					burst(r,x+1,y,i,root,grid2);
@@ -568,8 +915,15 @@ public class Main extends Application
 					conquer(r, x-1, y, s1.get(0), root,grid2);
 					conquer(r, x+1, y, s1.get(1), root,grid2);
 					conquer(r, x, y-1, s1.get(2), root,grid2);
-					if(checkWinner(r))
-						callwinner(i);
+					try
+					{
+						if(checkWinner(r))
+							o.callwinner(i);
+					}
+					catch(FileNotFoundException f)
+					{
+
+					}
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x+1,y,i,root,grid2);
 					burst(r,x,y-1,i,root,grid2);
@@ -611,8 +965,15 @@ public class Main extends Application
 					conquer(r, x-1, y, s1.get(0), root,grid2);
 					conquer(r, x, y-1, s1.get(1), root,grid2);
 					conquer(r, x, y+1, s1.get(2), root,grid2);
-					if(checkWinner(r))
-						callwinner(i);
+					try
+					{
+						if(checkWinner(r))
+							o.callwinner(i);
+					}
+					catch(FileNotFoundException f)
+					{
+
+					}
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x,y-1,i,root,grid2);
 					burst(r,x,y+1,i,root,grid2);
@@ -653,8 +1014,15 @@ public class Main extends Application
 					conquer(r, x-1, y, s1.get(0), root,grid2);
 					conquer(r, x+1, y, s1.get(1), root,grid2);
 					conquer(r, x, y+1, s1.get(2), root,grid2);
-					if(checkWinner(r))
-						callwinner(i);
+					try
+					{
+						if(checkWinner(r))
+							o.callwinner(i);
+					}
+					catch(FileNotFoundException f)
+					{
+
+					}
 					burst(r,x-1,y,i,root,grid2);
 					burst(r,x+1,y,i,root,grid2);
 					burst(r,x,y+1,i,root,grid2);
@@ -702,8 +1070,15 @@ public class Main extends Application
 					conquer(r, x+1, y, s1.get(1), root,grid2);
 					conquer(r, x, y-1, s1.get(2), root,grid2);
 					conquer(r, x, y+1, s1.get(3), root,grid2);
-					if(checkWinner(r))
-						callwinner(i);
+					try
+					{
+						if(checkWinner(r))
+							o.callwinner(i);
+					}
+					catch(FileNotFoundException f)
+					{
+
+					}
 					burst(r,x-1,y,i, root,grid2);
 					burst(r,x+1,y,i, root,grid2);
 					burst(r,x,y-1,i, root,grid2);
@@ -721,241 +1096,6 @@ public class Main extends Application
 			}
 		}
 		return null;
-	}
-
-	@Override
-	public void start(Stage stage) throws FileNotFoundException
-	{
-		pstage = stage;
-		String cgrid = "";
-		flagcheck = 0;
-
-		Image image = new Image(new FileInputStream("1.png"));
-		ImageView iv = new ImageView(image);
-		iv.setX(15);
-		iv.setY(10);
-		iv.setFitHeight(40);
-		iv.setFitWidth(40);
-		iv.setPreserveRatio(true);
-
-		Text t1 = new Text("Chain Reaction");
-		t1.setX(65);
-		t1.setY(40);
-		t1.setFill(Color.WHITE);
-		t1.setFont(Font.font("", FontWeight.NORMAL, FontPosture.REGULAR, 18));
-
-		Line barr = new Line();
-		barr.setStartX(10.0f);
-		barr.setStartY(65.0f);
-		barr.setEndX(390.0f);
-		barr.setEndY(65.0f);
-		barr.setStroke(Color.CYAN);
-
-		Text title = new Text();
-		title.setFont(Font.font("", FontWeight.BOLD, FontPosture.REGULAR, 24));
-		title.setX(100);
-		title.setY(95);
-		title.setText("Chain Reaction");
-		title.setFill(Color.WHITE);
-
-		final ComboBox<String> player = new ComboBox<String>();
-		player.getItems().addAll("2 Player Game", "3 Player Game", "4 Player Game", "5 Player Game", "6 Player Game", "7 Player Game", "8 Player Game");
-		player.setLayoutX(60);
-		player.setLayoutY(110);
-		player.setValue("2 Player Game");
-		if(p.size() == 0)
-		{
-			p = new ArrayList<Player>();
-			for(int i = 0; i < n; i++)
-				p.add(i,total.get(i));
-		}
-		else if (p.size() > 0 && p.size() < n)
-		{
-			for(int i = p.size() - 1; i < n; i++)
-				p.add(i,total.get(i));
-		}
-		else
-		{
-			for(int i = 0; i < n; i++)
-				p.set(i,total.get(i));
-		}
-		player.valueProperty().addListener(new ChangeListener<String>() {
-			public void changed(ObservableValue ov, String t1, String t2)
-			{
-				for(int i = 0; i < player.getItems().size(); i++)
-				{
-					if(ov.equals(player.getItems().get(i)))
-					{
-						player.setValue(player.getItems().get(i));
-						break;
-					}
-				}
-				if(ov.equals(t1))
-					player.setValue(t1);
-				else
-					player.setValue(t2);
-				n = Integer.parseInt(player.getValue().substring(0,1));
-				if(p.size() == 0)
-				{
-					p = new ArrayList<Player>(n);
-					for(int i = 0; i < n; i++)
-						p.add(i,total.get(i));
-				}
-				else if (p.size() > 0 && p.size() < n)
-				{
-					for(int i = p.size(); i < n; i++)
-						p.add(total.get(i));
-				}
-				else if(p.size() > n)
-				{
-					p = new ArrayList<Player>(n);
-					for(int i = 0; i < n; i++)
-						p.add(i,total.get(i));
-
-				}
-				else if(p.size() == n)
-				{
-					for(int i = 0; i < n; i++)
-						p.set(i,total.get(i));
-				}
-			}
-		});
-
-		final ComboBox<String> game = new ComboBox<String>();
-		game.getItems().addAll("Normal Grid", "HD Grid");
-		game.setLayoutX(210);
-		game.setLayoutY(110);
-		game.setValue("Normal Grid");
-		game.valueProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue ov, String t1, String t2)
-			{
-				if(ov.equals(t1))
-					game.setValue(t1);
-				else
-					game.setValue(t2);
-			}
-		});
-
-		Button play = new Button("Play");
-		play.setStyle("-fx-background-color:transparent;" + String.format("-fx-font-size: %dpx; -fx-text-fill:white;", (int)(0.65*40)));
-		play.setMinSize(105, 60);
-		play.setPrefSize(105, 60);
-		play.setMaxSize(105, 60);
-		play.setLayoutX(70.0f);
-		play.setLayoutY(140.0f);
-		play.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e)
-			{
-				try
-				{
-					File f1=new File("resume.txt");
-					f1.createNewFile();
-					if(game.getValue().equals("Normal Grid"))
-						playGame("Normal Grid");
-					else
-						playGame("HD Grid");
-				}
-				catch(Exception f)
-				{
-
-				}
-			}
-		});
-
-		Line line1 = new Line();
-		line1.setStartX(175.0f);
-		line1.setStartY(150.0f);
-		line1.setEndX(175.0f);
-		line1.setEndY(190.0f);
-		line1.setStroke(Color.GRAY);
-
-		Button resume = new Button("Resume");
-		resume.setStyle("-fx-background-color:transparent;" + String.format("-fx-font-size: %dpx; -fx-text-fill:white;", (int)(0.65*40)));
-		resume.setMinSize(145, 60);
-		resume.setPrefSize(145, 60);
-		resume.setMaxSize(145, 60);
-		resume.setLayoutX(175.0f);
-		resume.setLayoutY(140.0f);
-		resume.setOnAction(new EventHandler<ActionEvent>(){
-			public void handle(ActionEvent e)
-			{
-				try{
-					Scanner br=new Scanner(new File("resume.txt"));
-					arr=new int[8];
-					for(int i=0;i<8;i++){
-						arr[i]=br.nextInt();
-					}
-					n=br.nextInt();
-					p=new ArrayList<Player>();
-					for(int i=0;i<n;i++){
-						Color c=Color.web(br.next());
-						Player p0=new Player(c, i+1);
-						p.add(p0);
-					}
-					sizex=br.nextInt();
-					sizey=br.nextInt();
-					a=new int[sizex][sizey];
-					for(int i=0;i<sizex;i++){
-						for(int j=0;j<sizey;j++){
-							a[i][j]=br.nextInt();
-						}
-					}
-					turn=br.nextInt();
-					br.close();
-					resumeGame();
-					//System.out.println(p.size());
-				}
-		catch(IOException e1){}
-			}
-		});
-
-		Text content = new Text();
-		content.setFont(Font.font("", FontWeight.BOLD, FontPosture.REGULAR, 16));
-		content.setX(20);
-		content.setY(220);
-		content.setText("The objective of Chain Reaction is to take control of the board by eliminating your opponent orbs.");
-		content.setFill(Color.WHITE);
-
-		Text content1 = new Text();
-		content1.setFont(Font.font("", FontWeight.BOLD, FontPosture.REGULAR, 16));
-		content1.setX(20);
-		content1.setY(320);
-		content1.setText("Players takes it in turns to place their orbs in a cell." + 
-							"Once a cell has reached critical mass the orbs explode" +
-							" into the surrounding cells adding an extra orb and claiming " +
-							"the cell for the player. A player may only place their orbs " +
-							"in a blank cell or a cell that contains orbs of their own color. "+
-							"As soon as a player looses all their orbs they are out of the game.");
-		content1.setFill(Color.WHITE);
-
-		Button b1 = new Button("Player Settings");
-		b1.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e)
-			{
-				try
-				{
-					playerSettings();
-				}
-				catch(FileNotFoundException f)
-				{
-
-				}
-			}
-		});
-		b1.setLayoutX(282.0f);
-		b1.setLayoutY(620.0f);
-
-		mainscene = new Scene(new Group(), 400, 650, Color.BLACK);
-		Group mainroot = (Group)mainscene.getRoot();
-		mainroot.getChildren().addAll(title, player, game, barr, content, content1, b1, iv, t1, play, line1, resume);
-
-		content.wrappingWidthProperty().bind(mainscene.widthProperty().subtract(25));
-		content1.wrappingWidthProperty().bind(mainscene.widthProperty().subtract(25));
-
-		stage.setTitle("Chain Reaction");
-		stage.setScene(mainscene);
-		stage.show();
 	}
 
 	public void play(int gx1, int gy1, int gx2, int gy2,  float sbs, float bbs, double rad, double rt,boolean axy) throws FileNotFoundException
@@ -1029,17 +1169,17 @@ public class Main extends Application
 						if(sizex == 6)
 						{
 							turn = 0;
-							playGame("Normal Grid");
+							o.playGame("Normal Grid");
 						}
 						else
 						{
-							playGame("HD Grid");
+							o.playGame("HD Grid");
 						}
 					}
 					else
 					{
 						turn = 0;
-						callmain(turn, p.get(turn).getColor());
+						o.callmain(turn, p.get(turn).getColor());
 					}
 				}
 				catch(FileNotFoundException f)
@@ -1109,8 +1249,8 @@ public class Main extends Application
 		extra.setStroke(ccc);
 
 		Group gridroot=new Group();
-		gamescene = new Scene(new Group(), 400, 650, Color.BLACK);
-		Group root = (Group)gamescene.getRoot();
+		Main.gamescene = new Scene(new Group(), 400, 650, Color.BLACK);
+		Group root = (Group)Main.gamescene.getRoot();
 			PhongMaterial material[] = new PhongMaterial[n];
 		for(int i=0;i<n;i++){
 			material[i] = new PhongMaterial(); 
@@ -1326,7 +1466,7 @@ public class Main extends Application
 		un.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent e){
-				recreate(r,root,grid2,material,rad);
+				Main.recreate(r,root,grid2,material,rad);
 				
 				for(int k = 0; k < sizex; k++)
 	              	for(int l = 0; l < sizey; l++){
@@ -1357,354 +1497,6 @@ public class Main extends Application
 		root.getChildren().add(gridroot);
 	}
 
-	public void pcolor(int turn) throws FileNotFoundException
-	{
-		Image image = new Image(new FileInputStream("1.png"));
-		ImageView iv = new ImageView(image);
-		iv.setX(15);
-		iv.setY(10);
-		iv.setFitHeight(40);
-		iv.setFitWidth(40);
-		iv.setPreserveRatio(true);
-
-		Text t1 = new Text("Chain Reaction Preferences");
-		t1.setX(65);
-		t1.setY(40);
-		t1.setFill(Color.WHITE);
-		t1.setFont(Font.font("", FontWeight.NORMAL, FontPosture.REGULAR, 18));
-
-		Line line = new Line();
-		line.setStartX(10.0f);
-		line.setStartY(65.0f);
-		line.setEndX(390.0f);
-		line.setEndY(65.0f);
-		line.setStroke(Color.CYAN);
-
-		int flag = 0;
-		if(colors[0][0] != null)
-			flag = 1;
-
-		for(int i = 0; i < 5; i++)
-			for(int j = 0; j < 3; j++)
-			{
-				if(colors[i][j] == null)
-					colors[i][j] = new Button();
-				colors[i][j].setMinSize(90, 90);
-				colors[i][j].setPrefSize(90, 90);
-				colors[i][j].setMaxSize(90, 90);
-				colors[i][j].setLayoutX(j*110 + 45);
-				colors[i][j].setLayoutY(i*110 + 90);
-				colors[i][j].setBackground(new Background(new BackgroundFill(c.get(j + 3*i),null, null)));
-				colors[i][j].setOnAction(new ColorChange(turn, c.get(j + 3*i), this, i, j, total.get(turn).getColor()));
-			}
-		if(flag == 0)
-		{	
-			for(int i = 0; i < 3; i++)
-				for(int j = 0; j < 3; j++)
-					colors[i][j].setDisable(true);
-		}
-
-		colors[2][2].setDisable(false);
-
-		playascene = new Scene(new Group(), 400, 650, Color.BLACK);
-		Group playaroot = (Group)playascene.getRoot();
-		playaroot.getChildren().addAll(iv, t1, line);
-		for(int i = 0; i < 5; i++)
-			for(int j = 0; j < 3; j++)
-				playaroot.getChildren().add(colors[i][j]);
-	}
-
-	public void playerSettingscall() throws FileNotFoundException
-	{
-		Image image1 = new Image(new FileInputStream("1.png"));
-		ImageView iv1 = new ImageView(image1);
-		iv1.setX(15);
-		iv1.setY(10);
-		iv1.setFitHeight(40);
-		iv1.setFitWidth(40);
-		iv1.setPreserveRatio(true);
-
-		Text t2 = new Text("Chain Reaction Preferences");
-		t2.setX(65);
-		t2.setY(40);
-		t2.setFill(Color.WHITE);
-		t2.setFont(Font.font("", FontWeight.NORMAL, FontPosture.REGULAR, 18));
-
-		Line bar = new Line();
-		bar.setStartX(10.0f);
-		bar.setStartY(65.0f);
-		bar.setEndX(390.0f);
-		bar.setEndY(65.0f);
-		bar.setStroke(Color.CYAN);
-
-		Button p1 = new Button("Player 1 Settings                      Customisation for Player 1");
-		p1.setStyle("-fx-background-color:transparent;-fx-padding:0;-fx-background-size:0;" + String.format("-fx-font-size: %dpx; -fx-alignment: LEFT; -fx-text-fill: white;", (int)(0.35 * 70)));
-		p1.setMinSize(380, 60);
-		p1.setPrefSize(380, 60);
-		p1.setMaxSize(380, 60);
-		p1.setLayoutX(10.0f);
-		p1.setLayoutY(70.0f);
-		p1.setWrapText(true);
-		p1.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e)
-			{
-				try
-				{
-					playercolor(0);
-				}
-				catch(FileNotFoundException f)
-				{
-
-				}
-			}
-		});
-
-		Line bar1 = new Line();
-		bar1.setStartX(10.0f);
-		bar1.setStartY(135.0f);
-		bar1.setEndX(390.0f);
-		bar1.setEndY(135.0f);
-		bar1.setStroke(Color.GRAY);
-
-		Button p2 = new Button("Player 2 Settings                      Customisation for Player 2");
-		p2.setStyle("-fx-background-color:transparent;-fx-padding:0;-fx-background-size:0;" + String.format("-fx-font-size: %dpx; -fx-alignment: LEFT; -fx-text-fill: white;", (int)(0.35 * 70)));
-		p2.setMinSize(380, 60);
-		p2.setPrefSize(380, 60);
-		p2.setMaxSize(380, 60);
-		p2.setLayoutX(10.0f);
-		p2.setLayoutY(137.0f);
-		p2.setWrapText(true);
-		p2.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e)
-			{
-				try
-				{
-					playercolor(1);
-				}
-				catch(FileNotFoundException f)
-				{
-
-				}
-			}
-		});
-
-		Line bar2 = new Line();
-		bar2.setStartX(10.0f);
-		bar2.setStartY(202.0f);
-		bar2.setEndX(390.0f);
-		bar2.setEndY(202.0f);
-		bar2.setStroke(Color.GRAY);
-
-		Button p3 = new Button("Player 3 Settings                      Customisation for Player 3");
-		p3.setStyle("-fx-background-color:transparent;-fx-padding:0;-fx-background-size:0;" + String.format("-fx-font-size: %dpx; -fx-alignment: LEFT; -fx-text-fill: white;", (int)(0.35 * 70)));
-		p3.setMinSize(380, 60);
-		p3.setPrefSize(380, 60);
-		p3.setMaxSize(380, 60);
-		p3.setLayoutX(10.0f);
-		p3.setLayoutY(204.0f);
-		p3.setWrapText(true);
-		p3.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e)
-			{
-				try
-				{
-					playercolor(2);
-				}
-				catch(FileNotFoundException f)
-				{
-
-				}
-			}
-		});
-
-		Line bar3 = new Line();
-		bar3.setStartX(10.0f);
-		bar3.setStartY(269.0f);
-		bar3.setEndX(390.0f);
-		bar3.setEndY(269.0f);
-		bar3.setStroke(Color.GRAY);
-
-		Button p4 = new Button("Player 4 Settings                      Customisation for Player 4");
-		p4.setStyle("-fx-background-color:transparent;-fx-padding:0;-fx-background-size:0;" + String.format("-fx-font-size: %dpx; -fx-alignment: LEFT; -fx-text-fill: white;", (int)(0.35 * 70)));
-		p4.setMinSize(380, 60);
-		p4.setPrefSize(380, 60);
-		p4.setMaxSize(380, 60);
-		p4.setLayoutX(10.0f);
-		p4.setLayoutY(271.0f);
-		p4.setWrapText(true);
-		p4.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e)
-			{
-				try
-				{
-					playercolor(3);
-				}
-				catch(FileNotFoundException f)
-				{
-
-				}
-			}
-		});
-
-		Line bar4 = new Line();
-		bar4.setStartX(10.0f);
-		bar4.setStartY(336.0f);
-		bar4.setEndX(390.0f);
-		bar4.setEndY(336.0f);
-		bar4.setStroke(Color.GRAY);
-
-		Button p5 = new Button("Player 5 Settings                      Customisation for Player 5");
-		p5.setStyle("-fx-background-color:transparent;-fx-padding:0;-fx-background-size:0;" + String.format("-fx-font-size: %dpx; -fx-alignment: LEFT; -fx-text-fill: white;", (int)(0.35 * 70)));
-		p5.setMinSize(380, 60);
-		p5.setPrefSize(380, 60);
-		p5.setMaxSize(380, 60);
-		p5.setLayoutX(10.0f);
-		p5.setLayoutY(338.0f);
-		p5.setWrapText(true);
-		p5.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e)
-			{
-				try
-				{
-					playercolor(4);
-				}
-				catch(FileNotFoundException f)
-				{
-
-				}
-			}
-		});
-
-		Line bar5 = new Line();
-		bar5.setStartX(10.0f);
-		bar5.setStartY(403.0f);
-		bar5.setEndX(390.0f);
-		bar5.setEndY(403.0f);
-		bar5.setStroke(Color.GRAY);
-
-		Button p6 = new Button("Player 6 Settings                      Customisation for Player 6");
-		p6.setStyle("-fx-background-color:transparent;-fx-padding:0;-fx-background-size:0;" + String.format("-fx-font-size: %dpx; -fx-alignment: LEFT; -fx-text-fill: white;", (int)(0.35 * 70)));
-		p6.setMinSize(380, 60);
-		p6.setPrefSize(380, 60);
-		p6.setMaxSize(380, 60);
-		p6.setLayoutX(10.0f);
-		p6.setLayoutY(405.0f);
-		p6.setWrapText(true);
-		p6.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e)
-			{
-				try
-				{
-					playercolor(5);
-				}
-				catch(FileNotFoundException f)
-				{
-
-				}
-			}
-		});
-
-		Line bar6 = new Line();
-		bar6.setStartX(10.0f);
-		bar6.setStartY(470.0f);
-		bar6.setEndX(390.0f);
-		bar6.setEndY(470.0f);
-		bar6.setStroke(Color.GRAY);
-
-		Button p7 = new Button("Player 7 Settings                      Customisation for Player 7");
-		p7.setStyle("-fx-background-color:transparent;-fx-padding:0;-fx-background-size:0;" + String.format("-fx-font-size: %dpx; -fx-alignment: LEFT; -fx-text-fill: white;", (int)(0.35 * 70)));
-		p7.setMinSize(380, 60);
-		p7.setPrefSize(380, 60);
-		p7.setMaxSize(380, 60);
-		p7.setLayoutX(10.0f);
-		p7.setLayoutY(472.0f);
-		p7.setWrapText(true);
-		p7.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e)
-			{
-				try
-				{
-					playercolor(6);
-				}
-				catch(FileNotFoundException f)
-				{
-
-				}
-			}
-		});
-
-		Line bar7 = new Line();
-		bar7.setStartX(10.0f);
-		bar7.setStartY(537.0f);
-		bar7.setEndX(390.0f);
-		bar7.setEndY(537.0f);
-		bar7.setStroke(Color.GRAY);
-
-		Button p8 = new Button("Player 8 Settings                      Customisation for Player 8");
-		p8.setStyle("-fx-background-color:transparent;-fx-padding:0;-fx-background-size:0;" + String.format("-fx-font-size: %dpx; -fx-alignment: LEFT; -fx-text-fill: white;", (int)(0.35 * 70)));
-		p8.setMinSize(380, 60);
-		p8.setPrefSize(380, 60);
-		p8.setMaxSize(380, 60);
-		p8.setLayoutX(10.0f);
-		p8.setLayoutY(539.0f);
-		p8.setWrapText(true);
-		p8.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent e)
-			{
-				try
-				{
-					playercolor(7);
-				}
-				catch(FileNotFoundException f)
-				{
-
-				}
-			}
-		});
-
-		Line bar8 = new Line();
-		bar8.setStartX(10.0f);
-		bar8.setStartY(604.0f);
-		bar8.setEndX(390.0f);
-		bar8.setEndY(604.0f);
-		bar8.setStroke(Color.GRAY);
-
-		playerscene = new Scene(new Group(), 400, 650, Color.BLACK);
-		Group playerroot = (Group)playerscene.getRoot();
-		playerroot.getChildren().addAll(bar, p1, bar1, p2, bar2, p3, bar3, p4, bar4, p5, bar5, p6, bar6, p7, bar7, p8, bar8, t2, iv1);
-
-	}
-
-	public static void recreate(Group r[][],Group root,Rectangle grid2[][],PhongMaterial[] m,double rad){
-		int [][] beforeundo=new int [sizex][sizey];
-		try{
-			Scanner br=new Scanner(new File("abc.txt"));
-			arr=new int[8];
-			for(int i=0;i<8;i++){
-				arr[i]=br.nextInt();
-			}
-					n=br.nextInt();
-					p=new ArrayList<Player>();
-					for(int i=0;i<n;i++){
-						Color c=Color.web(br.next());
-						Player p0=new Player(c, i+1);
-						p.add(p0);
-					}
-					sizex=br.nextInt();
-					sizey=br.nextInt();
-					a=new int[sizex][sizey];
-					for(int i=0;i<sizex;i++){
-						for(int j=0;j<sizey;j++){
-							beforeundo[i][j]=br.nextInt();
-						}
-					}
-					turn=br.nextInt();
-					br.close();
-		}
-		catch(IOException e){}
-		check(r,root,grid2,m,rad,beforeundo);
-		a=beforeundo;
-	}
 	public static void check(Group r[][],Group root,Rectangle grid2[][],PhongMaterial[] m,double rad,int beforeundo[][]){
 		for(int i=0;i<sizex;i++){
 			for(int j=0;j<sizey;j++){
@@ -1749,41 +1541,358 @@ public class Main extends Application
 			}
 		}
 	}
+}
+
+public class Main extends Application
+{
+	static Stage pstage;
+	static Scene mainscene, playerscene, gamescene, playascene, winnerscene;
+
+	static Settings s;
+	static Game g;
+
+	
+	public static ArrayList<Player> total;
+	public static ArrayList<Color> c;
+
+	public static void write() {
+		try{
+            	BufferedWriter br=new BufferedWriter(new FileWriter(new File("resume.txt")) );
+            	for(int i=0;i<8;i++){
+            		br.write(Integer.toString(Game.arr[i]));
+            		br.newLine();
+            	}
+            	br.write(Integer.toString(Game.n));
+            	br.newLine();
+            	for(int i=0;i<Game.n;i++){
+            		String s = Game.p.get(i).getColor().toString();
+            		br.write(s);
+              		br.newLine();
+              	}
+              	br.write(Integer.toString(Game.sizex));
+              	br.newLine();
+              	br.write(Integer.toString(Game.sizey));
+              	br.newLine();
+	            for(int i=0;i<Game.sizex;i++){
+	            	for(int j=0;j<Game.sizey;j++){
+	            		br.write(Integer.toString(Game.a[i][j]));
+	            		br.newLine();
+	            	}
+	            }
+	           	br.write(Integer.toString((Game.turn+1)%Game.n));
+	        	br.flush();
+	        	br.close();
+            }
+        catch(IOException e){}
+	}
+
+	@Override
+	public void start(Stage stage) throws FileNotFoundException
+	{
+		pstage = stage;
+		String cgrid = "";
+		Game.flagcheck = 0;
+
+		Image image = new Image(new FileInputStream("1.png"));
+		ImageView iv = new ImageView(image);
+		iv.setX(15);
+		iv.setY(10);
+		iv.setFitHeight(40);
+		iv.setFitWidth(40);
+		iv.setPreserveRatio(true);
+
+		Text t1 = new Text("Chain Reaction");
+		t1.setX(65);
+		t1.setY(40);
+		t1.setFill(Color.WHITE);
+		t1.setFont(Font.font("", FontWeight.NORMAL, FontPosture.REGULAR, 18));
+
+		Line barr = new Line();
+		barr.setStartX(10.0f);
+		barr.setStartY(65.0f);
+		barr.setEndX(390.0f);
+		barr.setEndY(65.0f);
+		barr.setStroke(Color.CYAN);
+
+		Text title = new Text();
+		title.setFont(Font.font("", FontWeight.BOLD, FontPosture.REGULAR, 24));
+		title.setX(100);
+		title.setY(95);
+		title.setText("Chain Reaction");
+		title.setFill(Color.WHITE);
+
+		final ComboBox<String> player = new ComboBox<String>();
+		player.getItems().addAll("2 Player Game", "3 Player Game", "4 Player Game", "5 Player Game", "6 Player Game", "7 Player Game", "8 Player Game");
+		player.setLayoutX(60);
+		player.setLayoutY(110);
+		player.setValue("2 Player Game");
+		if(Game.p.size() == 0)
+		{
+			Game.p = new ArrayList<Player>();
+			for(int i = 0; i < Game.n; i++)
+				Game.p.add(i,total.get(i));
+		}
+		else if (Game.p.size() > 0 && Game.p.size() < Game.n)
+		{
+			for(int i = Game.p.size() - 1; i < Game.n; i++)
+				Game.p.add(i,total.get(i));
+		}
+		else
+		{
+			for(int i = 0; i < Game.n; i++)
+				Game.p.set(i,total.get(i));
+		}
+		player.valueProperty().addListener(new ChangeListener<String>() {
+			public void changed(ObservableValue ov, String t1, String t2)
+			{
+				for(int i = 0; i < player.getItems().size(); i++)
+				{
+					if(ov.equals(player.getItems().get(i)))
+					{
+						player.setValue(player.getItems().get(i));
+						break;
+					}
+				}
+				if(ov.equals(t1))
+					player.setValue(t1);
+				else
+					player.setValue(t2);
+				Game.n = Integer.parseInt(player.getValue().substring(0,1));
+				if(Game.p.size() == 0)
+				{
+					Game.p = new ArrayList<Player>(Game.n);
+					for(int i = 0; i < Game.n; i++)
+						Game.p.add(i,total.get(i));
+				}
+				else if (Game.p.size() > 0 && Game.p.size() < Game.n)
+				{
+					for(int i = Game.p.size(); i < Game.n; i++)
+						Game.p.add(total.get(i));
+				}
+				else if(Game.p.size() > Game.n)
+				{
+					Game.p = new ArrayList<Player>(Game.n);
+					for(int i = 0; i < Game.n; i++)
+						Game.p.add(i,total.get(i));
+
+				}
+				else if(Game.p.size() == Game.n)
+				{
+					for(int i = 0; i < Game.n; i++)
+						Game.p.set(i,total.get(i));
+				}
+			}
+		});
+
+		final ComboBox<String> game = new ComboBox<String>();
+		game.getItems().addAll("Normal Grid", "HD Grid");
+		game.setLayoutX(210);
+		game.setLayoutY(110);
+		game.setValue("Normal Grid");
+		game.valueProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue ov, String t1, String t2)
+			{
+				if(ov.equals(t1))
+					game.setValue(t1);
+				else
+					game.setValue(t2);
+			}
+		});
+
+		Button play = new Button("Play");
+		play.setStyle("-fx-background-color:transparent;" + String.format("-fx-font-size: %dpx; -fx-text-fill:white;", (int)(0.65*40)));
+		play.setMinSize(105, 60);
+		play.setPrefSize(105, 60);
+		play.setMaxSize(105, 60);
+		play.setLayoutX(70.0f);
+		play.setLayoutY(140.0f);
+		play.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e)
+			{
+				try
+				{
+					File f1=new File("resume.txt");
+					f1.createNewFile();
+					if(game.getValue().equals("Normal Grid"))
+						playGame("Normal Grid");
+					else
+						playGame("HD Grid");
+				}
+				catch(Exception f)
+				{
+
+				}
+			}
+		});
+
+		Line line1 = new Line();
+		line1.setStartX(175.0f);
+		line1.setStartY(150.0f);
+		line1.setEndX(175.0f);
+		line1.setEndY(190.0f);
+		line1.setStroke(Color.GRAY);
+
+		Button resume = new Button("Resume");
+		resume.setStyle("-fx-background-color:transparent;" + String.format("-fx-font-size: %dpx; -fx-text-fill:white;", (int)(0.65*40)));
+		resume.setMinSize(145, 60);
+		resume.setPrefSize(145, 60);
+		resume.setMaxSize(145, 60);
+		resume.setLayoutX(175.0f);
+		resume.setLayoutY(140.0f);
+		resume.setOnAction(new EventHandler<ActionEvent>(){
+			public void handle(ActionEvent e)
+			{
+				try{
+					Scanner br=new Scanner(new File("resume.txt"));
+					Game.arr=new int[8];
+					for(int i=0;i<8;i++){
+						Game.arr[i]=br.nextInt();
+					}
+					Game.n=br.nextInt();
+					Game.p=new ArrayList<Player>();
+					for(int i=0;i < Game.n;i++){
+						Color c=Color.web(br.next());
+						Player p0=new Player(c, i+1);
+						Game.p.add(p0);
+					}
+					Game.sizex=br.nextInt();
+					Game.sizey=br.nextInt();
+					Game.a=new int[Game.sizex][Game.sizey];
+					for(int i=0;i<Game.sizex;i++){
+						for(int j=0;j<Game.sizey;j++){
+							Game.a[i][j]=br.nextInt();
+						}
+					}
+					Game.turn=br.nextInt();
+					br.close();
+					resumeGame();
+					//System.out.println(p.size());
+				}
+		catch(IOException e1){}
+			}
+		});
+
+		Text content = new Text();
+		content.setFont(Font.font("", FontWeight.BOLD, FontPosture.REGULAR, 16));
+		content.setX(20);
+		content.setY(220);
+		content.setText("The objective of Chain Reaction is to take control of the board by eliminating your opponent orbs.");
+		content.setFill(Color.WHITE);
+
+		Text content1 = new Text();
+		content1.setFont(Font.font("", FontWeight.BOLD, FontPosture.REGULAR, 16));
+		content1.setX(20);
+		content1.setY(320);
+		content1.setText("Players takes it in turns to place their orbs in a cell." + 
+							"Once a cell has reached critical mass the orbs explode" +
+							" into the surrounding cells adding an extra orb and claiming " +
+							"the cell for the player. A player may only place their orbs " +
+							"in a blank cell or a cell that contains orbs of their own color. "+
+							"As soon as a player looses all their orbs they are out of the game.");
+		content1.setFill(Color.WHITE);
+
+		Button b1 = new Button("Player Settings");
+		b1.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e)
+			{
+				try
+				{
+					playerSettings();
+				}
+				catch(FileNotFoundException f)
+				{
+
+				}
+			}
+		});
+		b1.setLayoutX(282.0f);
+		b1.setLayoutY(620.0f);
+
+		mainscene = new Scene(new Group(), 400, 650, Color.BLACK);
+		Group mainroot = (Group)mainscene.getRoot();
+		mainroot.getChildren().addAll(title, player, game, barr, content, content1, b1, iv, t1, play, line1, resume);
+
+		content.wrappingWidthProperty().bind(mainscene.widthProperty().subtract(25));
+		content1.wrappingWidthProperty().bind(mainscene.widthProperty().subtract(25));
+
+		stage.setTitle("Chain Reaction");
+		stage.setScene(mainscene);
+		stage.show();
+	}
+
+	public static void recreate(Group r[][],Group root,Rectangle grid2[][],PhongMaterial[] m,double rad){
+		int [][] beforeundo=new int [Game.sizex][Game.sizey];
+		try{
+			Scanner br=new Scanner(new File("abc.txt"));
+			Game.arr=new int[8];
+			for(int i=0;i<8;i++){
+				Game.arr[i]=br.nextInt();
+			}
+					Game.n=br.nextInt();
+					Game.p=new ArrayList<Player>();
+					for(int i=0;i<Game.n;i++){
+						Color c=Color.web(br.next());
+						Player p0=new Player(c, i+1);
+						Game.p.add(p0);
+					}
+					Game.sizex=br.nextInt();
+					Game.sizey=br.nextInt();
+					Game.a=new int[Game.sizex][Game.sizey];
+					for(int i=0;i<Game.sizex;i++){
+						for(int j=0;j<Game.sizey;j++){
+							beforeundo[i][j]=br.nextInt();
+						}
+					}
+					Game.turn=br.nextInt();
+					br.close();
+		}
+		catch(IOException e){}
+		Game.check(r,root,grid2,m,rad,beforeundo);
+		Game.a=beforeundo;
+	}
+	
 	public void playerSettings() throws FileNotFoundException
 	{
-		playerSettingscall();
+		s.playerSettingscall();
 		pstage.setScene(playerscene);
 	}
 
 	public void playGame(String s) throws FileNotFoundException
 	{
-		arr = new int[8];
-		for(int i = 0; i < n; i++)
-			arr[i] = 1;
+		Game.arr = new int[8];
+		for(int i = 0; i < Game.n; i++)
+			Game.arr[i] = 1;
 		if(s.equals("Normal Grid")){
-			sizex = 6;
-			sizey = 9;
-			a=new int[sizex][sizey];
-			play(35, 100, 20, 80,55, 60, 15.0, 7.5,false);
+			Game.sizex = 6;
+			Game.sizey = 9;
+			Game.a=new int[Game.sizex][Game.sizey];
+			g.play(35, 100, 20, 80,55, 60, 15.0, 7.5,false);
 		}
 		else{
-			sizex = 10;
-			sizey = 15;
-			a=new int[sizex][sizey];
-			play(25, 90, 16, 80, 35.45f, 37, 10.0, 2.5,false);
+			Game.sizex = 10;
+			Game.sizey = 15;
+			Game.a=new int[Game.sizex][Game.sizey];
+			g.play(25, 90, 16, 80, 35.45f, 37, 10.0, 2.5,false);
 		}
 		pstage.setScene(gamescene);
 	}
 
-	public static void callwinner(int i)
+	public void playercolor(int turn) throws FileNotFoundException
 	{
-		/*Image image = new Image(new FileInputStream("3.png"));
+		Settings.pcolor(turn);
+		Main.pstage.setScene(Main.playascene);
+	}
+
+	public static void callwinner(int i) throws FileNotFoundException
+	{
+		Image image = new Image(new FileInputStream("3.png"));
 		ImageView iv = new ImageView(image);
-		iv.setX(120);
-		iv.setY(200);
-		iv.setFitHeight(150);
-		iv.setFitWidth(150);
-		iv.setPreserveRatio(true);*/
+		iv.setX(115);
+		iv.setY(150);
+		iv.setFitHeight(200);
+		iv.setFitWidth(200);
+		iv.setPreserveRatio(true);
 		i++;
 			File f=new File("resume.txt");
 			f.delete();
@@ -1795,28 +1904,20 @@ public class Main extends Application
 
 		winnerscene = new Scene(new Group(), 400, 650, Color.BLACK);
 		Group winnerroot = (Group)winnerscene.getRoot();
-		winnerroot.getChildren().addAll(t2);
+		winnerroot.getChildren().addAll(t2, iv);
 		pstage.setScene(winnerscene);
 	}
 
 	public void resumeGame() throws FileNotFoundException
 	{
-		if(sizex==6){
-			play(35, 100, 20, 80,55, 60, 15.0, 7.5,true);
+		if(Game.sizex==6){
+			g.play(35, 100, 20, 80,55, 60, 15.0, 7.5,true);
 		}
 		else{
-			play(25, 90, 16, 80, 35.45f, 37, 10.0, 2.5,false);
+			g.play(25, 90, 16, 80, 35.45f, 37, 10.0, 2.5,false);
 
 		}
-		pstage.setScene(gamescene);
-
-			
-	}
-
-	public void playercolor(int turn) throws FileNotFoundException
-	{
-		pcolor(turn);
-		pstage.setScene(playascene);
+		pstage.setScene(gamescene);		
 	}
 
 	public void callmain(int turn, Color c) throws FileNotFoundException
@@ -1826,7 +1927,11 @@ public class Main extends Application
 	}
 
 	public static void main(String[] args) {
-		p = new ArrayList<Player>();
+		Main o = new Main();
+		s = new Settings(o);
+		g = new Game(o);
+
+		Game.p = new ArrayList<Player>();
 		total = new ArrayList<Player>();
 		total.add(new Player(Color.RED, 1));
 		total.add(new Player(Color.GREEN, 2));
@@ -1854,12 +1959,12 @@ public class Main extends Application
 		c.add(Color.DARKBLUE);
 		c.add(Color.LIME);
 
-		cvalue = new int[5][3];
+		Game.cvalue = new int[5][3];
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 3; j++)
-				cvalue[i][j] = 1;
+				Game.cvalue[i][j] = 1;
 
-		cvalue[2][2] = 0;
+		Game.cvalue[2][2] = 0;
 		launch(args);
 	}
 }
