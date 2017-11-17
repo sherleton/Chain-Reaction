@@ -289,8 +289,11 @@ public class Main extends Application
 		for(int i = 0; i < sizey; i++)
 			for(int j = 0; j < sizex; j++)
 			{
-				int te = t[j][i]/4;
-				x[te] = 1;
+				if(t[j][i] != 0)
+				{	
+					int te = t[j][i]/4;
+					x[te] = 1;
+				}
 			}
 		
 		return x;
@@ -332,12 +335,13 @@ public class Main extends Application
 			a[x][y]=a[x][y]+4*(i-r1);
 		}
 		a[x][y]++;
+		/*
 		for(int k=0;k<sizey;k++){
               			for(int j=0;j<sizex;j++){
               				System.out.print(a[j][k]+"  ");
               			}
               			System.out.println("");
-              		}
+              		}*/
 		
 		write();
         
@@ -892,7 +896,7 @@ public class Main extends Application
 					turn=br.nextInt();
 					br.close();
 					resumeGame();
-					System.out.println(p.size());
+					//System.out.println(p.size());
 				}
 		catch(IOException e1){}
 			}
