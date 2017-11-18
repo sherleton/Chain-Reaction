@@ -26,6 +26,25 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 
+/**
+ * This is an application created using JavaFX which is similar to the 
+ * game Chain Reaction available on PlayStore and AppStore. This was done 
+ * as a project for the course Advance Programming (CSE 201) at IIIT Delhi.  
+ * For back end we have an integer grid in which the value of Player 1 are 1-4
+ * , for Player 2 are 5-8 for example in the given grid
+ * 0 1 2 5 7 
+ * 9 11 0 0
+ * The 1 tells us that this is being occupied by Player 1 with 1 Sphere,
+ * the 2 tells us that this is being occupied by Player 1 with 2 Spheres,
+ * the 5 tells us that this is being occupied by Player 2 with 1 (5%4=1) Sphere, 
+ * the 7 tells us that this is being occupied by Player 2 with 3 (7%4=3) Spheres,
+ * the 9 tells us that this is being occupied by Player 3 with 1 (9%4=1) Sphere,  
+ * the 11 tells us that this is being occupied by Player 3 with 3 (11%4=3) Spheres.
+ * This prevents creation of Cell class to determine who is occupying the cell.
+ * @author Apoorv Khattar 2016016
+ * @author Nikhil Sachdeva 2016061
+ * @version 1.0
+ */
 class ColorChange implements EventHandler<ActionEvent>
 {
 	private Main o;
@@ -83,13 +102,28 @@ class Player{
 		this.c = c;
 		this.i = i;
 	}
+	
+	/**
+	 * @param Nothing
+	 * @return Color This returns the color assigned to that Player 
+	 */
 	public Color getColor(){
 		return c;
 	}
+	
+	/**
+	 * @param Nothing
+	 * @return int This returns the no. assigned to that Player 
+	 */
 	public int getTurn()
 	{
 		return i;
 	}
+	
+	/**
+	 * @param c This is the the new color that needs to be assigned to the Player
+	 * @return Nothing
+	 */
 	public void setColor(Color c){
 		this.c=c;
 	}
@@ -105,7 +139,12 @@ class Settings
 		this.o = o;
 		colors = new Button[5][3];
 	}
-
+	
+	/**
+	 * This function creates the Player Settings Menu
+	 * @param Nothing
+	 * @return Nothing
+	 */
 	public void playerSettingscall() throws FileNotFoundException
 	{
 		Image image1 = new Image(new FileInputStream("1.png"));
@@ -389,7 +428,13 @@ class Settings
 		playerroot.getChildren().addAll(bar, p1, bar1, p2, bar2, p3, bar3, p4, bar4, p5, bar5, p6, bar6, p7, bar7, p8, bar8, t2, iv1, un);
 
 	}
-
+	
+	/**
+	 * After selecting the Player for whom the color is to be changed, 15 different colors are presented 
+	 * from which the Player can select any color that has not been assigned to any user.
+	 * @param turn This tells us the Player for whom the color is to be changed
+	 * @return Nothing
+	 */
 	public static void pcolor(int turn) throws FileNotFoundException
 	{
 		Image image = new Image(new FileInputStream("1.png"));
@@ -499,32 +544,96 @@ class Game
 		this.o = o;
 	}
 
-
+	/**
+	 * Checks if the sphere is added in the top left hand corner of the grid.
+	 * @param i This tells us the row of the Integer matrix (in the back end) to be accessed
+	 * @param j This tells us the column of the Integer matrix (in the back end) to be accessed
+	 * @return boolean Returns true if the sphere is in that corner
+	 */
 	public static boolean corner1(int i,int j){
 		return (i==0&&j==0);
 	}
+	
+	/**
+	 * Checks if the sphere is added in the top right hand corner of the grid.
+	 * @param i This tells us the row of the Integer matrix (in the back end) to be accessed
+	 * @param j This tells us the column of the Integer matrix (in the back end) to be accessed
+	 * @return boolean Returns true if the sphere is in that corner
+	 */
 	public static boolean corner2(int i,int j){
 		return (i==0&&j==sizey-1);
 	}
+	
+	/**
+	 * Checks if the sphere is added in the bottom left hand corner of the grid.
+	 * @param i This tells us the row of the Integer matrix (in the back end) to be accessed
+	 * @param j This tells us the column of the Integer matrix (in the back end) to be accessed
+	 * @return boolean Returns true if the sphere in that corner
+	 */
 	public static boolean corner3(int i,int j){
 		return (i==sizex-1&&j==0);
 	}
+	
+	/**
+	 * Checks if the sphere is added in the bottom right hand corner of the grid.
+	 * @param i This tells us the row of the Integer matrix (in the back end) to be accessed
+	 * @param j This tells us the column of the Integer matrix (in the back end) to be accessed
+	 * @return boolean Returns true if the sphere in that corner
+	 */
 	public static boolean corner4(int i,int j){
 		return (i==sizex-1&&j==sizey-1);
 	}
+	
+	/**
+	 * Checks if the sphere is added in the top most row of the grid.
+	 * @param i This tells us the row of the Integer matrix (in the back end) to be accessed
+	 * @param j This tells us the column of the Integer matrix (in the back end) to be accessed
+	 * @return boolean Returns true if the sphere in that row
+	 */
 	public static boolean edge1(int i,int j){
 		return (i==0&&j>0&&j<sizey-1);
 	}
+	
+	/**
+	 * Checks if the sphere is added in the first column of the grid.
+	 * @param i This tells us the row of the Integer matrix (in the back end) to be accessed
+	 * @param j This tells us the column of the Integer matrix (in the back end) to be accessed
+	 * @return boolean Returns true if the sphere in that column
+	 */
 	public static boolean edge2(int i,int j){
 		return (j==sizey-1&&i>0&&i<sizex-1);
 	}
+	
+	/**
+	 * Checks if the sphere is added in the bottom most row of the grid.
+	 * @param i This tells us the row of the Integer matrix (in the back end) to be accessed
+	 * @param j This tells us the column of the Integer matrix (in the back end) to be accessed
+	 * @return boolean Returns true if the sphere in that row
+	 */
 	public static boolean edge3(int i,int j){
 		return (i==sizex-1&&j>0&&j<sizey-1);
 	}
+	
+	/**
+	 * Checks if the sphere is added in the last column of the grid.
+	 * @param i This tells us the row of the Integer matrix (in the back end) to be accessed
+	 * @param j This tells us the column of the Integer matrix (in the back end) to be accessed
+	 * @return boolean Returns true if the sphere in that column
+	 */
 	public static boolean edge4(int i,int j){
 		return (j==0&&i>0&&i<sizex-1);
 	}
-
+	
+	/** 
+	 * This function is used for an extra grid that is maintained in the back end. This was done because the
+	 * updation of the grid was slowed down due to animations which was needed for serializing it and for checking
+	 * if a Player has been eliminated or not.
+	 * @param b This is an integer matrix in which the changes are made
+	 * @param x This is an integer representing the row no. of the grid
+	 * @param y This is an integer representing the column no. of the grid
+	 * @param i This is an integer representing which Player it is
+	 * @return Nothing
+	 */
 	public static void backburst(int[][] b, int x,int y,int i){
 		if(b[x][y]/4!=i){
 			int r=b[x][y]/4;
@@ -604,7 +713,19 @@ class Game
 			}
 		}
 	}
-
+	
+	/**
+	 * This function is called inside burst() to update the grid after there has a change in it if 
+	 * one of the cells had more than spheres than the permissible limit.
+	 * @param r This a 2D array of Group representing each cell in the front end Grid
+	 * @param x This is an integer representing the row no. of the grid
+	 * @param y This is an integer representing the column no. of the grid
+	 * @param s This is the new sphere that has to be added at r[x][y]
+	 * @param root This is the main Group in which r and other components of the grid are present
+	 * @param grid2 This is a 2D array of rectangles present in the grid that are needed to find the centre
+	 * 		  of the cell in which the Sphere is to be added 
+	 * @return Nothing
+	 */
 	public static void conquer(Group[][] r, int x, int y, Sphere s, Group root,Rectangle[][] grid2)
 	{
 		ArrayList<Sphere> s1=new ArrayList<Sphere>();
@@ -642,7 +763,13 @@ class Game
 		root.getChildren().add(r[x][y]);
 		r[x][y].toBack();
 	}
-
+	
+	/**
+	 * This function is called to check if we have a winner. It does so by checking if there are two or more different
+	 * colored Spheres present in the Grid
+	 * @param r This a 2D array of Group representing each cell in the front end Grid 
+	 * @return boolean returns true if the winner has been found
+	 */
 	public static boolean checkWinner(Group[][] r)
 	{
 		ArrayList<Color> ch = new ArrayList<Color>();
@@ -667,7 +794,12 @@ class Game
 			return true;
 		return false;
 	}
-
+	
+	/**
+	 * This function is used to check if the any Player no longer has even a single Sphere in the Grid or not
+	 * @param t This is a 2D Integer matrix which is the back end grid which is being maintained. 
+	 * @return int[] This is an array in which if the value is zero then it implies that Player has been eliminated
+	 */
 	public static int[] updateplayers(int[][] t)
 	{
 		int[] x = new int[8];
@@ -683,7 +815,19 @@ class Game
 		
 		return x;
 	}
-
+	
+	/** 
+	 * This function is used for the front end Grid that is maintained. the translation animation if there are more than
+	 * permissible no. of Spheres is being carried out here. Also the write(), checkinner() are called in it. 
+	 * @param r This a 2D array of Group representing each cell in the front end Grid
+	 * @param x This is an integer representing the row no. of the grid
+	 * @param y This is an integer representing the column no. of the grid
+	 * @param s This is the new sphere that has to be added at r[x][y]
+	 * @param root This is the main Group in which r and other components of the grid are present
+	 * @param grid2 This is a 2D array of rectangles present in the grid that are needed to find the centre
+	 * 		  of the cell in which the Sphere is to be added 
+	 * @return Nothing
+	 */
 	public static void burst(Group r[][],int x,int y,int i, Group root,Rectangle[][] grid2)
 	{
 		Bounds b=grid2[x][y].getBoundsInLocal();
@@ -1134,7 +1278,13 @@ class Game
 			}
 		}
 	}
-
+	/**
+	 * This function is used by play() to get a sphere present in the requested Group and then use that sphere
+	 * to ensure it has the same color as the color assigned to the Player making the move.
+	 * @param s This is the Sphere to be searched for
+	 * @param r This is the group in which we wish to know if there is Sphere or not.
+	 * @return Sphere returns a sphere if there is any in that group
+	 */
 	public static Sphere find(Sphere s,Group r){
 		for(Node n:r.getChildren()){
 			if(n.getClass().getName().equals(s.getClass().getName())){
@@ -1143,7 +1293,14 @@ class Game
 		}
 		return null;
 	}
-
+	
+	/**
+	 * This is the most important function in which the grid of the requested size is created and the input made by 
+	 * the Player are handled here i.e. adding a sphere, ensuring it has same color as the one that might be already 
+	 * present in that cell of the grid, calling  burst() function, functionality of the undo button.
+	 * @param
+	 * @return Nothing
+	 */
 	public void play(int gx1, int gy1, int gx2, int gy2,  float sbs, float bbs, double rad, double rt,boolean axy) throws FileNotFoundException
 	{
 		Color ccc=p.get(turn).getColor();
@@ -1534,7 +1691,19 @@ class Game
 			gridroot.getChildren().add(line[sizex][i]);
 		root.getChildren().add(gridroot);
 	}
-
+	
+	/**
+	 * This function is called when undo button is pressed from the recreate() function. This based on the data 
+	 * provided by the beforeundo matrix creates the front end Grid
+	 * @param r This a 2D array of Group representing each cell in the front end Grid
+	 * @param root This is the main Group in which r and other components of the grid are present
+	 * @param grid2 This is a 2D array of rectangles present in the grid that are needed to find the centre
+	 * 		  of the cell in which the Sphere is to be added 
+	 * @param m This is a 1D array of PhongMaterial the different materials that a sphere can have
+	 * @param rad This is the radius of the sphere to be added in a cell of the grid.
+	 * @param beforeundo This is a 2D Integer matrix of the back end grid
+	 * @return Nothing
+	 */
 	public static void check(Group r[][],Group root,Rectangle grid2[][],PhongMaterial[] m,double rad,int beforeundo[][]){
 		for(int i=0;i<sizex;i++){
 			for(int j=0;j<sizey;j++){
@@ -1593,6 +1762,11 @@ public class Main extends Application
 	public static ArrayList<Player> total;
 	public static ArrayList<Color> c;
 
+	/**
+	 * This function is called to write the contents of the game's current status into the file resume.txt
+	 * @param Nothing
+	 * @return Nothing
+	 */
 	public static void write() {
 		try{
             	BufferedWriter br=new BufferedWriter(new FileWriter(new File("resume.txt")) );
@@ -1623,7 +1797,7 @@ public class Main extends Application
             }
         catch(IOException e){}
 	}
-
+	
 	@Override
 	public void start(Stage stage) throws FileNotFoundException
 	{
@@ -1858,7 +2032,18 @@ public class Main extends Application
 		stage.setScene(mainscene);
 		stage.show();
 	}
-
+	/**
+	 * This function is called when the undo button is pressed, it reads the content from the file abc.txt where 
+	 * the grid from the previous move have been maintained to update the back end grid and it then calls the check()
+	 * function to make the same changes in the front end grid.
+	 * @param r This a 2D array of Group representing each cell in the front end Grid
+	 * @param root This is the main Group in which r and other components of the grid are present
+	 * @param grid2 This is a 2D array of rectangles present in the grid that are needed to find the centre
+	 * 		  of the cell in which the Sphere is to be added 
+	 * @param m This is a 1D array of PhongMaterial the different materials that a sphere can have
+	 * @param rad This is the radius of the sphere to be added in a cell of the grid.
+	 * @return Nothing
+	 */
 	public static void recreate(Group r[][],Group root,Rectangle grid2[][],PhongMaterial[] m,double rad){
 		int [][] beforeundo=new int [Game.sizex][Game.sizey];
 		try{
@@ -1890,16 +2075,27 @@ public class Main extends Application
 		Game.a=beforeundo;
 	}
 	
+	/**
+	 * This function is called when the player clicks on the PlayerSettings button to change the menu 
+	 * by first calling playerSettingscall() then changing the scene.
+	 * @param Nothing
+	 * @return Nothing
+	 */
 	public void playerSettings() throws FileNotFoundException
 	{
 		s.playerSettingscall();
 		pstage.setScene(playerscene);
 	}
-
+	
+	/**
+	 *  This function is called when the play button is pressed. This functions depending on the size requested,
+	 *  calls play() function to create the front end grid
+	 * @param s determines whether the grid is 9x6 or 15X10
+	 * @return Nothing
+	 */
 	public void playGame(String s) throws FileNotFoundException
 	{
 		Game.arr = new int[8];
-		System.out.println(Game.n);
 		for(int i = 0; i < Game.n; i++)
 			Game.arr[i] = 1;
 		if(s.equals("Normal Grid")){
@@ -1916,15 +2112,28 @@ public class Main extends Application
 		}
 		pstage.setScene(gamescene);
 	}
-
+	
+	/**
+	 * This method is called when in the player settings menu the Player selects whose color they want to 
+	 * change. It further calls pcolor() where the color panel is displayed to the user.
+	 * @param turn This tells us for which Player the color has to be changed
+	 * @return Nothing
+	 */
 	public void playercolor(int turn) throws FileNotFoundException
 	{
 		Settings.pcolor(turn);
 		Main.pstage.setScene(Main.playascene);
 	}
-
+	
+	/** This function is called if checkwinner() returns true. It displays the player who has won the game
+	 * and provides to either start a new game or return to the main menu.
+	 * @param i This is the Player no. who has won
+	 * @return Nothing
+	 */
 	public void callwinner(int i) throws FileNotFoundException
 	{
+		
+		
 		Image image = new Image(new FileInputStream("3.png"));
 		ImageView iv = new ImageView(image);
 		iv.setX(115);
@@ -2007,25 +2216,42 @@ public class Main extends Application
 		winnerroot.getChildren().addAll(t2, iv, iv1, play,resume);
 		pstage.setScene(winnerscene);
 	}
-
+	
+	/**
+	 * This function is called when the resume button is pressed to create a grid of the size that was
+	 * saved from the last game that was played.
+	 * @param Nothing
+	 * @return Nothing
+	 */
 	public void resumeGame() throws FileNotFoundException
 	{
 		if(Game.sizex==6){
 			g.play(35, 100, 20, 80,55, 60, 15.0, 7.5,true);
 		}
 		else{
-			g.play(25, 90, 16, 80, 35.45f, 37, 10.0, 2.5,false);
+			g.play(25, 90, 16, 80, 35.45f, 37, 10.0, 2.5,true);
 
 		}
 		pstage.setScene(gamescene);		
 	}
-
+	
+	/**
+	 * This functions is called when the Player clicks on Back to Menu button. 
+	 * @param turn This is the player that is being added to the ArrayList total
+	 * @param c Color for the Player that is being added to the list
+	 * @return Nothing 
+	 */
 	public void callmain(int turn, Color c) throws FileNotFoundException
 	{
 		total.set(turn, new Player(c, total.get(turn).getTurn()));
 		start(pstage);
 	}
-
+	
+	/** 
+	 * This is the main function where object of Main class is created and a few other components are initialized.
+	 * @param args Unused
+	 * @return Nothing 
+	 */
 	public static void main(String[] args) {
 		Main o = new Main();
 		s = new Settings(o);
