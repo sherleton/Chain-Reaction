@@ -818,6 +818,13 @@ class Game
 
 			}
 		}
+
+		RotateTransition rt=new RotateTransition(Duration.millis(1000),r[x][y]);
+		rt.setByAngle(360);
+		rt.setCycleCount(Timeline.INDEFINITE);
+		rt.setInterpolator(Interpolator.LINEAR);
+		rt.play();
+
 		root.getChildren().add(r[x][y]);
 		r[x][y].toBack();
 	}
@@ -1361,6 +1368,7 @@ class Game
 	 */
 	public void play(int gx1, int gy1, int gx2, int gy2,  float sbs, float bbs, double rad, double rt,boolean axy) throws FileNotFoundException
 	{
+		flagcheck = 0;
 		Color ccc=p.get(turn).getColor();
 		Group[][] r=new Group[sizex][sizey];
 		for(int i=0;i<sizex;i++){
@@ -2204,7 +2212,8 @@ public class Main extends Application
 		Main.pstage.setScene(Main.playascene);
 	}
 	
-	/** This function is called if checkwinner() returns true. It displays the player who has won the game
+	/** 
+	 * This function is called if checkwinner() returns true. It displays the player who has won the game
 	 * and provides to either start a new game or return to the main menu.
 	 * @param i This is the Player no. who has won
 	 * @return Nothing
@@ -2244,6 +2253,7 @@ public class Main extends Application
 					if(Game.sizex == 6)
 					{
 						Game.turn = 0;
+
 						playGame("Normal Grid");
 					}
 					else
