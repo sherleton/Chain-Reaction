@@ -45,6 +45,8 @@ import javafx.scene.layout.BackgroundFill;
  * @author Nikhil Sachdeva 2016061
  * @version 1.0
  */
+
+
 class ColorChange implements EventHandler<ActionEvent>
 {
 	private Main o;
@@ -93,6 +95,10 @@ class ColorChange implements EventHandler<ActionEvent>
 	}
 }
 
+/**
+ * This is the Player class in which Color assigned to that player and their no. dare data members.
+ *
+ */
 class Player{
 	private Color c;
 	private int i;
@@ -129,9 +135,20 @@ class Player{
 	}
 }
 
+/**
+ * Settings class is used to create the settings menu when the player clicks on Player Settings Button
+ * and has functions for changing the color of the color of a particular player.
+ */
 class Settings
 {
+	/**
+	 * o is a static object of the Main class
+	 */	
 	public static Main o;
+	
+	/**
+	 * colors is a 2D array of button that provide a color panel when the user wants to change the color of a player
+	 */	
 	public static Button[][] colors;
 
 	Settings(Main o)
@@ -516,19 +533,60 @@ class Settings
 	}
 }
 
+/**
+ * The functions related to the Game like burst(), conquer() that change the value of the grid after each move
+ * present here. The animation for translation of spheres is also carried out in the class
+ */
 class Game
 {
+	/**
+	 * This is s static object of the Main class
+	 */
 	static Main o;
 
+	/**
+	 * This represents the list of players that are currently playing
+	 */
 	public static ArrayList<Player> p;
+	
+	/**
+	 * This represents the player who has to make a move
+	 */
 	public static int turn;
+	
+	/**
+	 * This represents the no. of players playing the game
+	 */
 	public static int n;
+	
+	/**
+	 * This represents no. of rows in the grid 
+	 */
 	public static int sizex;
+	
+	/**
+	 * This represents no. of columns in the grid 
+	 */
 	public static int sizey;
+	
+	/**
+	 * Back end grid
+	 */
 	public static int [][]a;
+	
+	/**
+	 * This value is used by the undo function to always write the grid of previous turn onto the file abc.txt
+	 */
 	public static int lol;
+	
+
 	public static int[][] cvalue;
 	public static int flagcheck;
+	
+	/**
+	 * arr tells which player are still playing. Of the 8 elements in it if arr[i] is zero then that player
+	 * is not allowed to make a move.
+	 */
 	public static int[] arr;
 
 	Game(Main o)
@@ -1750,15 +1808,36 @@ class Game
 	}
 }
 
+/** 
+ * Main class has all the different pages as its members and here the grid is created based on the user's choices
+ * and the input made by the user is placed in the grid by the play(). the rotation transistion of spheres is also 
+ * done here.
+ */
 public class Main extends Application
-{
+{	
+	/**
+	 * The main stage 
+	 */
 	static Stage pstage;
+	
+	/**
+	 * Scenes for main menu, play game, payer settings, winner page
+	 */
 	static Scene mainscene, playerscene, gamescene, playascene, winnerscene;
 
+	/**
+	 * static object of Settings class
+	 */
 	static Settings s;
+	
+	/**
+	 * static object of Game class
+	 */
 	static Game g;
 
-	
+	/**
+	 * This is just a list of all the 8 players and the color assigned to them
+	 */
 	public static ArrayList<Player> total;
 	public static ArrayList<Color> c;
 
