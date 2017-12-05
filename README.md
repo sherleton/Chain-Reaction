@@ -1,4 +1,4 @@
-# Chain-Reaction
+# Chain-Reaction ver 1.0
 
 This is an application created using JavaFX which is similar to the game Chain Reaction available on PlayStore and AppStore. This was done as a project for the course Advance Programming (CSE 201) at IIIT Delhi. For back end we have an integer grid in which the value of Player 1 are 1-4, for Player 2 are 5-8 for example in the given grid
 
@@ -14,11 +14,10 @@ The 1 tells us that this is being occupied by Player 1 with 1 Sphere,the 2 tells
 To play compile and run Main.java program to play the game.
 
 Apoorv Khattar 2016016
-
 Nikhil Sachdeva 2016061
 
 
-verion 1.0
+
 
 
 
