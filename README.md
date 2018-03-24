@@ -13,8 +13,9 @@ The 1 tells us that this is being occupied by Player 1 with 1 Sphere,the 2 tells
 
 To play compile and run Main.java program and then type "java Main" to play the game.
 
-Apoorv Khattar 2016016
-Nikhil Sachdeva 2016061
+# Future prospects
+1. A single player AI mode (Roguh Idea: Following the player inputs, we can design this option).
+2. Playing on network (Roguh Idea: Through Socet programming, we can design this).
 
 
 
